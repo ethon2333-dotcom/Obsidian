@@ -1,0 +1,11 @@
+# Obsidian 本地缓存（每台设备不同，不需同步）
+.obsidian/cache/
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# 回收站
+.trash/
+
+# 系统文件
+.DS_Store
+Thumbs.db

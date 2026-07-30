@@ -36,6 +36,13 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 - **XPIA**：UI / 文档中嵌入恶意指令劫持 Agent，是新型攻击面；缓解 = ODR 受控发现 + 会话隔离 + 用户中断（见 [[XPIA 跨提示注入]]）。
 - **Copilot Vision**：session-bound、显式 opt-in 的屏幕感知，与 Android UI Automation（[[工业级 GUI Agent 架构（VLM+无障碍树）]]）思路互补。
 
+## 2026-07 增补（Agent Workspace 预览细则，来源 [[OS PM 近一月情报简报 2026-07-31]]）
+
+- **四大新基元**：① Agent accounts（专属、受限、非交互 Windows 账号，ACL / Intune / MDM / 组策略可治理）；② Agent Workspace（独立轻量桌面会话，运行时隔离，轻于 VM）；③ Scoped file access（默认仅 **6 个 known folders：Documents / Downloads / Desktop / Pictures / Music / Videos**）；④ MCP（经 ODR 注册连接器，显式可审计）。
+- **默认关闭 + 需 opt-in**：`Settings > System > AI components > Agent tools > Experimental agentic features`，**默认关**、需管理员开启、设备级生效；文件访问同意三档：Allow Always / Ask every time / Never allow。
+- **XPIA（跨提示注入）** 列头号新风险：UI/文档嵌入恶意指令劫持 Agent → 数据外泄/装马；缓解 = 签名 Agent 二进制 + 防篡改日志 + 管理员开关 + 限定文件夹 + 会话隔离。
+- **三原则**：Non-repudiation（Agent 行为可区分于用户）/ Confidentiality（不低于所消费数据安全标准）/ Authorization（用户审批所有数据查询与动作）。
+
 ## 可复用启发
 
 - 「隔离会话 + 低权限账号 + 签名 + ACL」是本地 Agent 安全执行的标杆范式，可迁移到任何 OS Agent（见 [[Agent Workspace 隔离执行]]）。

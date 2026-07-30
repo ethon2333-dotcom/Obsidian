@@ -45,6 +45,15 @@ enum AssetType { ... }
 - **归属判定**：`OwnershipProvidingEntity`（EntityOwnership `.shared` / `.public` / `.unknown`）区分实体归属，Confirmation UI 据此差异化提示。
 - **Agentic Macro**：Shortcuts 2.0 借 MCP 让 Slack / Notion 等把 Internal Actions 暴露给 Siri Intelligence，App 退化为 headless 服务；`isAssistantOnly` 为过渡开关；Passwords App 可代理执行改密等系统动作。
 
+## 2026-07 增补（iOS 27 / WWDC26，来源 [[OS PM 近一月情报简报 2026-07-31]]）
+
+- **System Orchestrator（系统编排者）**：跨 App 动作统一由系统编排者路由，**App 之间不直接互相驱动**——这是刻意为隐私与安全的设计（详见 [[System Orchestrator 系统编排]]）。
+- **前台/后台速率限制**：on-device 模型前台**无速率限制**，后台高负载时限流、无固定预算数字。
+- **SiriKit 正式弃用**：App Intents 成 Siri 强制集成面，约 2~3 年迁移窗口；早期伙伴含 Uber / Amazon / YouTube / WhatsApp / AllTrails。
+- **新框架族**：Foundation Models（原生 Swift API，可切换 Apple/Claude/Gemini）、Core AI（自带模型上设备）、Evaluations、App Intents Testing。
+- **路由链路**：App Intents 与 **System Orchestrator + Spotlight 语义索引 + App Toolbox** 协同跨 App 路由。
+- **新增 Schema 类型**：`ValueRepresentation` / `RelevantEntities` / `EntityCollection` / `SyncableEntity` / `LongRunningIntent` / `ExecutionTargets` 等（细节以官方文档为准）。
+
 ## 可复用启发
 
 - 平台方应通过「声明式宏 + AI 辅助生成」把 App 接入成本压到极低（Apple `isAssistantOnly` 过渡）。

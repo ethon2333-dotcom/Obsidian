@@ -27,13 +27,20 @@ tags: [AppIntent, FunctionCalling, 端侧Planner, 评测, 概念]
 
 | 模型 | 规模 | 策略 | 关键指标（实测） | 定位 |
 |------|------|------|-----------------|------|
-| **FunctionGemma 270M** | 270M | 单应用 Tool Schema 微调 + LiteRT-LM | Tool Choice / 参数抽取 **46% → 90%**；Pixel 7 ~**2000 tok/s** prefill | 端侧 Planner（主路由） |
+| **FunctionGemma 270M** | 270M | 单应用 Tool Schema 微调 + LiteRT-LM | Mobile Actions 微调 **base 58% → 85%**；BFCL Simple 61.6 / Parallel 39（详见下方 2026-07 增补） | 端侧 Planner（主路由） |
 | **qwen3-0.6b-tool-router** | 0.6B | 禁 CoT + 严格 JSON，确定性 edge router | BFCL Multi-Turn Base **90.42%**；Relevance **90.89%** | 确定性边缘路由 |
 | **Qwen3-Embedding-0.6B** | 0.6B | 语义缓存学习环 | 降低云端依赖（高频意图留端侧） | 语义缓存 |
 | Gemma 4 | 待补 | — | 待实测 | 待跟踪 |
 | Qwen3-Coder-Next | 待补 | — | 待实测 | 待跟踪 |
 
-> 说明：Gemma 4 / Qwen3-Coder-Next 为待跟踪项，数据回填后更新本表（回流 [[AppIntent 跨平台情报简报 2026-07-30]]）。
+> 说明：Gemma 4 / Qwen3-Coder-Next 为待跟踪项，数据回填后更新本表（回流 [[OS PM 近一月情报简报 2026-07-31]]）。
+
+### 2026-07 增补（官方实测，来源 [[OS PM 近一月情报简报 2026-07-31]]）
+
+- **FunctionGemma 官方 BFCL（零样本）**：Simple 61.6 / Multiple 63.5 / Parallel 39 / Parallel-Multiple 29.5 / Live-Simple 36.2 / Live-Multiple 25.7 / Live-Parallel 22.9 / Live-Parallel-Multiple 20.8 / Relevance 61.1 / Irrelevance 73.7。并行/多函数组合场景显著下滑 → 官方强调"必须微调"。
+- **S25 Ultra 实测（dynamic_int8, CPU LiteRT XNNPACK 4 线程, ctx 1024）**：Mobile Actions 微调 prefill **1718 tok/s**、decode **125.9 tok/s**、TTFT **0.3s**、模型 **288MB**、峰值 RSS **551MB**。
+- **Local Agent Bench Round 3**：qwen3:1.7b **#1（0.960）**、functiongemma **0.640（435ms）** → 详见 [[Local Agent Bench 端侧智能体基准]]。
+- **口径说明**：早期简报记 FunctionGemma "46%→90%"（基准未注明），与 Google 官方 "base 58% → Mobile Actions 微调 85%" 口径不同；以 **官方 58%→85%** 为准。
 
 ## 可复用启发
 

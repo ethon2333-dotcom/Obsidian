@@ -39,6 +39,16 @@ tags:
 - OS PM 评估「Agent 大脑」应同时看：**Agent 专项基准分 + 每任务成本 + 上下文窗口 + 工具调用/计算机使用内建能力**，而非仅通用榜。
 - 与端侧分层：云端前沿模型做复杂规划/低置信升级，端侧小模型做本地路由（见 [[Function Calling 端侧工具调用]]）。
 
+## 深化补充
+
+- **数字口径提醒**：本笔记的 OSWorld-Verified 83.0%（Gemini 3.6 Flash）、Frontier-Bench 43.3%（Claude Opus 5）等为**厂商自述 / 2026-07 窗口快照**，非独立复核榜；据 web 复核，OSWorld 官方榜（361 项任务）头部条目与部分中文媒体「实在 Agent 90.2%」口径不一致——该 90.2% 仅见于媒体，**官方榜快照未见**，需以 os-world.github.io 为准（待核实，见 [[OSWorld 计算机操作基准]]）。
+- **与端侧分层**：云端前沿模型做复杂规划/低置信升级，端侧小模型（如 [[Simple Attention Network 无FFN端侧路由]]、[[Function Calling 端侧工具调用]]）做本地路由，二者经 [[Intent Router 语义路由]] 衔接。
+- **Agent 专项基准**：除 Frontier-Bench / OSWorld-Verified，还应纳入 [[通用 AI Agent 评测基准 2026]] 与 [[Local Agent Bench 端侧智能体基准]] 做端云对照。
+
+- [ ] Claude Opus 5 的 Frontier-Bench 43.3% 与 Gemini OSWorld-Verified 83.0% 是否同测试集、同后处理？横向对比需对齐口径。
+- [ ] GPT-5.6 / ChatGPT Work 在 Agent 专项基准上的公开分数缺失，待补。
+- [ ] 模型迭代极快，本笔记需设定回流周期（如月度）更新快照，避免数字过时。
+
 ## 关联
 
 - 来源：[[AI Agent 半月情报简报 2026-07-31]]

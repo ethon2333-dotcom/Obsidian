@@ -59,6 +59,16 @@ tags: [AppIntent, 安全, XPIA, 注入, 概念]
 - **四平台靶面（均待补，无一家公开 ADI 类别评估）**：Apple `.appEntityIdentifier` / View Annotations 的实体标识符（恰是 ADI 场景一靶心）、Android `AppFunctionMetadata` / `app_metadata`、HarmonyOS A2A 消息格式、Windows Agent Workspace 内工具格式。详见 [[Agent Data Injection 数据注入攻击]]。
 - **与 Stored IPI 同源**：姊妹论文 DualView（arXiv 2607.03821）证明传统隔离对存储型注入仍 53.3% 失守，提出数据视图隔离原语，见 [[Dual View 智能体数据视图隔离]]。
 
+## 深化补充
+
+- **威胁模型的三个拐点（已立）**：① 一次性注入（本库基线）→ ② 文档型蠕虫自传播（[[文档型 XPIA 自传播蠕虫]]）→ ③ ADI 数据注入（[[Agent Data Injection 数据注入攻击]]）。三者是「注入会繁殖」「注入不靠指令」「注入伪造结构」的递进，四平台防护目前**均停留在拐点①**。
+- **与确认机制的分层**：XPIA 的缓解需三层叠加——隔离（[[Agent Workspace 隔离执行]]）+ 确认（[[Confirmation UI 安全机制]]）+ 数据形态隔离（[[Dual View 智能体数据视图隔离]]）；且据 [[Confirmation UI 安全机制]] 2026-08-03 增补，确认本身需走「带外」第三档（AIMS：LLM MUST NOT hold credentials）才抗 ADI。
+- **与 Agentic OS 的张力**：当 [[Agentic OS 意图调度内核]] 把调度单元升级为意图，意图本身成为新注入面，XPIA 防线需前移到意图注册 / 写回阶段。
+
+- [ ] 四平台对「拐点③ ADI」是否已有任何官方类别级回应？截至 2026-08-04 均待补。
+- [ ] XPIA 在「Proactive Agent 主动触发意图」场景下如何拦截？主动触发意味着 Agent 自己发起，确认点更难布（见 [[Agentic OS 意图调度内核]]）。
+- [ ] 能否把 XPIA 防护纳入 OS 意图框架的「能力描述」环节（[[Intent Schema Protocol 意图模式规范]]），让声明即带防护属性？
+
 ## 关联
 
 - 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]]

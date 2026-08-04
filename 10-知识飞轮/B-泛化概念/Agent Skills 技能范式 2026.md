@@ -46,3 +46,13 @@ Agent Skills 是 Anthropic 于 2025-10 提出的开放标准（2025-12-18 成为
 2. 渐进式披露 = 端侧算力范式，可参考用于系统级 Skill 商店。
 3. 格式统一者掌握生态入口（类比 MCP 之于工具调用）。
 4. self-improving（从纠错回写长期记忆）是 2026 主线之一。
+
+## 深化补充
+
+- **标准时间线修正**：Anthropic 于 **2025-12-18** 正式将 Skill 定为**跨平台开放标准**（非 2025-10 首次提出时），并进入 **Linux 基金会 AIDF** 候选；截至 2026 已被 OpenAI、Cursor、GitHub Copilot、Claude Code 等多家采纳，`SKILL.md` 成为事实最广的兼容格式。
+- **与 OS Registry 的关系**：Skill 的「渐进式披露」三层级（YAML 元数据 → SKILL.md → 关联文件）与四平台意图框架的「能力声明 → 语义索引 → 执行」同构；OS 完全可把 `SKILL.md` 当作跨厂商 **能力描述** 的可迁移载体，直接对齐 [[智能体互联国家标准与 AIP]] 的「五段式」能力描述段。
+- **与 MCP 分工**：Skill=知识层（菜谱），MCP=连接层（厨房），二者在 OS Agent 里对应「声明能力」与「注册工具」（见 [[Intent Schema Protocol 意图模式规范]]、[[端侧执行通道 GUI 与 MCP 路线之争]]）。
+
+- [ ] 当 Skill 被 OS 系统 Agent 动态加载并执行写回操作时，其安全边界归属 App 还是系统？需明确责任链。
+- [ ] 企业级 Skill 市场（见 [[企业级 Agent 平台与 Agent-as-Asset 2026]]）如何做来源校验与签名，避免恶意 Skill 注入（呼应 [[Agent Data Injection 数据注入攻击]]）？
+- [ ] 端侧低带宽下，Skill 的渐进式披露与 [[Simple Attention Network 无FFN端侧路由]] 的轻量路由能否共用同一套「按需加载」运行时？

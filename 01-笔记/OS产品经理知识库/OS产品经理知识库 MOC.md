@@ -27,6 +27,9 @@ created: 2026-07-30
 - [[OS-PM-AI Runtime动态调度与降级策略]] —— 温控/电量/内存三维下的 SpecDec 动态降级矩阵
 - [[OS-PM-系统AI Runtime vs 应用引擎]] —— 为什么 OS 要自研 AI Runtime（4 大护城河）
 
+### D. 方法论 / 跨学科发散
+- [[PM 需求定义 跨学科发散]] —— 把"定义需求"辐射到需求工程/JTBD/情境调查/经济学/设计思维/敏捷/博弈论/合规/逻辑/FMEA/OKR，收敛给 PM 的 5 条启示，并落到 OS/Android PM 实战（系统级 App Intent 开放能力需求定义）
+
 ## 🔗 关联
 - 与 [[PRD MOC]] 互补：本库偏「技术原理与指标」，PRD 库偏「需求文档怎么写」
 - 关键贯穿概念：`PagedAttention`、`KV Cache`、`Chunked Prefill`、`INT4 量化`、`Speculative Decoding`、`NPU QoS`

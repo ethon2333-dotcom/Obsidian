@@ -41,6 +41,16 @@ tags:
 - Agent 评估应**双轨 + 分层**：通用基准（AgentCompass/OmniaBench）+ 端侧基准（[[Local Agent Bench 端侧智能体基准]]）+ 单点路由（[[Function Calling 端侧工具调用]]）。
 - 选型别只看总分，要看**在你目标场景子域**的具体表现（AgenticDataBench 启示：最强未必最省、最便宜未必最差）。
 
+## 深化补充
+
+- **基准口径提醒**：OmniaBench 的 Claude-Sonnet-5 58.54 / GPT-5.6-Sol 57.14 等为 **2026-07 窗口快照、论文自述**，非持续复核榜；引用须标版本日期。据 web 复核，BFCL 在 **v3→v4 间测试集与口径变动**，跨版本分数**不可直接比较**（待核实，与 [[Simple Attention Network 无FFN端侧路由]] 同纪律）。
+- **与端侧基准互补**：本篇「通用 / 云端」应和 [[Local Agent Bench 端侧智能体基准]]（端侧跑通）、[[OSWorld 计算机操作基准]]（计算机使用）、[[Function Calling 端侧工具调用]]（单点路由）组成端云双轨评估框架。
+- **EdgeBench（7-22）** 专门定义边缘 / 端侧 Agent 的 benchmark 与排行榜方法论，是端侧评测的正式入口。
+
+- [ ] 通用基准（AgentCompass / OmniaBench）与端侧基准（Local Agent Bench）能否用统一任务 schema 对齐，使端云结果可比？
+- [ ] OmniaBench 规划 / 约束保持 / 自适应纠正是共性短板，端侧 Planner（[[Simple Attention Network 无FFN端侧路由]]）是否同样受困于多步依赖？待测。
+- [ ] BFCL v4 是否已纳入端侧小模型分项？待官方榜核实。
+
 ## 关联
 
 - 来源：[[AI Agent 半月情报简报 2026-07-31]]

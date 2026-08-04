@@ -49,9 +49,50 @@ App Intents 不仅暴露动作，还暴露**数据实体（App Entities）**。A
 ## 结论
 App Intents 是 Apple Intelligence 接入真实软件世界的「官方桥梁」。开发者无需为 AI 重写应用，只要把数据实体与核心操作按规范注册为 App Intents，应用就自动具备被全局 AI 调度的能力。
 
+## 深化补充（2026-08，WWDC26 后）
+
+### 一句话心智模型
+苹果的路线不是「让 AI 学会用你的 App」，而是**「让你的 App 说 AI 已经会的那门语言」**。App Schema 就是这门共同语言——所以 Siri 不需要针对某个 App 训练，也所以你只要不对齐 Schema，就永远进不了这套体系。
+
+### 一个反直觉的机制：确认与否，看「影响谁」而不是「危不危险」
+WWDC26 Session 343 里最值得记的一条（官方视频已核实）：
+
+> **Siri 默认假定你的实体是「用户私人的」，因而可能跳过确认。** 只有当实体 conform 新的 `OwnershipProvidingEntity` 协议、把 `EntityOwnership` 声明为 `.shared` / `.public` 后，Siri 才会倾向于弹确认。
+
+官方举的例子极其清楚：改我自己的私人日程，Siri 可能不问；改「Crew Lunch」这种带参与者的日程，Siri 会问。
+
+- **产品含义**：Apple 把确认的触发判据定在了「**这条数据的副作用会外溢给谁**」，而不是传统的「动作是不是不可逆」。这是我之前没想到的一个维度。
+- **顺带的代价**：开发者必须**实时维护 ownership 状态**（系统每次取实体时都要求是最新的）。声明错了，要么骚扰用户，要么静默改了别人的东西。
+
+### 与 Android 的路线分歧（这条对做安卓的我最有用）
+
+| | Apple | Android AppFunctions |
+|---|---|---|
+| 确认由谁做 | **系统级** Confirmation UI，据 entity ownership 差异化提示 | **下放给 App 自己实现**——官方指引原文建议开发者「加不止一步确认」 |
+| 体验一致性 | 高（全系统一套） | 低（各 App 自觉） |
+| App 灵活度 | 低 | 高 |
+| 可审计性 | 强 | **靠开发者自觉** |
+| 理解在哪跑 | 端侧 + 云端协同 | 官方明示「**system agents may process user queries on the server**」 |
+
+→ 我的判断：Apple 是「安全成本由平台承担」，Android 是「安全成本转嫁给开发者、最终转嫁成用户多点几次」。做安卓侧产品时，**这块空缺就是厂商 ROM 可以补位的地方**。
+
+### 另外两条 2026 的结构性变化
+- **System Orchestrator**：跨 App 动作统一由系统编排者路由，**App 之间不直接互相驱动**——刻意为隐私与安全设计。上面案例里的「链式执行」其实全程有个中间人。
+- **`EntityCollection`（Session 345）**：把「**解析实体本身是有成本的**」写进了 Schema 设计。Intent 执行前系统会解析每一个实体（调查询、填全属性），批量场景是灾难；改用 `EntityCollection` 只传标识符。→ Intent 设计要区分「需完整实体的语义操作」与「只需 ID 的批量操作」。
+- ⚠️ **待核实**：多方报道称重推理由定制版 Google Gemini 承担，Apple 未明确拆分口径；Session 345 演示的「1000 张照片近乎瞬时」原视频未给具体秒数。
+
+### 待解问题
+- [ ] 「按影响面决定是否确认」这个判据，能不能搬到安卓？安卓侧没有 entity ownership，**厂商能从哪里推断「这条数据是不是共享的」**——从 App 声明（可伪造）还是从系统侧行为（不全）？
+- [ ] Apple 把私有界面内容默认不开放、必须显式 opt-in。这条边界在国内安卓生态里会不会反而成为超级 App 拒绝开放的**合法挡箭牌**？
+- [ ] 上面那张「相比模拟点击的优势」表写于 GUI 能力弱的年代。2026 年 GUI 侧 OSWorld 已到 90% 量级（媒体口径，见 [[OSWorld 计算机操作基准]]），这张表的「可靠性/泛化」两行**是不是该改口径了**？
+
 ## 关联
 - App Intent 的基础概念见 [[App Intent 的核心作用]]
 - 底层支撑架构见 [[App Infra 应用基建]]
 - 国内类似能力为何难落地见 [[国内安卓厂商做 App Intent 的阻力]]
+- WWDC26 API 级细节深读 → [[Apple AppIntents Schema Protocol 2026]]
+- 确认机制四平台对照 → [[Confirmation UI 安全机制]]
+- 系统编排者 → [[System Orchestrator 系统编排]] ｜ 语义路由 → [[Intent Router 语义路由]]
+- 安卓侧对照 → [[Android AppFunctions 设备侧意图 2026]]
 
 #标签/AppleIntelligence #标签/AppIntent

@@ -3,6 +3,7 @@ type: concept
 status: draft
 derived_from: "[[AppIntent 跨平台情报简报 2026-07-30]]"
 tags: [AppIntent, 安全, ConfirmationUI, 概念]
+aliases: [确认机制]
 ---
 
 # Confirmation UI 安全机制

@@ -42,6 +42,16 @@ tags:
 - Agent 安全分级：低危动作软件确认（[[Confirmation UI 安全机制]]）、高危动作硬件级/密码学审批（本概念）。
 - 任何 Agent 上线前先验：身份归属、action-level 授权、审计轨迹、人类可中断——与 [[Agent Workspace 隔离执行]] 的隔离/ACL 同构。
 
+## 深化补充
+
+- **与 AIMS 反向论点互文**：带外防御研究（arXiv 2606.26479）提出 **AIMS**——「LLM MUST NOT hold credentials」，授权应由授权服务器完成而非本地 UI 确认；若 Agent 已被 ADI / IPI 污染，它呈现的确认文案本身即被操纵。这与本概念「硬件 / 密码学锚定」一致：把审批移出模型可控范围（见 [[Agent Data Injection 数据注入攻击]]、[[Confirmation UI 安全机制]]）。
+- **与意图支付授权衔接**：中国银联 [[意图支付授权协议 APOP]] 把「意图」作为不可篡改凭证并做用户身份管理，是 action-level 授权在支付场景的官方落地形态；YubiKey 式硬件审批可看作其终端侧实现之一。
+- **三级防护关系**：本概念的「身份 + 硬件」层应叠加 [[Confirmation UI 安全机制]] 的软件确认层与 [[Agent Workspace 隔离执行]] 的隔离层，构成「隔离 / 确认 / 硬件」三级。
+
+- [ ] 硬件级审批（如 YubiKey 5.8）如何与 OS 级 Agent（Android AppFunctions / Apple App Intents）的原生确认 UI 并存？会不会双重弹窗？
+- [ ] action-level 授权的「动作指纹」如何定义才算不可伪造、不可重放？需一手标准。
+- [ ] 消费级 OS Agent 是否应提供「高危动作强制硬件审批」的可选开关？四平台现状待补。
+
 ## 关联
 
 - 来源：[[AI Agent 半月情报简报 2026-07-31]]

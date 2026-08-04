@@ -1,0 +1,15 @@
+/* Obsidian 关系图谱 · 柔和线条（可选片段）
+   启用：设置 → 外观 → CSS 片段 → 开启「graph-soft」
+   仅影响连线/箭头/标签的观感，节点颜色由 graph.json 的分组控制。 */
+.graph-view.color-line {
+  color: rgba(125, 135, 150, 0.40);
+}
+.graph-view.color-text {
+  color: var(--text-muted);
+}
+.graph-view.color-arrow {
+  color: var(--text-faint);
+}
+.graph-view.color-fill-unresolved {
+  color: #c2554d;
+}

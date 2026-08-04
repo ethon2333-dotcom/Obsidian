@@ -3,6 +3,7 @@ type: concept
 status: draft
 derived_from: "[[AppIntent 跨平台情报简报 2026-07-30]]"
 tags: [AppIntent, FunctionCalling, 端侧Planner, 评测, 概念]
+aliases: [端侧工具调用]
 ---
 
 # Function Calling 端侧工具调用

@@ -39,6 +39,19 @@ tags: [AppIntent, A2A, 多智能体, 概念]
 - **对范式的修正**：原「端侧直连优先」应升级为「**按时延/隐私 vs 推理深度划界**」——并非所有 Agent 协作都该在端侧。详见 [[HarmonyOS Intents Kit 与 ArkAF 2026]]。
 - ⚠️ 待补：端侧 A2A 多 Agent 互写互调时的 XPIA 类别级评估（四平台均无）。
 
+## 深化补充
+
+- **重要区分（概念纠偏）**：本笔记原把 A2A 框定为「端侧多 Agent 直连」，但 **Agent2Agent（A2A）作为技术协议**，主体是 **Google 提出、2025-04 捐赠 Linux 基金会、2026-03 发布 v1.0** 的 **HTTP/JSON 跨框架网络协议**，与 HarmonyOS 的「端侧 A2A」是不同层级——前者解决「异构 Agent 框架如何跨网络对话」，后者是鸿蒙设备内/云侧的编排实现。
+- **v1.0 关键形态**：
+  - **AgentCard**：发布于 `/.well-known/agent.json`，机器可读地声明能力、技能、鉴权；v1.0 起支持**签名 AgentCard**（防伪造）。
+  - **任务生命周期**：5 状态机 `submitted → working → input-required → completed / failed`，远端流式推送进度。
+  - 与 MCP 互补：MCP 管「Agent 调工具」，A2A 管「Agent 调 Agent」（见 [[端侧执行通道 GUI 与 MCP 路线之争]]）。
+- **与国标的关系**：A2A 的 AgentCard 能力描述段，与 [[智能体互联国家标准与 AIP]]「五段式」中的「能力描述 / 协同交互」高度同构，可作为跨厂商互认的技术底座之一。
+
+- [ ] A2A v1.0 的「签名 AgentCard」能否直接对接 [[Agent 身份与硬件级审批]] 的硬件级信任根？待核实。
+- [ ] HarmonyOS 端侧 A2A 与 Google A2A 协议是否互通？还是各自私有？需一手源。
+- [ ] A2A 多 Agent 消息传递时的 provenance 链（见 [[数据溯源分级与单调棘轮]]）如何实现？v1.0 是否定义？待补。
+
 ## 关联
 
 - 来源：[[AppIntent 跨平台情报简报 2026-07-30]]

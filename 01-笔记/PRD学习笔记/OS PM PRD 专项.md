@@ -58,3 +58,16 @@ created: 2026-07-31
 ## 相关库内笔记
 - [[Apple AppIntents Schema Protocol 2026]] / [[Android AppFunctions 设备侧意图 2026]] / [[HarmonyOS Intents Kit 与 ArkAF 2026]] / [[Windows Copilot Actions 与 Agent Workspace 2026]]
 - [[Agent 身份与硬件级审批]] / [[Confirmation UI 安全机制]] / [[Function Calling 端侧工具调用]] / [[Local Agent Bench 端侧智能体基准]]
+
+## 深化补充
+
+**心智模型**：OS PM 的 PRD 难在"我定义的不是功能，是一条别人要遵守的契约"——契约一旦发布就难收回，所以"默认拒绝 + 显式确认"不是保守，是给未来的自己留退路。
+
+**具体例子 / 对比**：第 23 行的"能力暴露 / 接口面"和第 26 行的"系统编排与 Fallback"是 App PRD 几乎不会写的，但对系统级 Agent 是生死线。对比 [[OS 系统级 Agent PRD 范例]] 的 §5 Schema 与 §7 Fallback 就知道：一个意图参数设计错（比如 `riskLevel` 没区分 medium/high），上线后想改就要动所有接入方——这就是"向后兼容与弃用窗口"章节存在的理由（弃用周期 ≥ 2 个系统版本，见范例 NFR4）。
+
+**关联**：[[HarmonyOS Intents Kit 与 ArkAF 2026]]（鸿蒙怎么把能力拆成可被系统检索的单元）、[[Windows Copilot Actions 与 Agent Workspace 2026]]（Windows 的 Agent 账户/隔离思路）、[[意图框架的商业与生态博弈]]（接入率才是 PRD 成功指标里最该写、又最难写的那条）、[[OS-PM-概览与四大核心领域]]（生态治理/合规是四大领域里我目前最弱的）。
+
+**留给自己的待解问题**
+- [ ] "开发者接入成本 ≤ 1 人日"这类指标，我有没有真实招募开发者测过？还是拍的？
+- [ ] 当能力契约要跨 Apple/Android/HarmonyOS/Windows 四家对齐时，我的 PRD 是各写一份还是抽一层公共 Schema？取舍标准是什么？
+- [ ] 权限"默认拒绝"在 ToC 体验上会摩擦，摩擦和安全的平衡点我怎么定、谁来拍板？

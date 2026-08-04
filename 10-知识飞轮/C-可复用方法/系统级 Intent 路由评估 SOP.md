@@ -62,4 +62,72 @@ tags: [AppIntent, 评估, SOP, 端侧Planner]
 - 混合栈：FunctionGemma 本地 + 低置信升级 Gemini Flash + Qwen3-Embedding-0.6B 语义缓存。
 - 双基准反例：Bonsai-8B（1-bit, 1.15GB）BFCL **73.3%** 却 NexusRaven **43.8%**，Qwen3.5-9B 恰好相反（64.0% / 75–77.1%）→ 详见 [[AppIntent 每日情报 2026-08-03-晚]]。
 
+## 深化补充（2026-08-04）：步骤 4 的「双基准」应升级为「三基准 + 版本号」
+
+> 触发：BFCL 已发布 v4 并**重构评分权重**，上面步骤 4 写的「双基准」成文于 08-03，当时默认 BFCL 指 v3。**v3 与 v4 测的不是同一件事，分数不可同栏比较**，本节为该步骤打补丁。概念侧全表见 [[Function Calling 端侧工具调用]]。
+
+### A. 官方口径核实结果（2026-08-04 检索，部分解决库内挂起待办）
+
+- **已由官方页确认**：`gorilla.cs.berkeley.edu/leaderboard.html` 自述 BFCL **V4** 为 "**holistic agentic evaluation**"，榜单列结构为 **Agentic（Format Sensitivity / Web Search / Memory）+ Multi Turn + Single Turn（Non-live AST / Live AST）+ Hallucination Measurement**，与库内记录的类目一致；评分沿用 **AST + 状态转移**判定（非 LLM judge），故可复现。
+- **权重公式已交叉确认（非孤证）**：`Overall = Agentic×40% + Multi-Turn×30% + Live×10% + Non-Live×10% + Hallucination×10%`，由 **EvalScope 官方 `bfcl_v4` 实现文档**明确写出（实现依赖 `bfcl-eval` 包），与库内此前的第三方拆解数字一致。
+- ⚠️ **仍标「待核实」**：Berkeley **官方博客原文**对该权重表的直接表述本轮未取到（官方 v4 博客分 Web Search / Memory / Format Sensitivity 三篇，其「Full Leaderboard Score Composition」段落未抓全）。当前状态从「单一二手快照」升级为「**官方确认结构 + 独立实现确认权重，官方原文表述待核**」。
+- ⚠️ **榜单时效**：第三方注明榜单末次更新 **2026-04-12**；本轮官方页所见条目也集中在 2025 年底—2026 年初的模型，**2026 年中后期新模型未入表**。库内 08-04 记录的 `benchlm.ai` 镜像站那批分数（LFM2.5-8B-A1B 49.7% 等）在本轮官方页**未见对应行**，因此仍为**镜像站口径，不可当官方榜单行引用**。
+
+### B. 官方榜单端侧规模档实测行（2026-08-04 检索所见，BFCL v4 Overall Acc）
+
+| 模型 | 类型 | v4 Overall |
+|---|---|---|
+| Claude-Opus-4-5 (FC) | 闭源，榜首 | **77.47** |
+| Claude-Sonnet-4-5 (FC) | 闭源 | 73.24 |
+| Gemini-3-Pro-Preview (Prompt) | 闭源 | 72.51 |
+| xLAM-2-3b-fc-r (FC) | 3B 工具专用 | **41.22** |
+| Qwen3-4B-Instruct-2507 (FC) | 4B 通用 | 35.68 |
+| Arch-Agent-3B | 3B 工具专用 | 35.36 |
+| Arch-Agent-1.5B | 1.5B | 32.14 |
+| xLAM-2-1b-fc-r (FC) | 1B 工具专用 | 30.44 |
+| Qwen3-1.7B (FC) | 1.7B 通用 | **28.41** |
+| Hammer2.1-1.5b (FC) | 1.5B 工具专用 | 27.88 |
+
+**这张表直接改写选型预期**：在 v3 时代靠窄域微调能刷到 90%+ 的规模档（1–4B），到 v4 只剩 **28–41 分**，与榜首差 **35 分以上**。注意 `xLAM-2-3b`（41.22）反而高于 `Qwen3-4B`（35.68）——**工具专用微调在这一档仍然有效，但抬不动 Agentic/Multi-Turn 那 70% 的权重**。
+
+⚠️ 榜单为定期更新的活数据，引用时**必须同时记录检索日期**（本表：2026-08-04）。
+
+### C. 步骤 4 的替换版：三基准并列，每列标版本号
+
+| 列 | 基准 | 测什么 | 对应的线上失败模式 |
+|---|---|---|---|
+| ① 格式合规 | **BFCL v3**（或 v4 的 Non-Live 子项） | 能不能按 Schema 把槽填对 | 参数类型错、JSON 不合法 |
+| ② API 语义 | **NexusRaven** 或等价复杂 API 语义集 | 懂不懂这个 API 是干嘛的 | 跨应用编排选错工具 |
+| ③ 多轮 + 拒答 | **BFCL v4** | 跨轮持状态；**无合适工具时会不会硬凑一个** | 槽位追问断裂；**误召回** |
+
+**验收硬规则**：选型表里每个分数后面必须跟 `(基准名 + 版本 + 官方/第三方 + 微调/零样本 + 全量/子集 + 检索日期)`。缺任一项的数字，评审时按「不可用」处理。
+
+### D. 对 OS 意图路由最该看的一栏：Hallucination（v4 占 10%）
+
+它测的是「**当系统里没有任何 AppIntent / AppFunction 能满足用户这句话时，模型会不会硬编一个函数去调**」。这正是真机上最高频、也最难被用户察觉的失败模式——**Registry 越大，误召回代价越高**。而工具微调过的模型系统性偏向「调点什么」，恰恰是这一项的弱项。
+
+→ **落地建议**：内部评测集必须**主动构造「无解意图」样本**（用户说的事本机确实没有对应能力），单独统计拒答率；不要只用有解样本算准确率。这一项不达标的模型，**不允许承担开放域路由，只能做窄域固定 Schema 路由**。
+
+### E. 失败表增补两行
+
+| 失败 | 处理 |
+|---|---|
+| **拿 v3 分数论证 v4 时代的选型** | 全表加版本列；v3 高分只能证明"格式会填"，不能证明"多轮能办事" |
+| **只测有解意图，误召回在线上才暴露** | 评测集补「无解意图」子集，单列拒答率；对齐 v4 Hallucination 口径 |
+
+## 关联
+
+- 概念底座：[[Function Calling 端侧工具调用]]（端侧 Planner 全量评测表 + 口径纪律）｜ [[Intent Router 语义路由]]
+- 新架构变量：[[Simple Attention Network 无FFN端侧路由]]（26M 无 FFN 路由器，"工具调用本质是检索不是推理"）
+- 基准邻居：[[Local Agent Bench 端侧智能体基准]]（补部署现实）｜ [[OSWorld 计算机操作基准]]（GUI 侧能力）｜ [[通用 AI Agent 评测基准 2026]]
+- 下游方法：[[端侧执行通道选型 SOP]]（路由完之后走哪条通道执行）
+- 安全交叉：[[Agent 读入路径可信数据边界 SOP]]（路由输入若来自不可信源，准确率再高也会被劫持）
+- 平台落点：[[Android AppFunctions 设备侧意图 2026]] ｜ [[Apple AppIntents Schema Protocol 2026]] ｜ [[Agentic OS 意图调度内核]]
+
+## 待解问题
+
+- [ ] **Berkeley 官方 v4 博客原文的权重表述仍未取到**（本轮只拿到官方类目结构 + EvalScope 实现公式）。下轮直接抓 `gorilla.cs.berkeley.edu/blogs/15_bfcl_v4_web_search.html` 的「Full Leaderboard Score Composition」段落原文。
+- [ ] 官方 v4 榜单未见 1B 以下条目，本库关注的 Needle 26M / Bonsai-1.7B / FunctionGemma 270M **全部不在官方表内**。这一档要么自建回归集，要么承认"没有可比的公开基准"——该选哪条？自建集又如何避免变成第二个 `prism-coder` 式自证？
+- [ ] v4 的 Agentic 40% 里含 Web Search（需 SerpAPI）与 Memory，**这两项与端侧离线意图路由的相关性存疑**。是否应该对 OS 场景重新加权（例如只取 Multi-Turn + Hallucination + Non-Live 三项做内部口径），并把这个自定义加权明确写进选型模板？
+
 #标签/评估 #标签/SOP #标签/端侧Planner

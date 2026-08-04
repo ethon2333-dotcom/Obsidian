@@ -3,6 +3,7 @@ type: concept
 status: draft
 derived_from: "[[AppIntent 跨平台情报简报 2026-07-30]]"
 tags: [AppIntent, SchemaProtocol, 概念]
+aliases: [意图模式规范]
 ---
 
 # Intent Schema Protocol 意图模式规范
@@ -34,6 +35,19 @@ tags: [AppIntent, SchemaProtocol, 概念]
 
 - OS 设计应尽早固化统一的 Schema / Tool 描述规范：实体类型、Parameter Slot、EntityOwnership 三件套。
 - 「声明式宏 + AI 辅助生成」把接入成本压到极低，是生态起量的关键杠杆。
+
+## 深化补充
+
+- **各平台 Schema 的机器可读落点（具体形态）**：
+  - Apple：`@AppIntent(schema: .audio.addToPlaylist)` 声明式宏 + `EntityOwnership`（`.shared` / `.public` / `.unknown`）决定归属提示（见 [[Apple AppIntents Schema Protocol 2026]]、[[Confirmation UI 安全机制]]）。
+  - Android：`@AppFunction` / `@AppFunctionServiceEntryPoint` 注解经 KDoc 编译产出 `AppFunctionMetadata`，注册进 Android Registry 需 `EXECUTE_APP_FUNCTIONS` 权限（见 [[Android AppFunctions 设备侧意图 2026]]）。
+  - HarmonyOS：`insight_intent.json` 声明 `IntentActionInfo` / `IntentEntityInfo`，`Want` 承载 action/bundle（见 [[HarmonyOS Intents Kit 与 ArkAF 2026]]）。
+  - Windows：ODR 注册 MCP 连接器，受控发现（见 [[Windows Copilot Actions 与 Agent Workspace 2026]]）。
+- **Schema 缺的第三列**：四平台 Schema 都描述「能力是什么」，但据 [[数据溯源分级与单调棘轮]] 复核，**均无 `source.type` / `classification` 字段**——即 Schema 不回答「这条能力声明能被伪造吗」，这是 ADI 攻击面（见 [[Agent Data Injection 数据注入攻击]]）。
+
+- [ ] 能否把「来源类型枚举」作为 Schema 标准的可选扩展列，让各 OS 的 Registry 自带 provenance？需先验证四平台是否接受第三方元数据。
+- [ ] Schema Protocol 与 [[智能体互联国家标准与 AIP]] 的「五段式」能力描述段如何映射？国标是否提供可迁移的字段定义？
+- [ ] EntityOwnership 的 `.unknown` 在路由时如何处置——默认拒绝还是默认允许？待一手源核实。
 
 ## 关联
 

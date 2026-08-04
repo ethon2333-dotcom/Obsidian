@@ -53,6 +53,16 @@ tags:
 - **新增该看的一栏**：BFCL v4 的 **Hallucination（10%）测「没有合适工具时正确地不调用」**——这是 Local Agent Bench 现有 Round 3 数据里**没有覆盖**的维度，而它恰是意图 Registry 规模变大后最关键的失败模式。建议自建端侧回归集时补上「空 Registry / 无匹配意图」用例。
 - ⚠️ **本节点旧数据的版本标注**：`qwen3:1.7b` 0.960、`functiongemma` 0.640/435ms 为 **Local Agent Bench Round 3**（2026-07 检索，来源 URL 仍**待回填**），与任何 BFCL 分数**不同量纲、不可换算**。
 
+## 深化补充
+
+- **基准口径提醒（延续笔记纪律）**：`qwen3:1.7b` 0.960、`functiongemma` 0.640/435ms 为 **Local Agent Bench Round 3（2026-07 检索，来源 URL 待回填）**，与 BFCL v4 任何分数**不同量纲、不可换算**。
+- **与 SAN 架构互文**：[[Simple Attention Network 无FFN端侧路由]] 的「无 FFN」专才定位，恰是 Local Agent Bench 指出的 functiongemma 级「快路由 / 分流」而非「重任务」——二者共同说明端侧 Agent 应分层：小模型做路由、大一点模型（1.7B 级）做端到端。
+- **Hallucination 维度缺口**：BFCL v4 的 Hallucination（10%）测「无合适工具时正确不调用」，Local Agent Bench Round 3 **未覆盖**；自建端侧回归集应补「空 Registry / 无匹配意图」用例，呼应 [[Intent Router 语义路由]] 的低置信升级逻辑。
+
+- [ ] Local Agent Bench 后续轮次是否已纳入 Hallucination / 空 Registry 用例？待官方榜核实。
+- [ ] qwen3:1.7b 的 0.960 在哪些任务子集拉高、哪些拉低？需分项拆解，避免总分误导端侧选型。
+- [ ] 端侧基准能否与 [[OSWorld 计算机操作基准]] 共用「跨应用协同」子项，使端侧 / 桌面结果可比？
+
 ## 关联
 
 - 来源：[[OS PM 近一月情报简报 2026-07-31]] ｜ [[AppIntent 每日情报 2026-08-04]]

@@ -39,9 +39,23 @@ tags:
 - 端侧 Agent 评估应**双轨并行**：BFCL（调用正确性）+ Local Agent Bench（任务完成度），见 [[系统级 Intent 路由评估 SOP]]。
 - 选型参考：需要"端到端办事"优先 qwen3:1.7b 级；需要"毫秒级路由/分流"优先 FunctionGemma 级。
 
+## 2026-08-04 增补：BFCL v4 把「端到端 agentic」并入自身，本节点的定位需重述（来源 [[AppIntent 每日情报 2026-08-04]]）
+
+**发生了什么**：BFCL v4 把权重重排为 **Agentic 40% / Multi-Turn 30% / Live 10% / Non-Live 10% / Hallucination 10%**——经典单轮 function calling 只剩 20%。
+
+**对本节点的直接影响（重要，避免以后误用）**：
+
+- 本节点开头写的「补齐 BFCL 的单点视角」**是 v3 时代的判断**。BFCL **v4 已经自己把 70% 权重放到 agentic + multi-turn 上**，与 Local Agent Bench 的定位高度重叠。
+- **修正后的分工**：
+  - **BFCL v4** = 标准化、AST 可复现、有 Hallucination（abstention）子集的**通用 agentic 评测**——适合横向比模型。
+  - **Local Agent Bench** = 端侧本地跑、贴近真实设备算力与延迟的**端到端完成度评测**——适合验证「这台机器上跑不跑得动」。
+  - 二者仍应并行，但**理由从「补单点视角」变成「补部署真实性」**。
+- **新增该看的一栏**：BFCL v4 的 **Hallucination（10%）测「没有合适工具时正确地不调用」**——这是 Local Agent Bench 现有 Round 3 数据里**没有覆盖**的维度，而它恰是意图 Registry 规模变大后最关键的失败模式。建议自建端侧回归集时补上「空 Registry / 无匹配意图」用例。
+- ⚠️ **本节点旧数据的版本标注**：`qwen3:1.7b` 0.960、`functiongemma` 0.640/435ms 为 **Local Agent Bench Round 3**（2026-07 检索，来源 URL 仍**待回填**），与任何 BFCL 分数**不同量纲、不可换算**。
+
 ## 关联
 
-- 来源：[[OS PM 近一月情报简报 2026-07-31]]
+- 来源：[[OS PM 近一月情报简报 2026-07-31]] ｜ [[AppIntent 每日情报 2026-08-04]]
 - 单点评测：[[Function Calling 端侧工具调用]]
 - 方法：[[系统级 Intent 路由评估 SOP]]
 

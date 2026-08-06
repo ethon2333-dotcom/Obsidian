@@ -18,12 +18,12 @@ window: "7 日滚动窗口 2026-07-30 → 2026-08-05"
 
 **本期 30 秒速览**
 
-| 维度 | 本期结论 | 重要性 |
-|---|---|---|
-| 系统级执行总线 | **Windows Agent Launchers**：基于 App Actions + ODR 的系统级 Agent 注册表（`com.microsoft.windows.ai.agentInfo`、odr.exe agent-info add/remove/list），补齐 Windows「应用向系统声明能力」的注册层，与 Apple/Android/HarmonyOS 首次对齐 | 7–8/10 |
-| 端侧 Planner 路由 | **LFM2.5-2.6B**（08-04）入表：2.6B on-device agentic，<2.5GB、手机约 30 tok/s；LFM2.5 家族 230M/450M/2.6B/8B-A1B 规模阶梯完整 | 7/10 |
-| 评测口径 | **BFCL v4 权重经 EvalScope 官方文档确认**（Agentic 40% / Multi-Turn 30% / Live+NonLive+Hallucination 各 10%），08-04 待办关闭 | 6/10 |
-| 四平台官方渠道 | Apple / Android / HarmonyOS / Windows 经逐条复核**无新增可执行 API**（HarmonyOS ArkAF 文章为 06-17，窗口外） | — |
+| 维度            | 本期结论                                                                                                                                                                                              | 重要性    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| 系统级执行总线       | **Windows Agent Launchers**：基于 App Actions + ODR 的系统级 Agent 注册表（`com.microsoft.windows.ai.agentInfo`、odr.exe agent-info add/remove/list），补齐 Windows「应用向系统声明能力」的注册层，与 Apple/Android/HarmonyOS 首次对齐 | 7–8/10 |
+| 端侧 Planner 路由 | **LFM2.5-2.6B**（08-04）入表：2.6B on-device agentic，<2.5GB、手机约 30 tok/s；LFM2.5 家族 230M/450M/2.6B/8B-A1B 规模阶梯完整                                                                                        | 7/10   |
+| 评测口径          | **BFCL v4 权重经 EvalScope 官方文档确认**（Agentic 40% / Multi-Turn 30% / Live+NonLive+Hallucination 各 10%），08-04 待办关闭                                                                                      | 6/10   |
+| 四平台官方渠道       | Apple / Android / HarmonyOS / Windows 经逐条复核**无新增可执行 API**（HarmonyOS ArkAF 文章为 06-17，窗口外）                                                                                                          | —      |
 
 **两条最可执行的判断**
 

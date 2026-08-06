@@ -74,10 +74,40 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 
 **③ 产品判断（给 OS PM）**：如果做 OS 级意图 Registry，「文件夹白名单」这类**位置权限**是最低门槛而非终点；真正防 ADI 的是**给每条读入数据打来源标签并禁止降级**。后者成本远低于 Dual View（约 15× 调用开销），是当前性价比最高的一档。
 
+## 2026-08-05 增补 · Windows Agent Launchers：系统级 Agent 注册表（来源 [[AppIntent 每日情报 2026-08-05]]）
+
+> ⚠️ **补一块此前认知缺口**：本笔记 07/08 两月记录里，Windows 的「系统级意图框架」只覆盖 **ODR 的 MCP 连接器注册**（注册「能调什么工具/服务」）。本期发现 Windows 还有**第二层注册表**——Agent Launchers，注册「系统里有哪些可用的 agent 实体」。
+
+**是什么**：在 **App Actions 框架**之上的一层 agent registry，打包应用据此把「自己提供的 agent」发布到系统，供 M365 Copilot（Analyst / Researcher 等）发现与调用。
+
+**已核实技术细节（learn.microsoft.com `/windows/ai/agent-launchers/` 与 `agents-get-started`，官方文档）**：
+
+- AppExtension 名：`com.microsoft.windows.ai.agentInfo`
+- 注册清单 `agentRegistration.json`：`manifest_version` / `version` / `name` / `display_name` / `description` / `placeholder_text` / `icon` / `action_id`（**须匹配一个已定义的 App Action id**）
+- ODR 命令：`odr.exe agent-info add "<path>"` ｜ `odr agent-info remove "<path>"` ｜ `odr agent-info list`
+- 底层 = App Actions（需 `agentName` + `prompt` 输入，可选 `attachedFile`）；支持静态（install-time）/ 动态（runtime）注册
+- 约束：动态 ODR 注册需打包应用具备 **package identity**；官方文档**未提额外 Capability 声明**
+
+**对四平台对比的意义（重要）**：补齐后，Windows 现与另三家在「**应用向系统声明可被调用的能力**」这一层首次对齐——
+
+| 平台 | 应用发布物 | 注册机制 |
+|---|---|---|
+| Apple | App Intent | App Intents 框架（系统发现） |
+| Android | App Function | AppFunctions Registry（`BIND_APP_FUNCTION_SERVICE` / app_metadata） |
+| HarmonyOS | Intent / Want | Intents Kit（SKILL.md / 元服务） |
+| **Windows** | **Agent 实体** | **Agent Launchers（`com.microsoft.windows.ai.agentInfo`）+ ODR** |
+
+差异：Windows 当前颗粒度是 **agent 实体**，而非 Apple/Android/HarmonyOS 的细粒度 intent/function；但「声明→注册→受控发现」的骨架已齐。
+
+**待补/存疑（诚实标注）**：
+- Agent Launchers 具体 Insider build 号与发布日期待补（官方文档页无日期）。
+- 动态注册的安全闸口（是否需签名、是否受 08-02 记的 `Settings > System > AI components > Agent tools > Experimental agentic features` 同一 opt-in 开关管控）**待确认**。
+- 宿主调用注册 agent 的信任链（谁批准、是否用户可审计、XPIA 缓解如何覆盖 agent 实体而非仅工具调用）**待补**。
+
 ## 关联
 
-- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-04]]
+- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-04]] ｜ [[AppIntent 每日情报 2026-08-05]]
 - 安全：[[Agent Workspace 隔离执行]] ｜ [[XPIA 跨提示注入]] ｜ [[Confirmation UI 安全机制]] ｜ [[数据溯源分级与单调棘轮]] ｜ [[Agent Data Injection 数据注入攻击]]
-- 跨平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[HarmonyOS Intents Kit 与 ArkAF 2026]]
+- 跨平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[HarmonyOS Intents Kit 与 ArkAF 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]]
 
 #标签/Windows #标签/CopilotActions #标签/AgentWorkspace #标签/XPIA

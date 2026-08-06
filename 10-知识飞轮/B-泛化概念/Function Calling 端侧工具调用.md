@@ -183,9 +183,55 @@ prism-coder 8b/14b/32b 宣称「**BFCL 100%**」，实为**自建 6-tool 路由�
 2. **Hallucination 那 10% 是四大 OS 意图框架最该看的一栏。** 它测的是「系统里没有任何 AppIntent / AppFunction 能满足用户这句话时，模型会不会硬凑一个来调」——这正是跨应用意图路由在真机上最高频的失败模式，**Registry 越大误召回代价越高**；而工具微调模型系统性偏向「调点什么」，恰是其弱项。
 3. **三基准三件事，单基准必然选错**：BFCL **v3** 测格式合规 → NexusRaven 测 API 语义理解（同模型差 30 分且排名倒转）→ BFCL **v4** 测多轮 + 该不该调。选型表必须三列并存，且**每个分数都标版本号**。
 
+## 2026-08-05 增补：LFM2.5-2.6B 入表 + BFCL v4 权重获官方文档确认 + 08-05 快照（来源 [[AppIntent 每日情报 2026-08-05]]）
+
+> 本期两件事：① 端侧 Planner 评测表补 **LFM2.5-2.6B** 这一档，使 LFM2.5 家族规模阶梯完整；② **BFCL v4 权重公式经 EvalScope 官方文档交叉确认**，将 08-04 的「二手快照」升级为「已核实口径」（Berkeley 原文仍待补）。
+
+**A. LFM2.5-2.6B（Liquid AI，2026-08-04 发布，窗口内增量）**
+
+- 参数 **2.6B**，定位 on-device agentic；架构 LIV convolutions + selective attention。
+- 速度（厂商自述，未复现）：M5 Max **220 tok/s** / Ryzen AI Max **113 tok/s** / 手机约 **30 tok/s**；内存 **< 2.5GB**。
+- 厂商称在 **BFCLv4 / ToolSandbox / Claw-Eval** 上可竞争 4–10× 更大的模型；**具体 BFCLv4 分数待补**（仅相对表述，未公布绝对值）。
+- **LFM2.5 家族规模阶梯更新**：LFM2.5-230M（21.0%）→ LFM2.5-VL-450M（21.1%）→ **LFM2.5-2.6B（待补）** → LFM2.5-8B-A1B（49.7%）。便于讨论「路由档 vs 端到端档」的取舍。
+
+**B. BFCL v4 权重获官方文档确认（关闭 08-04 待办）**
+
+EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
+
+| BFCL v4 类别 | 权重 | 实际测什么 |
+|---|---|---|
+| Agentic | **40%** | 取外部信息、持持久状态、抗 Schema/格式变动 |
+| Multi-Turn | **30%** | 跨轮正确用工具（约 800 例） |
+| Live | 10% | 真实用户单轮调用 |
+| Non-Live | 10% | 精选单/多/并行调用（经典 BFCL） |
+| Hallucination | **10%** | 无合适工具时正确拒绝调用 |
+
+→ 状态：从「第三方快照」升为「**已核实（EvalScope 官方文档）**」。库内全部历史分数版本标签（v3 格式合规分 vs v4 不可比）维持。Berkeley 官方博客原文逐字表述仍**待补**。
+
+**C. 2026-08-05 榜单快照（镜像站 benchlm.ai，12 模型非全量，⚠️ 不等同官方榜）**
+
+| 模型 | 类型 | **BFCL v4** |
+|---|---|---|
+| Qwen3.7 Max（Alibaba） | 闭源 | **75.0%** |
+| Ling 3.0 Flash（Alibaba） | 闭源 | 73.0% |
+| Qwen3.7 Plus（Alibaba） | 闭源 | 72.9% |
+| Pokee-Isaac 28B（Pokee AI） | 开源权重 | 70.9% |
+| **LFM2.5-2.6B（LiquidAI）** | 开源权重 | **56.9%** |
+| **LFM2.5-8B-A1B（LiquidAI）** | 开源权重 | 49.7% |
+| Mellum2-12B-A2.5B-Thinking（JetBrains） | 开源权重 | 45.6% |
+| Mellum2-12B-A2.5B-Instruct（JetBrains） | 开源权重 | 44.2% |
+| ZAYA1-8B（Zyphra） | 开源权重 | 39.2% |
+| **MiniCPM5-1B（OpenBMB）** | 开源权重 | 25.1% |
+| LFM2.5-VL-450M（LiquidAI） | 开源权重 | 21.1% |
+| **LFM2.5-230M（LiquidAI）** | 开源权重 | 21.0% |
+
+⚠️ `benchlm.ai` 为**镜像/聚合站**（自述 mirrors the published score view），**12 模型非全量、不等同 Berkeley 官方榜**。LFM2.5-2.6B 此处 **56.9%** 与 A 节厂商「竞争 4–10× 更大模型」的相对表述一致，但**绝对值仍属镜像站口径，需以官方榜复核**。
+
+**D. 沿用结论（无变化）**：v4 加权最重的 Agentic+Multi-Turn（70%）恰是端侧小模型最弱处；选型表必须 BFCL v3 / NexusRaven / BFCL v4 三列并存且每分标版本。
+
 ## 关联
 
-- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]] ｜ [[AppIntent 每日情报 2026-08-03-晚]] ｜ [[AppIntent 每日情报 2026-08-04]]
+- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]] ｜ [[AppIntent 每日情报 2026-08-03-晚]] ｜ [[AppIntent 每日情报 2026-08-04]] ｜ [[AppIntent 每日情报 2026-08-05]]
 - 路由：[[Intent Router 语义路由]] ｜ 新架构：[[Simple Attention Network 无FFN端侧路由]]
 - 方法：[[系统级 Intent 路由评估 SOP]]
 - 路由：[[Intent Router 语义路由]] ｜ 方法：[[系统级 Intent 路由评估 SOP]]

@@ -100,3 +100,19 @@
 - 核查结论：竞品情报层（`竞品情报 MOC` + HarmonyOS/Windows 两篇子笔记）**已完整且全连通**——结构与你贴的意图逐条一致；12 个出链全部命中（0 断链）；3 个父索引（手机AI智能体知识库 / 意图框架·跨体系索引 MOC / PM决策层 MOC）均已回链；库内 6 篇 B 层技术笔记 + 安卓对比/安全笔记均存在可支撑对标。
 - 产出：`01-笔记/竞品情报整理任务清单.md`（agent 审批用结构化清单，非自然语言报告，沿用 00:25 偏好）。含：A 结构核验 / B 双链审计 / C 公开底座按对标轴盘点 / D 缺口（Apple 第三轴待定、B 层「可复用启发」未显式引用、标签约定不统一、NDA 不入库已固化）/ E 安全脚手架模板 / F 待审批。
 - 未改主库笔记（用户 own-words 内容不替写、不替改）。下一步情报跑（21:00）不受影响。
+
+## 2026-08-05（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-07-30→08-05。Horizon MCP 仍全部 disconnected（**连续 7 日**），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 自行综合，未调外部 gemini，无 429。
+- **窗口内两条真增量（均 ≥7/10）**：
+  - **① Windows Agent Launchers（7–8/10）** —— 本库此前未记录的系统级 Agent 注册表。基于 App Actions 框架 + ODR，通过 `com.microsoft.windows.ai.agentInfo` AppExtension 与 `odr.exe agent-info add/remove/list` 发布 agent 实体（区别于 ODR 既有的 MCP 连接器注册）。补齐 Windows 与 Apple/Android/HarmonyOS 在「应用向系统声明可被调用能力」层的对齐缺口；当前颗粒度是 agent 实体而非细粒度 intent/function。**已 WebFetch 官方 learn.microsoft.com 页核实行为口径**，无发布日期（博客 URL 经核实为 7522 build 共享贴）。
+  - **② LFM2.5-2.6B（Liquid AI，2026-08-04，7/10）** —— on-device agentic 小模型，2.6B、<2.5GB、手机约 30 tok/s；使 LFM2.5 家族规模阶梯（230M/450M/2.6B/8B-A1B）完整。具体 BFCLv4 分数厂商自述 + 镜像站 benchlm.ai 56.9%，**待 Berkeley 官方榜复核**。
+- **延续待办关闭（口径）**：**BFCL v4 权重公式经 EvalScope 官方文档交叉确认**（Agentic 40% / Multi-Turn 30% / Live+NonLive+Hallucination 各 10%），将 08-04 的「二手快照」升级为「已核实口径」（Berkeley 原文逐字仍待补）。
+- **四大 OS 官方渠道经逐条复核无新增可执行 API**，已在 A 层显式列「已复核·无净新增」清单（Apple App Intents 2.0 / Android AppFunctions 实验态 / HarmonyOS ArkAF 06-17 窗口外 / Windows agentic security 四支柱一致）避免重复检索。
+- **落库**：A 1（AppIntent 每日情报 2026-08-05）｜ B 既有增补 3（Windows Copilot Actions / Function Calling 端侧工具调用 / Local Agent Bench，追加不重复）｜ D 1（AppIntent 每日情报速览 2026-08-05）｜ 看板已登记「本次新增（2026-08-05）」。
+- **运行纪律延续**：同日不重跑全窗口，只补净新增 + 显式列无净新增；新事实 vs 口径变化分类；未复现数字标「待补」，镜像站≠官方榜；双链指向既有 B 节点不新建重复。
+- **⚠️ 待办**：
+  - **【连续第 5 日未解，最高优先】四平台是否采纳意图元数据来源分级**（Apple `.appEntityIdentifier` 来源绑定/签名仍待补）。08-03 定的「改查安全白皮书 PDF」路径仍未跑完，下轮必须执行。
+  - 核实 Agent Launchers 具体 Insider build 号 / 发布日期 / 是否受 08-02 记的 Experimental agentic features 同一 opt-in 开关管控。
+  - 复核 LFM2.5-2.6B 的 BFCLv4 绝对值（厂商 + 镜像站 56.9%，需官方榜）。
+  - 延续：Berkeley 官方 BFCL v4 博客原文、PrismML 技术报告、APOP 协议全文与对接、六方 Registry Checklist（仍仅 Android 填实）、Digital Omnibus 正式文本、HarmonyOS 银行 App 名、Per-Intent Privacy Manifest、荣耀 Robot Phone（8 月发布）、Måløy 类别级缓解。

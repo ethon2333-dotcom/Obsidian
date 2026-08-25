@@ -52,8 +52,15 @@ tags: [AppIntent, A2A, 多智能体, 概念]
 - [ ] HarmonyOS 端侧 A2A 与 Google A2A 协议是否互通？还是各自私有？需一手源。
 - [ ] A2A 多 Agent 消息传递时的 provenance 链（见 [[数据溯源分级与单调棘轮]]）如何实现？v1.0 是否定义？待补。
 
+## 反例与边界（何时 A2A 不成立）
+
+- **强一致事务场景**：若任务需要跨 Agent 的原子性与回滚（如「下单且冻结库存」必须同时成功/失败），端侧 A2A 的分布式协作会放大一致性难题，此时集中式 Planner（见 [[System Orchestrator 系统编排]]）更合适。
+- **跨厂商互信缺失**：HarmonyOS 端侧 A2A 与 Google A2A 协议是否互通尚未证实；缺乏统一 AgentCard 互认前，跨生态 A2A 易退化为私有总线孤岛。
+- **敏感写回未隔离**：A2A 解决「谁调谁」，不解决「被调方是否被注入」——多 Agent 互写互调须叠加 [[Agent Data Injection 数据注入攻击]] 的元数据来源校验，否则反而放大攻击面。
+
 ## 关联
 
+- 索引：[[意图框架·跨体系索引 MOC]]
 - 来源：[[AppIntent 跨平台情报简报 2026-07-30]]
 - 平台：[[HarmonyOS Intents Kit 与 ArkAF 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]]
 - 范式：[[Atomic Service 元服务]] ｜ [[Intent Schema Protocol 意图模式规范]]

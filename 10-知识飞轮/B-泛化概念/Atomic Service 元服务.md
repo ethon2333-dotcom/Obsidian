@@ -1,5 +1,6 @@
 ---
 type: concept
+aliases: [元服务]
 status: draft
 derived_from: "[[AppIntent 跨平台情报简报 2026-07-30]]"
 tags: [AppIntent, HarmonyOS, 元服务, 概念]

@@ -52,10 +52,17 @@ DualView（arXiv 2607.03821）提出了一个比进程/账号隔离**粒度更�
 - [ ] 隔离会话内的 Agent 输出能否被审计留存并对接 [[数据溯源分级与单调棘轮]] 的单调棘轮？
 - [ ] 移动端（Android / iOS）能否复用「独立低权限账号 + 数字签名」隔离范式？接口形态待补。
 
+## 反例与边界（隔离执行的盲区）
+
+- **合法权限读不可信数据**：进程/账号隔离管的是「执行主体」，管不了「Agent 有合法权限却读到被污染原文」——Stored IPI 在 Dual LLM 下仍有 53.3% 命中（见 [[Dual View 智能体数据视图隔离]]）。隔离必须叠加**数据形态隔离**才闭环。
+- **隔离 ≠ 免疫注入**：隔离把爆炸半径锁死，但 Agent 在隔离域内仍可能被注入并执行域内动作；须与 [[Confirmation UI 安全机制]]（敏感操作确认）+ 流量级检测（[[Agent Data Injection 数据注入攻击]] 的 Project Perception）组合。
+- **实现成本门槛**：独立低权限账号 + 签名 + ACL 在移动端接口形态未标准化，Android / iOS 能否直接复用 Windows 范式待补（见上方待办）。
+
 ## 关联
 
+- 索引：[[意图框架·跨体系索引 MOC]]
 - 来源：[[AppIntent 跨平台情报简报 2026-07-30]]
 - 平台：[[Windows Copilot Actions 与 Agent Workspace 2026]]
-- 安全：[[Confirmation UI 安全机制]] ｜ [[XPIA 跨提示注入]]
+- 安全：[[Confirmation UI 安全机制]] ｜ [[XPIA 跨提示注入]] ｜ [[Dual View 智能体数据视图隔离]]
 
 #标签/隔离执行 #标签/AgentWorkspace #标签/安全

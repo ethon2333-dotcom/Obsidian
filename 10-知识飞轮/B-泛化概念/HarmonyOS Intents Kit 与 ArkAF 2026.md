@@ -67,6 +67,8 @@ HarmonyOS 以 **Intents Kit（`Want` 意图对象）+ 元服务（Atomic Service
 
 - 「元服务 + 意图」是把 App 拆成可被发现的能力单元，与 Apple headless / Android MCP 殊途同归（见 [[Intent Schema Protocol 意图模式规范]]）。
 - 端侧 A2A 是多 Agent 协作的底层协议范式（见 [[A2A 端侧智能体协议]]）。
+- **给接入方留「多档梯度」而不是一条正路**：鸿蒙同时开放 Agent Skill / 元服务 / 意图框架 / MCP 四条接入路径 + 云 A2A / 端 A2A 两种运行模式，让「只想被搜到」和「要做完整闭环」的开发者各取所需。对比 Apple 只有 App Intents 一条路——**接入梯度本身就是生态起量杠杆**。
+- **把「智能体产出物」放进系统固定承载位**（Today-Task Skill → 负一屏）：Agent 的价值不能只留在对话气泡里，必须有可回看、可复用的系统级落点，否则留存不成立。
 
 ## 2026-08-01 增补：负一屏元服务成为智能体可分发能力单元（来源 [[AppIntent 每日情报 2026-08-01]]）
 
@@ -89,12 +91,48 @@ HarmonyOS 以 **Intents Kit（`Want` 意图对象）+ 元服务（Atomic Service
 - **开发者实证（接入门槛）**：「奇妙工具箱」团队一周完成 Agent 接入（编排工作流→接入插件→开发卡片），上线一年 120 万+ 用户 / 7 万+ 五星好评；以「我想看一下金价」为例：意图分类→大模型语义理解→知识库检索→端侧插件拉起界面→卡片推送，完成「说一句→服务到眼前」闭环。
 - ⚠️ 口径：银行/O2O 为厂商披露口径，具体 App 名、意图清单、闭环成功率未独立核验（待补）；HDD 西安站稿件为官方通稿转载，与 HDC 2026 技术表述一致。
 
+## 最新进展 / 一手来源（2026）
+
+- **华为开发者官方渠道已补齐「三大支柱」表述**：① Agent 亲和系统架构（三层：底层智能中枢 / 小艺与 OS 融合、系统能力全面 Skill 化 / 面向伙伴的 HMAF）；② HMAF 2.0（>90% 复杂任务成功率，**首次开放 GUI 操控**，开放 20+ 系统级 AI 能力，**接入方式明确为 Agent Skill / 元服务 / 意图框架 / MCP 四选多**）；③ 小艺定位「系统智慧大脑」，建立在 200+ 项系统级数据之上、可调用 2100+ 系统能力 / 500+ 伙伴 Skill / 2000+ 智能体。来源：<https://developer.huawei.com/consumer/cn/forum/topic/0204220276046985102>
+- **⚠️ API Level 口径冲突（本笔记 07 月「待官方文档二次确认」有进展但未解）**：华为开发者博客称 **HarmonyOS 7 = API 26**（<https://developer.huawei.com/consumer/cn/blog/topic/03221321523789021>）；而社区接入指南称基线为 **API 23 / HarmonyOS NEXT 7.0**、依赖 `@kit.AgentKit 2.0.0`、权限 `ohos.permission.AGENT_SKILL`、元信息 `ohos.hmaf.agent` → `agent_config.json`（含 `agentId` / `supportInteraction` / `exposeA2A`）。两组口径不一致，且后者为社区二手，**以官方 API 文档为准，仍标待补**。
+- **五层架构获第三方独立复述**（用户意图层 / 智能体调度层-图推理引擎 DAG / Skill 能力层 / 系统服务层-分布式软总线+Intents Kit+Agent Framework Kit+MCP / 设备执行层），与本笔记 07-31 节记录一致，可视为交叉印证。来源：<https://www.infoq.cn/zones/harmonyos/article/778d6d52e4865d76a874f11b2>
+- **🔑 GUI 通道的规模化实测（2026-07-30，媒体口径）**：TOP100 清单中测 58 款 App，**49 款可被「小艺帮帮忙」GUI 操控（约 84%）、8 款不支持**——不支持者为微信、QQ、腾讯视频、云闪付、企业微信、同花顺、建行、工行；支付宝部分任务可用（医保码、话费充值入口）但支付仍需用户接管。来源：<https://www.toutiao.com/article/7670783893489959478/>（新黄河大鱼财经，2026-08-06 转载）。
+
+## 反例与边界
+
+- **「意图即服务」的高成功率有前提**：>90% 是 HMAF 2.0 在**已 Skill 化能力**上的口径；一旦落到未接入的第三方 App，就退回 GUI 兜底，而 GUI 侧实测覆盖率约 84%、且金融/支付/社交类系统性失败。**「一句话搞定」的边界≈生态适配边界**，不是技术边界。
+- **免安装 ≠ 免信任**：元服务 `installationFree` 把安装摩擦降为零，同时也把「用户对 App 的一次性审查机会」拿掉了。当分发从「人找服务」变成「服务找人」（负一屏探索元服务、LBS 推荐），用户对**谁在什么时候拿了什么数据**的直觉大幅下降——最小权限原则在这里是必要条件而非加分项。
+- **端 A2A 的隐私优势不可跨场景推广**：银行 1000+ 意图不出端成立，是因为金融语义域窄且结构化；开放域任务（行程规划、比价）必然要外部数据，端 A2A 退化为云 A2A。把「端侧 A2A = 隐私安全」当通用结论会误判架构。
+- **数据口径长期打架**：本笔记 08-01 节已记录终端数（7000 万 vs 6600 万）与元服务数（40 万 vs 3.5 万）冲突至今未澄清；本次又新增 API level（26 vs 23）冲突。**引用鸿蒙生态数字时必须带口径**，否则结论不可复现。
+
+## 开放问题 / 未决
+
+- [ ] HarmonyOS 7 的 Intents Kit 是否有等价于 Android `setAppFunctionEnabled` 的**运行时动态可见性 API**？四平台中目前仅 Android 有公开 API（**待补**，与 [[Android AppFunctions 设备侧意图 2026]] 08-03 节同一未决项）。
+- [ ] GUI 通道与 A2A 通道的**切换策略**由谁决定、以什么置信度切换？华为未公布（见 [[端侧执行通道 GUI 与 MCP 路线之争]]）。
+- [ ] 「意图框架注册工具能力」的 schema 字段定义（`insight_intent.json` 的 `IntentActionInfo` / `IntentEntityInfo` 全量字段）与国标 AIP 的五段式能力描述能否互映射？（见 [[智能体互联国家标准与 AIP]]）
+
+## 与其他概念的关系
+
+- **上游**：[[Intent Schema Protocol 意图模式规范]]（鸿蒙是其 `Want` + `insight_intent.json` 实现）｜ [[Agentic OS 意图调度内核]]（小艺「系统智慧大脑」= 调度对象升级为意图）｜索引 [[意图框架·跨体系索引 MOC]]、[[Intent Routing Stack 六方意图路由分层对照 2026]]。
+- **互补**：[[Atomic Service 元服务]]（免安装能力单元，是意图的落地物）｜ [[A2A 端侧智能体协议]]（端/云双模的协议底座）｜ [[Agent Skills 技能范式 2026]]（SKILL.md 描述 + 运行时，与 ArkAF Skill 框架同源）。
+- **对立**：[[Apple AppIntents Schema Protocol 2026]]——Apple 明确「App 之间不直接互驱、统一走 System Orchestrator」，鸿蒙端侧 A2A 恰恰允许**元服务之间直连对话**，两者在「是否信任 App 间直连」上取了相反立场（见 [[System Orchestrator 系统编排]]）。
+- **特例**：[[端侧执行通道 GUI 与 MCP 路线之争]] 在鸿蒙是「双轨并行且官方承认」的特例——首次向开发者开放 GUI 操控能力，而非把 GUI 只当兜底。
+
 ## 关联
 
-- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]]
-- 概念：[[Atomic Service 元服务]] ｜ [[A2A 端侧智能体协议]] ｜ [[Intent Schema Protocol 意图模式规范]]
-- 跨平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]] ｜ [[Agentic OS 意图调度内核]]
-- 概念：[[Atomic Service 元服务]] ｜ [[A2A 端侧智能体协议]] ｜ [[Intent Schema Protocol 意图模式规范]]
-- 跨平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]]
+- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]]（上游：一手日报沉淀）
+- 索引：[[意图框架·跨体系索引 MOC]]（上游枢纽）
+- 概念：[[Atomic Service 元服务]]（互补：能力单元）｜ [[A2A 端侧智能体协议]]（互补：协作协议）｜ [[Intent Schema Protocol 意图模式规范]]（上游规范）
+- 跨平台：[[Apple AppIntents Schema Protocol 2026]]（对立：App 间直连 vs 系统编排）｜ [[Android AppFunctions 设备侧意图 2026]]（同类互补）｜ [[Agentic OS 意图调度内核]]（上游范式）
+
+## 2026-08-17 增补：A2UI 生成式 UI + insight_intent.json 三步模型 + 1200 底层能力 Skill 化（来源 [[AppIntent 每日情报 2026-08-17]]）
+
+> 接续本笔记 07-31/08-01 的 ArkAF 三层与 HMAF 2.0。本期补**代码级接入细节**与 **A2UI 精确定义**，均属 HDC2026/2026-06 公开材料（库内空白补漏，非 24h 新公告）。
+
+- **A2UI（生成式 UI / Generative UI）精确定义**：小艺侧根据 Skill 返回的**结构化数据动态渲染界面**，开发者**无需为每种展示场景单独写页面**——意图即服务的「动态 UI」从「概念」落到「机制」。
+- **意图框架接入三步模型**：**意图定义 → 意图注册 → 意图执行**。开发者声明能处理哪些意图（`insight_intent.json`），写好执行器（`InsightIntentEntryExecutor` 子类），选对执行模式；语义理解/参数提取/路由分发全由系统完成。
+- **后台执行模式（API 20+）**：最简场景「查订单状态」= 小艺后台调接口、结果转自然语言念给用户，**不打开任何页面**——对应 `InsightIntentEntryExecutor` 的后台执行模式。
+- **HarmonyOS 7 把 1200+ 系统底层能力 Skill 化**：相机、高精度定位、运动健康、分布式支付、端侧 AI 推理等超过 1200 个系统底层能力重构为标准化智能体组件（来源：中国日报 2026-06-22）。⚠️ **口径冲突延续**：本笔记 07 节记「2100+ 系统能力 Skill 化」（HDC 口径），此处「1200+ 底层能力」为 HarmonyOS 7 表述，统计口径不同，**引用须带口径**。
+- → 对 OS PM：鸿蒙「意图框架三步 + A2UI + 1200 底层能力组件化」是把「系统能力即 Skill」做到极致的样本；对照 Apple 只有 App Intents 一条路（[[Apple AppIntents Schema Protocol 2026]]），鸿蒙的接入梯度（意图框架/Skill/元服务/MCP + 云/端 A2A）仍是生态起量杠杆。⚠️ 具体 `insight_intent.json` 字段全量定义与 API level 冲突（26 vs 23）仍待官方文档澄清。
 
 #标签/HarmonyOS #标签/IntentsKit #标签/元服务 #标签/ArkAF

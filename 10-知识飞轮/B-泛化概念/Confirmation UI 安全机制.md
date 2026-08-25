@@ -81,12 +81,59 @@ aliases: [确认机制]
   2. **中等**：系统据结构化元数据渲染确认（Apple entity ownership 路线）→ 但元数据若可伪造仍不安全；
   3. **最强**：确认/授权走**带外**通道，由不可被模型影响的组件（[[Agent 身份与硬件级审批]]）完成。
 
+## 2026-08-09晚 增补：Chrome 的「确认触发器由谁判定」——三档触发器分类法（来源 [[AppIntent 每日情报 2026-08-09-晚]]）
+
+本笔记此前的三档判据讨论的是**确认内容从哪来**（Agent 自组织 / 系统元数据 / 带外）。Chrome 架构（**2025-12-08**，[[Chrome Agent Origin Sets 与用户对齐评判器 2026]]）补上了一个正交且此前缺失的维度：**确认由什么触发**。
+
+| Chrome 的确认触发点 | 触发判定方式 | 本库判读 |
+|---|---|---|
+| 导航到银行 / 医疗等敏感站点 | **确定性清单比对** | 高后果场景**不赌分类器准确率** |
+| 用 Google Password Manager 登录 | **确定性**（且模型**无凭证访问权**） | 直接落实 AIMS「LLM MUST NOT hold credentials」 |
+| 支付 / 发消息等后果性动作 | 确定性 + 模型混合（官方自陈"try to pause"、分类器仍在调准确率） | 语义类动作只能混合，**是承认的弱点** |
+
+**新增判据（触发器三档，与既有「内容三档」正交，可组成 3×3 矩阵）**：
+
+1. **最弱**：由**规划模型自己**决定何时该问用户 → 被污染的模型可以选择不问；
+2. **中等**：由**独立分类器 / 评判模型**决定 → 好于①，但准确率有边界（Chrome 自陈 `"cannot flag everything"`）；
+3. **最强**：由**确定性规则**决定（清单、动作类型、资产敏感度）→ 不可被内容影响。
+
+**这条对 OS 意图框架的直接含义**：四平台目前在「确认内容」上普遍处于 1–2 档，而在「确认触发器」上更弱——Android 把确认**整体下放给 App**（见上方 08-03 增补 A），意味着**触发时机也由 App 自定**，系统无法保证「危险动作一定会弹窗」。**Chrome 的做法反过来说明：触发器应当由系统按动作类型确定性判定，而不是交给可被影响的一方。** 落到 Registry 设计上，即 intent 声明中应带**系统可读的后果性标记**（不可逆 / 涉资金 / 涉凭证），由系统而非 App 决定是否强制确认。
+
+**另一条正交形态：事后知情**。Google 官方六层防御中的 **End-user security mitigation notifications**（见 [[XPIA 跨提示注入]] 2026-08-09晚 增补）与 Chrome Enterprise 在 **Chrome History 中把 agent 导航页面显式标记为 agent actions**，共同构成「确认」之外的第二类用户在环形态——**事前确认管授权，事后标记管追溯**。后者成本远低，且是可追溯性合规的低成本抓手，四大 OS 意图框架**均无对应物**。
+
+## 2026-08-15 增补：Trust Insights 作为 coerced-intent 互补信号
+
+> 来源：[[AppIntent 每日情报 2026-08-15]]。
+
+Trust Insights（WWDC26 Session 379）检测的是「用户是否正被社会工程胁迫而发出**非自愿**意图」，与 Confirmation UI 的「用户主动授权」**正交**——前者是**执行前意图真实性检查**（coerced intent authenticity），后者是**执行前授权确认**。二者叠加构成「双重闸门」：即便用户点了确认，若意图被判定为受胁迫，仍可拦截。
+
+注意：Trust Insights 是 **App 集成能力**（通过 `com.apple.developer.trustinsights.base` entitlement 接入），**不是 OS 总线级强制**；其落地依赖开发者接入 `InsightEvaluator` / `IsLikelyBeingCoachedInsight`，因此与本笔记既有判据「确认应是系统级强制层而非交给开发者」形成张力——它补的是「意图真实性」这一确认机制此前完全缺失的维度，但落点仍在 App 侧。详见 [[Trust Insights 意图 coercion 检测框架 2026]]。
+
 ## 关联
 
-- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]]
+- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]] ｜ [[AppIntent 每日情报 2026-08-09-晚]]
+- 触发器分类法来源：[[Chrome Agent Origin Sets 与用户对齐评判器 2026]] ｜ 确定性原则：[[带外防御与确定性门控]]
 - 隔离：[[Agent Workspace 隔离执行]] ｜ 注入：[[XPIA 跨提示注入]] ｜ 蠕虫：[[文档型 XPIA 自传播蠕虫]]
 - 平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[Windows Copilot Actions 与 Agent Workspace 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]] ｜ [[Agentic OS 意图调度内核]]
 - 隔离：[[Agent Workspace 隔离执行]] ｜ 注入防护：[[XPIA 跨提示注入]]
 - 平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[Windows Copilot Actions 与 Agent Workspace 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]]
+
+## 2026-08-16 增补：Session 347 副作用轴 = 触发器三档里的「确定性规则」实例（来源 [[AppIntent 每日情报 2026-08-16]]）
+
+> 接续本笔记 2026-08-09晚 的「触发器三档分类法」。Apple Session 347 的**风险元数据（副作用轴）驱动确认**是「第 3 档·确定性规则触发」在 OS 意图框架里的首个官方实例。
+
+- Session 347：系统用**静态风险元数据（基于意图副作用）+ 动态系统状态**做风险评估，高风险（destructive / exfiltration / shared-content update）**更可能触发确认**；确认触发由**系统按动作类型确定性判定**，不交给 App 或模型自决。
+- 这直接坐实本笔记 08-09晚 的结论：「**确认触发器应由系统按动作类型确定性判定，而非交给可被影响的一方**」。Apple 用「副作用分类」落实了这一点；对照 Android 把确认整体下放 App（本笔记 08-03 增补 A），两平台在「触发器归属」上仍处对立路线。
+- 与新建 [[意图风险元数据与鉴权策略棘轮 2026]] 互补：该节点记副作用轴分类与鉴权棘轮机制，本节点记「它属于哪种确认触发器档位」。
+
+## 2026-08-17 增补：Apple 硬件级确认锚点——Secure Enclave「Secure intent」（来源 [[AppIntent 每日情报 2026-08-17]]）
+
+> 接续本笔记 08-09晚「触发器三档」与 08-16「副作用轴 = 第 3 档确定性规则」。本期补一个**硬件层**确认锚点，是「最强档（带外/不可被模型影响）」在 Apple 平台的既有实例。
+
+- **Secure intent（Apple Platform Security）**：一条**物理链路**——从物理按键（Face ID 双击 / Touch ID 指纹）直连 **Secure Enclave**，**完全绕过操作系统与 Application Processor**。即使拥有 root 权限或内核级软件也**无法伪造**用户意图确认。
+- 当前用途：Apple Pay 交易确认、Magic Keyboard with Touch ID 与 Mac 配对终结。支持 iPhone X+ / Apple Watch S1+ / iPad Pro 全系 / iPad Air(2020) / Apple silicon Mac（T2 机型有等价机制）。
+- **对确认机制分层的位置**：它把本笔记「三档触发器 / 三档内容」里的**最强档（带外、物理、不可被模型影响）**落到了硬件——与 AIMS「LLM MUST NOT hold credentials」、[[Agent 身份与硬件级审批]] 同构。App Intents 的**软件层风险元数据确认**（08-16 副作用轴）是「第 3 档确定性规则」，而 Secure intent 是「第 3 档的硬件根」——两者互补：软件层管「动作多危险要确认」，硬件层管「这次确认本身是不是真人按的」。
+
+⚠️ 口径：Secure intent 是 Apple Platform Security 既有机制（非 2026 新发布），本次作为「确认机制硬件锚点」补入本库；它**不接入 App Intents 总线**，目前仅用于支付/配对等高敏场景，是否扩展到 agentic intent 确认待官方。
 
 #标签/安全 #标签/ConfirmationUI #标签/StepUpAuth

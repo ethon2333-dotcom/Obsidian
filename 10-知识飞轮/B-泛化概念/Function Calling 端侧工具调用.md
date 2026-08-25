@@ -229,6 +229,14 @@ EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
 
 **D. 沿用结论（无变化）**：v4 加权最重的 Agentic+Multi-Turn（70%）恰是端侧小模型最弱处；选型表必须 BFCL v3 / NexusRaven / BFCL v4 三列并存且每分标版本。
 
+## 2026-08-15 增补：FunctionGemma 类端侧 router 的部署路径（CoreML / LiteRT-LM，库内补漏）
+
+> 来源：[[AppIntent 每日情报 2026-08-15]]。FunctionGemma 270M 本身为 2026-02 发布（已录其 BFCL/base→85% Mobile Actions），本条补漏的是**「它怎么真正跑在手机上」的部署路径**，此前本笔记只记评测未记部署。
+
+- **soniqo.audio 指南**给出两端官方友好端口：Apple 侧 **CoreML（~283MB，跑 Neural Engine）**、Android / Linux / Windows 侧 **LiteRT-LM（~283MB）**；明文称「small enough to load alongside an ASR + TTS pipeline on phone-class hardware」，即作为**把用户话语转成工具调用的 router**。
+- **严格语法**：训练产出 `call:NAME{...}` 哨兵语法，SDK 直接解析为类型化 `FunctionCall`（Swift Codable / Kotlin @Serializable），**无需 JSON repair、无需 schema-mode prompting**。
+- → 对本笔记「端侧 Planner 选型」的补充：**可部署性**（CoreML for Apple NE + LiteRT-LM for Android）与**语法可靠性**（受限 grammar 免 JSON 修复）是选型的第 4、第 5 维度，与准确率/BFCL/云端逃逸率并列。FunctionGemma 在「小体积 + 严格语法 + 双端可部署」上是最接近「生产可用端侧 router」的样本之一（厂商/社区端口，非 Google 官方发布声明，标待补）。
+
 ## 关联
 
 - 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]] ｜ [[AppIntent 每日情报 2026-08-03-晚]] ｜ [[AppIntent 每日情报 2026-08-04]] ｜ [[AppIntent 每日情报 2026-08-05]]
@@ -236,5 +244,31 @@ EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
 - 方法：[[系统级 Intent 路由评估 SOP]]
 - 路由：[[Intent Router 语义路由]] ｜ 方法：[[系统级 Intent 路由评估 SOP]]
 - 算力：[[OS-PM-3B模型内存预算推演]]（跨库参考）
+
+## 2026-08-16 增补：Needle 2 入表（体积阶梯 + BFCL v4，来源 [[AppIntent 每日情报 2026-08-16]]）
+
+> 端侧 Planner 评测表补 **Needle 2（Cactus，2026-08 中旬）** 这一档。完整机制见 [[端侧 Router 置信度门控与工具可达性收缩 2026]]。
+
+**A. 规模/体积阶梯更新（手机可塞下限样本）**
+
+| 模型 | 规模 | 量化/体积 | 关键指标（厂商自述，非官方榜） |
+|---|---|---|---|
+| Needle 26M | 26M | INT4 / 14MB | single-shot 优于 270M~600M（Cactus 自述） |
+| **Needle 2** | **45M** | **CQ2-bit / 14MB / ~28MB RAM** | **BFCL v4 42.6**；Mobile Actions 63.7；函数名准确率 98.3%；格式良好率 93.4%（BFCL 3,641 行） |
+| Bonsai-1.7B | 1.7B | 1-bit / 0.25GB | BFCL v3 55%（第三方仓，非手机 SoC） |
+| FunctionGemma 270M | 270M | CoreML/LiteRT-LM / ~283MB | Mobile Actions 微调 85% |
+| Bonsai-8B | 8B | 1-bit / 1.15GB | BFCL v3 73.3% |
+
+→ Needle 2 在「**同等 14MB 体积**」下把参数翻倍并加安全闸，是体积约束下「加闸不增体积」的样本；其 BFCL v4 42.6 低于 LFM2.5-230M（21.0% 为镜像站 v4，不可直接比——Needle 2 的 42.6 是 Cactus 自报、归因于消费设备语料偏向）。
+
+**B. 口径纪律（延续）**：Needle 2 的 BFCL 数字为 **Cactus 厂商自述、非 Berkeley 官方榜行**；Cactus 自承语料偏消费设备动作、非通用/企业 API，故 v4 总分偏低**不反映窄域能力**。引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
+
+## 2026-08-17 增补：FunctionGemma 270M BFCL v4 第三方聚合分（标待补，来源 [[AppIntent 每日情报 2026-08-17]]）
+
+> 接续本笔记 08-15 的 FunctionGemma 部署路径。本期补一个第三方评测给出的 **BFCL v4 聚合分**，但须严标口径。
+
+- 第三方 LittleLamb 评测（MultiverseComputingCAI，EvalScope 推理）引 Google 模型卡给出 **functiongemma-270m-it BFCL v4 聚合分 27.03**（Simple 61.6 / Multiple 63.5 / Parallel 39.0 / Live Simple 36.2 / Relevance 61.1 / Irrelevance 73.7 等分项，与 07-31 节 Google 自报分项一致）。
+- ⚠️ **口径冲突警示**：该聚合分 27.03 与 Google 自报分项（Simple 61.6 等）**不在同一口径**——聚合分疑似把 Live/Parallel 等多轮/并行类（权重在 v4 占 70%）拉低整体；且来源标注模型卡日期 **09/04/2026**（晚于本运行日，待官方复核）。**不可与官方 BFCL v4 榜单行并列**，引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
+- 沿用结论：本笔记 08-04 起建立的「每个分数标版本号」纪律不变；端侧 Planner 选型仍以 **BFCL v3（格式合规）/ NexusRaven（语义）/ BFCL v4（多轮+该不该调）三列并存**为准。
 
 #标签/FunctionCalling #标签/端侧Planner #标签/评测

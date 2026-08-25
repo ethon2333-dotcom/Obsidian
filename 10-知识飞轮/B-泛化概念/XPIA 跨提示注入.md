@@ -59,6 +59,21 @@ tags: [AppIntent, 安全, XPIA, 注入, 概念]
 - **四平台靶面（均待补，无一家公开 ADI 类别评估）**：Apple `.appEntityIdentifier` / View Annotations 的实体标识符（恰是 ADI 场景一靶心）、Android `AppFunctionMetadata` / `app_metadata`、HarmonyOS A2A 消息格式、Windows Agent Workspace 内工具格式。详见 [[Agent Data Injection 数据注入攻击]]。
 - **与 Stored IPI 同源**：姊妹论文 DualView（arXiv 2607.03821）证明传统隔离对存储型注入仍 53.3% 失守，提出数据视图隔离原语，见 [[Dual View 智能体数据视图隔离]]。
 
+## 2026-08-09 增补：第④支——学习型防御 AgentAntibody + NowSecure iOS 27 攻击面（来源 [[AppIntent 每日情报 2026-08-09]]）
+
+**① AgentAntibody（arXiv 2608.04053，2026-08-04 提交）—— 把「学习型防御」补进本库**
+- 此前本库 XPIA 缓解只归为**静态三件套**：隔离（[[Agent Workspace 隔离执行]]）+ 确认（[[Confirmation UI 安全机制]]）+ 数据视图隔离（[[Dual View 智能体数据视图隔离]]）。AgentAntibody 是**第四支——学习型**：维护持久「抗体库」编码对用户**安全边界**的演化理解，运行时识别越界并启动免疫响应，跨遭遇进化。
+- 直击最难的「意图歧义」场景：有害与合法动作都符合任务描述时，静态确认/过滤难分；它从每次遭遇**学习用户边界**应用到下次。
+- 量化了安全-实用权衡：ablation 显示若匹配后**中止整个任务**，AgentDojo 的 SU-HM 从 72.0% → 24.2%——「低攻击成功率 ≠ 安全」，防注入要同盯任务完成率。完整机制/数字见 [[AgentAntibody 自适应免疫防御 2026]]。
+- ⚠️ 预印本自报数字（AgentDojo ASR 3.8% / LBB 2.5%），未在独立榜复现。
+
+**② NowSecure iOS 27 App Intents 攻击面（2026-08-05）—— 给「拐点①一次性注入」补一个可测清单**
+- 移动 AppSec 厂商把「App Intents → agentic Siri → iOS 27」威胁落到 actionable 清单：盘 App Intents/schemas、测完整 workflow（非仅 UI）、监控数据流向哪些模型。与 Apple Session 347 威胁模型（间接 PI 经工具输出/日历/锁屏触发）一致。详见 [[Apple AppIntents Schema Protocol 2026#2026-08-09 增补]]。
+- 对四平台防护对照表的意义：Apple 列的「系统级 Confirmation UI + EntityOwnership」现在有了具体的 AppSec 验证动作（锁屏 Siri intent 鉴权审计、App Attest），是从「设计」到「可测」的闭环。
+
+**威胁模型四个拐点的当下状态**
+① 一次性注入（基线）→ ② 文档型蠕虫自传播（[[文档型 XPIA 自传播蠕虫]]）→ ③ ADI 数据注入（[[Agent Data Injection 数据注入攻击]]）→ ④ 学习型防御（[[AgentAntibody 自适应免疫防御 2026]]，补防非补攻）。前三个是攻击演进，④是防御演进；**四平台 OS 层仍停留在①的静态防护，③的 ADI 与④的学习型防御均未被任何平台内建**。
+
 ## 深化补充
 
 - **威胁模型的三个拐点（已立）**：① 一次性注入（本库基线）→ ② 文档型蠕虫自传播（[[文档型 XPIA 自传播蠕虫]]）→ ③ ADI 数据注入（[[Agent Data Injection 数据注入攻击]]）。三者是「注入会繁殖」「注入不靠指令」「注入伪造结构」的递进，四平台防护目前**均停留在拐点①**。
@@ -69,11 +84,50 @@ tags: [AppIntent, 安全, XPIA, 注入, 概念]
 - [ ] XPIA 在「Proactive Agent 主动触发意图」场景下如何拦截？主动触发意味着 Agent 自己发起，确认点更难布（见 [[Agentic OS 意图调度内核]]）。
 - [ ] 能否把 XPIA 防护纳入 OS 意图框架的「能力描述」环节（[[Intent Schema Protocol 意图模式规范]]），让声明即带防护属性？
 
+## 2026-08-09晚 增补：Google 官方六层防御口径 + NCSC 的「混淆代理」定性（来源 [[AppIntent 每日情报 2026-08-09-晚]]）
+
+### ① Google 对 Gemini 的分层防御——**官方支持页原文六层**（Google Workspace 管理员帮助，最后更新 **2026-03-17**）
+
+此前本库对 Google 侧防护多为二手转述，本轮拿到**官方逐条口径**：
+
+| 层 | 官方英文名 | 作用 |
+|---|---|---|
+| ① | **Prompt injection content classifiers** | 专有 ML 模型，在多种数据格式中检测恶意指令 |
+| ② | **Security thought reinforcement** | 在提示内容周围**加装定向安全指令**，提醒 LLM 执行用户任务、忽略嵌入的对抗指令（业界俗称 **spotlighting**） |
+| ③ | **Markdown sanitization + suspicious URL redaction** | 借 Safe Browsing 移除 / 遮蔽外部图片 URL 与可疑链接，**防 EchoLeak 式渲染外泄** |
+| ④ | **User confirmation framework** | 对敏感操作（官方举例：**删除日历事件**）要求显式确认，HITL 兜底 |
+| ⑤ | **End-user security mitigation notifications** | 检测 / 缓解后**告知用户**，形成协同治理 |
+| ⑥ | **Model resilience** | 模型自身的对抗鲁棒性 |
+
+**判读**：⑤「缓解后通知用户」是四平台里少见的一层——它把安全事件变成**用户可感知的信号**而非静默拦截。这条对 OS Agent 的 PRD 价值高于其技术含量：**用户需要知道「刚才有人试图操纵你的助手」**，这是建立长期信任的必要条件，也是 [[Confirmation UI 安全机制]] 之外的第二种「用户在环」形态（**事后知情** vs 事前确认）。
+
+### ② 客户端层新增第⑤支防御形态：读 / 写边界隔离
+
+本库既有防御谱系为：隔离执行 / 确认 / 数据视图隔离 / 学习型防御（AgentAntibody）。本轮补入第⑤支——**执行边界的读写分级**，代表实现见 [[Chrome Agent Origin Sets 与用户对齐评判器 2026]]。它与前四支正交：不判断内容是否恶意，只限制「读来的数据能流向哪里」。
+
+### ③ 英国 NCSC：提示注入可能**永远无法被完全缓解**
+
+据 Computerworld 转述，NCSC 将提示注入定性为 **"confused deputy"（混淆代理）** 类漏洞——**受信任的系统被诱骗代不受信任方行事**；其根因是 LLM 无法可靠区分「指令」与「数据」，因此建议组织**以设计管理风险**（限制访问与权限），而非期待技术修复消除问题。同期 Gartner 建议企业**封禁 AI 浏览器**。
+
+> ⚠️ **口径标注**：NCSC 表态与 Gartner 建议均来自 Computerworld 二手转述，**原文链接与具体发布日期待补**。OWASP「73% 生产 AI 部署中存在提示注入（2024 评估）」一项同为该文转述，**未独立核实**。
+
+**对本笔记结论的影响**：三个拐点之上再加一条**元判断**——若 NCSC 定性成立（这是**架构缺陷**而非**可修 bug**），则四平台的正确目标不是「防住注入」，而是**「假定注入必然发生，用权限与边界把爆炸半径压到可接受」**。这与 Chrome「bounds the threat vector」的措辞一致，也解释了为何工业界主流投入在**边界**（origin set / workspace 隔离）而非**检测**。
+
+## 2026-08-15 增补：Windows Copilot Vision + 语义文件索引 = XPIA 读路径扩张
+
+> 来源：[[AppIntent 每日情报 2026-08-15]]。
+
+Windows Copilot Vision 通过**屏幕像素 + 语义文件索引**扩展读取路径——Agent 能读取的内容从「显式授予」扩张到「屏幕上可见 + 索引可检索」。这一读路径扩张发生在**应用层（app-layer）**，并非走 ODR 总线（OS-defined registry bus），属于**观察性能力（observation only）**。
+
+含义：XPIA 防御需覆盖的读路径更长——不仅是工具调用参数注入，还包括视觉/索引侧的非预期数据摄入。这与本库既有「拐点③ ADI」同源：被读取的内容若是被污染的结构化数据，Agent 可能基于它自推错误结论。但 Copilot Vision 的读路径**不经过 ODR 受控发现**，是 OS Agent 读路径治理的一个新增缺口（详见 [[Agent Data Injection 数据注入攻击]]）。
+
 ## 关联
 
-- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]]
+- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-01]] ｜ [[AppIntent 每日情报 2026-08-09]] ｜ [[AppIntent 每日情报 2026-08-09-晚]]
+- 第⑤支·读写边界：[[Chrome Agent Origin Sets 与用户对齐评判器 2026]]
 - 写回风险：[[Agent 写回路径 XPIA 风险评估 SOP]] ｜ 蠕虫范式：[[文档型 XPIA 自传播蠕虫]]
-- 隔离：[[Agent Workspace 隔离执行]] ｜ 确认：[[Confirmation UI 安全机制]]
-- 平台：[[Windows Copilot Actions 与 Agent Workspace 2026]]
+- 隔离：[[Agent Workspace 隔离执行]] ｜ 确认：[[Confirmation UI 安全机制]] ｜ 数据视图隔离：[[Dual View 智能体数据视图隔离]]
+- 数据注入（拐点③）：[[Agent Data Injection 数据注入攻击]] ｜ 学习型防御（拐点④）：[[AgentAntibody 自适应免疫防御 2026]]
+- 平台：[[Windows Copilot Actions 与 Agent Workspace 2026]] ｜ iOS 27 攻击面：[[Apple AppIntents Schema Protocol 2026]]
 
 #标签/XPIA #标签/安全 #标签/注入

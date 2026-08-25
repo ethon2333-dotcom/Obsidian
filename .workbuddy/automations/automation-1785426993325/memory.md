@@ -6,12 +6,15 @@
 ## 角色与范围
 系统级 Agent 与 OS 意图框架前沿情报官。每日检索过去 24h 内 Apple / Android / HarmonyOS / Windows 在「系统级意图框架 / 端侧 Agent 执行总线 / 设备侧 Planner 意图路由 / 跨应用 Intent 工作流 / 执行安全（XPIA、ODR、Confirmation UI）」的新进展，落库 Obsidian 知识飞轮。
 
-## 落库分层约定
-- A 原始资料：`10-知识飞轮/A-原始资料/`（用 `_模板/原始资料.md`）
+## 落库分层约定（2026-08-06 起执行「日报索引化」）
+- **A 原始资料 = 索引，不是容器**：`10-知识飞轮/A-原始资料/AppIntent 每日情报 YYYY-MM-DD.md` 只做**索引**——每条有价值信息 1 行（重要性 + 原子笔记链接 + 主题枢纽链接 + 一手来源），**禁止内联完整分析**。完整内容落 B 泛化概念。
+- **每条信息 = 独立原子笔记（B 层）**：同一概念只在 B 有一处权威笔记（已存在则追加不新建）；正文必须外链到主题枢纽（如 [[Intent Router 语义路由]] / [[Agent Skills 技能范式 2026]] / [[意图框架·跨体系索引 MOC]]）。
+- **防信息孤岛铁律**：A / D 层节点必须外链 ≥1 个 B 原子笔记或 MOC；B 笔记必须外链 ≥1 个主题枢纽 / MOC。原始资料不加工不链接 = 数字垃圾。
 - B 泛化概念：`10-知识飞轮/B-泛化概念/`（用 `_模板/概念蒸馏.md`；已存在则**追加**不新建）
 - C 可复用方法：`10-知识飞轮/C-可复用方法/`（用 `_模板/方法SOP.md`）
-- D 输出内容：`10-知识飞轮/D-输出内容/`（用 `_模板/输出复盘.md`）
+- D 输出内容：`10-知识飞轮/D-输出内容/`（用 `_模板/输出复盘.md`；速览须外链到对应 B 笔记，禁止 1 链接孤岛）
 - 收尾：在 `10-知识飞轮/知识飞轮看板.md` 末尾「本次新增（日期）」区登记链接。
+- 重构历史：2026-08-06 用户反馈日报过大+孤岛，确立索引化；08-05 日报已作为范本压成索引（内容零损失，全在 B 笔记）。
 
 ## 运行记录
 
@@ -116,3 +119,79 @@
   - 核实 Agent Launchers 具体 Insider build 号 / 发布日期 / 是否受 08-02 记的 Experimental agentic features 同一 opt-in 开关管控。
   - 复核 LFM2.5-2.6B 的 BFCLv4 绝对值（厂商 + 镜像站 56.9%，需官方榜）。
   - 延续：Berkeley 官方 BFCL v4 博客原文、PrismML 技术报告、APOP 协议全文与对接、六方 Registry Checklist（仍仅 Android 填实）、Digital Omnibus 正式文本、HarmonyOS 银行 App 名、Per-Intent Privacy Manifest、荣耀 Robot Phone（8 月发布）、Måløy 类别级缓解。
+
+## 结构设计改进（2026-08-06 · 用户反馈，非情报跑）
+- **反馈**：用户指出 AppIntent 每日情报日报节点过大且重复（正文 inline 重复 B 笔记内容）；A/D 层节点连线少=信息孤岛，时间久成数字垃圾。
+- **新约定（已写入上方「落库分层约定」）**：日报=索引（每信息 1 行 + 原子笔记链接 + 主题枢纽链接 + 一手来源，禁内联分析）；每条信息=独立 B 原子笔记并外链主题枢纽（[[Intent Router 语义路由]]/[[Agent Skills 技能范式 2026]]/[[意图框架·跨体系索引 MOC]]）；A/D 必须外链 B/MOC 防孤岛。
+- **范本**：08-05 日报已压成纯索引（内容全在 B 笔记，零损失）；D 速览 08-05 出链由 1 → 10+。
+- **审计结论**：B 层健康（出链 13–16）；孤岛主因是 A 日报（内容黑洞）+ D 速览（少数 1 链接）。
+- **待办（需用户确认）**：批量重构 07-31→08-04 共 7 期日报为索引；重构前须先核实每期内容是否已落 B 笔记（避免丢内容）。
+- **已固化**：项目 `.workbuddy/memory/MEMORY.md` + 本文件落库分层约定。
+
+## 全量深耕循环（vault-deepen · 2026-08-03 起，用户要求「一直循环直到手动停止」）
+
+- **性质**：独立于每日情报采集的另一条循环线。对全库 137 篇做「拓展深度并延伸」（vault-deepen skill）。每轮读进度台账 `.workbuddy/memory/vault_deepen_progress.md` 下一批 pending → 逐篇深化+延伸 → 改 done；全部 done 后本轮 no-op 并报「✅ 全量深耕完成」。
+- **优先级**：P1 B-泛化概念(30) → P2 01-笔记/手机AI智能体(12) → P3 知识飞轮 A/C/D → P4 01-笔记其余 → P5 02-项目。
+- **方法论**：每篇补 反例与边界 / 开放问题 / 最新 2026 一手来源 / 与相邻概念关系，且**强制链 `[[意图框架·跨体系索引 MOC]]`**；修命名不一致（见 vault-deepen skill 映射 C）；不用子代理（曾 502）。
+- **台账状态**：本文件只记每轮批次数与累计 done，不存全文。
+
+### 2026-08-03 第 1 轮（本次，批量 8）
+- 处理 P1 B 层前 8 篇：`A2A 端侧智能体协议` / `Agent Data Injection 数据注入攻击` / `Agent Skills 技能范式 2026` / `Agent Workspace 隔离执行` / `Agent 身份与硬件级审批` / `Agentic OS 意图调度内核` / `Android AppFunctions 设备侧意图 2026` / `Apple AppIntents Schema Protocol 2026`。
+- 后两篇（Android AppFunctions / Apple AppIntents）此前已自带 `最新进展 / 反例与边界 / 开放问题 / MOC 链接`，本轮仅标记 done，未重复改动；其余 6 篇补齐 `[[意图框架·跨体系索引 MOC]]` 链接 + `反例与边界` 小节。
+- 同步强化 MOC：新增 `Context Engineering 学习笔记`、`端侧大模型推理 学习笔记` 两行前向索引（库内已存在但未入索引的手写笔记）。
+- 累计 done：**8 / 142**（台账含少量额外文件）。下一轮从 `Atomic Service 元服务` 续。
+- 已知：EBUSY 偶发（Obsidian 索引锁文件），重试即成功，非阻塞。
+
+## 2026-08-09（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-08-03→08-09。Horizon MCP 仍全部 disconnected（**连续 9 日**），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 自行综合，未调外部 gemini，无 429。
+- **本期主线 = 库内空白补漏 + 2 条窗口真增量**：① **Windows Agent Framework / Microsoft Agent Framework 端侧 Agent 执行框架**（Build 2026-06-02 OS 级栈 Runtime/Store/Mesh/Copilot Workspace/Polaris + 2026-04-02 合并 SK+AutoGen 的 MAF SDK 1.0，本库此前无完整框架节点，新建 B）② **NowSecure iOS 27 App Intents 攻击面**（2026-08-05，AppSec 视角补 XPIA 可测清单）③ **AgentAntibody**（arXiv 2608.04053，2026-08-04，XPIA 学习型防御第④支）。
+- **重新核验**：本 turn 上下文未带前次 fetch 原文，落库前用 WebSearch/WebFetch 重验三关键事实——确认官方名为「Microsoft Agent Framework」（非「Windows Agent Framework」俗称）、Windows Agent Runtime 2026-06 Insider 预览 / Store 85:15 / Mesh Q4 GA / Copilot Workspace GA / Polaris 8 月替换 GPT-4、NowSecure 2026-08-05 博客与 Session 347 映射、AgentAntibody 提交 2026-08-04 且带 bench 数字（AgentDojo ASR 3.8% / LBB 2.5%）。
+- **四大 OS 官方渠道经复核无新增可执行 API**，已在 A 层显式列「已复核·无净新增」清单避免重复检索。
+- **落库**：A 1（AppIntent 每日情报 2026-08-09）｜ B 净新增 2（Windows Agent Framework 端侧 Agent 执行框架 2026 / AgentAntibody 自适应免疫防御 2026）｜ B 既有增补 3（Apple AppIntents Schema Protocol 2026 / XPIA 跨提示注入 / Windows Copilot Actions 与 Agent Workspace 2026）｜ D 1（AppIntent 每日情报速览 2026-08-09）｜ 看板已登记「本次新增（2026-08-09）」。
+- **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；库内补漏标真实日期不冒充当日新闻；诚实标注 NowSecure 厂商视角 / AgentAntibody 预印本数字 / Windows 部分生态组件（MXC/Entra Agent Identity）第三方解读均「待官方确认」。
+- **⚠️ 待办**：**【连续第 6 日未解·最高优先】四平台意图元数据来源分级**（Apple `.appEntityIdentifier` 仍待补，下轮必须执行「查各平台安全白皮书 PDF」路径）；Windows Agent Framework 官方 MIT 许可页 / Runtime Insider build 号 / Mesh GA 日期；NowSecure 厂商视角独立核验；AgentAntibody 预印本数字独立榜复现；Berkeley 官方 BFCL v4 博客原文。
+
+## 2026-08-09（晚间增补跑）
+
+- **性质**：同日 21:00 已跑完整 7 日窗口，本轮为**增补跑**。只记 21:00 版之后的净新增，并显式列「已复核·无净新增」清单。Horizon MCP 仍全部 disconnected（连续 9+ 日）。
+- **四大 OS 官方渠道无新增**：Apple（support.apple.com fetch 仅返回目录页、无 App Intents 来源校验内容，已记未决）、Android（AppFunctions 实验态无变化）、HarmonyOS（ArkAF 06-17 窗口外）、Windows（agentic security 四支柱一致）。
+- **真增量来自客户端/浏览器层（非 OS 层）**：**Chrome Agent Origin Sets**（Google 官方 security.googleblog.com，2025-12-08，Nathan Parker）——按任务会话的只读/读写源白名单集 + 隔离的 User Alignment Critic 双 LLM 确定性门控；经 WebSearch 精确定日 + mirror 全文 + TechCrunch 一手引用，官方 URL 逐字待补。
+- **6 天最高优先待办第二次实质进展**：结论从「两层（研究层 ADI/DualView + 治理层 MS AGT）」精化为**三层（研究 + 治理 + 客户端/浏览器 Chrome 产品化）**，但四大 OS intent 层仍全空白。同时把「最低成本判据」收口为 OS PM 在意图 Registry 加 `readOrWrite` 声明位。
+- **落库**：A 1（AppIntent 每日情报 2026-08-09-晚）｜ B 净新增 1（Chrome Agent Origin Sets 与用户对齐评判器 2026）｜ B 既有增补 4（Agent Data Injection / 带外防御与确定性门控 / XPIA 跨提示注入 / Confirmation UI 安全机制）｜ D 1（AppIntent 每日情报速览 2026-08-09-晚）｜ 看板已登记。
+- **层级纪律（关键收获）**：Chrome 是浏览器、Origin Sets 未下沉到 Android AppFunctions——同属 Google 两家产品线成熟度不可混淆，这是最容易「误填」该 6 天待办的坑，本轮已显式规避并写入笔记。
+- **⚠️ 待办**：**【连续第 7 日未解·最高优先】四平台意图元数据来源分级**（Apple `.appEntityIdentifier` 仍待补，下轮改查 Apple Platform Security 白皮书 PDF 全文 + WWDC26 Session 347 逐字稿，不走 support.apple.com 在线指南）；Chrome Origin Sets 官方 URL 逐字复核；Windows Agent Framework MIT 许可页/build 号；NowSecure/AgentAntibody 独立核验；Berkeley 官方 BFCL v4 博客原文。
+
+## 2026-08-15（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-08-09→08-15。Horizon MCP 仍全部 disconnected（连续 13+ 日），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 自行综合，未调外部 gemini，无 429。
+- **本期最重（8/10）：Trust Insights（WWDC26 Session 379，iOS 27）—— 执行安全第三元素**。Apple 首次给出「意图真实性 / 被胁迫意图」检测框架：`InsightEvaluator` / `IsLikelyBeingCoachedInsight` / 5 类 operationCategories / entitlement `com.apple.developer.trustinsights.base`。与 XPIA（注入指令）和 Confirmation UI（用户授权）**正交**，构成三元模型（注入 / 授权 / 意图真实性）。前 7 轮全漏，本轮补建净 B 节点。
+- **关掉一个错误前提（最高优先待办连续第 7 日）**：逐条核验 Apple 官方文档，确认 `.appEntityIdentifier` 是「实体-视图链接（Session 343 View Annotations 的屏幕感知）」、**不是来源校验/签名**。四平台意图元数据来源分级仍全空白，待办不关闭，下轮改查 **Apple Platform Security 白皮书 PDF + Session 347 逐字稿**。
+- **其余窗口真增量 / 补漏（均 5–6/10）**：iOS 27 Beta 5 App Intents 逐字变更（AttributedString name / calendar.deleteEvent 重命名 / AppEntity 10MB / 后台 Neural Engine entitlement `com.apple.developer.background-tasks.continued-processing.inference`，首条端侧 Planner 托管治理信号）；Android AppFunctions 真机有限预览（Galaxy S26 + Pixel 10，非 GA）；Windows Copilot Vision + 语义文件索引扩张 XPIA 读路径（应用层非 ODR 总线）；FunctionGemma 类端侧 router 部署路径（CoreML/LiteRT-LM ~283MB + 严格 `call:NAME{...}` 语法）。
+- **四大 OS 官方渠道经复核无新增可执行 API**，已在 A 层显式列「已复核·无净新增」清单避免重复检索。
+- **落库**：A 1（AppIntent 每日情报 2026-08-15）｜ B 净新增 1（Trust Insights 意图 coercion 检测框架 2026）｜ B 既有增补 6（Apple AppIntents Schema Protocol 2026 / Android AppFunctions 设备侧意图 2026 / Agent Data Injection 数据注入攻击 / XPIA 跨提示注入 / Confirmation UI 安全机制 / Function Calling 端侧工具调用）｜ D 1（AppIntent 每日情报速览 2026-08-15）｜ 看板已登记「本次新增（2026-08-15）」。
+- **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；库内补漏标真实日期；诚实标注预印本/媒体数字「待补」；双链指向既有 B 节点不新建重复；净新增 B 仅 Trust Insights 一个。
+- **⚠️ 待办**：**【连续第 8 日未解·最高优先】四平台意图元数据来源分级**（Apple `.appEntityIdentifier` 已证伪为视图链接，下轮必跑 **Apple Platform Security 白皮书 PDF + Session 347 逐字稿**）；Watch OS 26 / 其他平台是否也有 Trust Insights 类意图真实性机制；Windows Agent Framework MIT 许可页/build 号；NowSecure / AgentAntibody 独立核验；Berkeley 官方 BFCL v4 博客原文；Chrome Origin Sets 官方 URL 逐字复核。
+
+### 2026-08-16（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-08-10→08-16。Horizon MCP 仍全部 disconnected（连续 14+ 日），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 自行综合，未调外部 gemini，无 429。
+- **本期最重（8/10）**：**Needle 2（Cactus Compute，2026-08 中旬发布）** —— 本窗口**唯一新增的端侧 router 模型**，45M 参数 / **CQ2-bit（从预训练起 2-bit）** / 14MB 二进制 / ~28MB RAM；带来两道安全闸：**置信度门控**（置信分 = min(校准头, 解码概率)，离线返回空调用 `[]`）+ **工具可达性收缩**（>5 工具时对比检索头只放行 top-5，未选中当轮不可达）。BFCL v4 42.6（Cactus 自述，归因于消费设备语料偏向，非官方榜）。已建净 B 节点 [[端侧 Router 置信度门控与工具可达性收缩 2026]]。
+- **第②重（8/10）**：**Apple Session 347 风险元数据（副作用轴）+ 鉴权棘轮 + `createTimer` 持久化注入** —— `@AppIntent(schema:)` 自动继承 schema 副作用分类（destructive/exfiltration/shared-content update）；`authenticationPolicy` 只能更严不能更松（棘轮）；createTimer 可选 String label 经模型填参被注入、list timers 拉回污染新上下文 = ADI 具象实例。已建净 B 节点 [[意图风险元数据与鉴权策略棘轮 2026]]。
+- **最高优先待办从「全空白」重构为两正交轴（核心收获）**：副作用轴（动作多危险）Apple 已解；来源/溯源轴（数据从哪来、可不可信）四平台 OS intent 层仍全空白。待办不关闭，但收窄为「来源轴」。最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位。
+- **四大 OS 官方渠道经复核无新增可执行 API**，已在 A 层显式列「已复核·无净新增」清单避免重复检索。
+- **排除 4 条（过滤纪律）**：LightAgent v0.10.0 / DeepSeek Harness / OmniBot / PalmClaw 均应用层 agent 框架，非 OS 意图框架/端侧路由/执行安全，低于阈值排除。
+- **第三方 corroboration（非官方）**：agentinterface.app tracker（2026-08-13）确认 Windows Copilot Actions 铺开 Insiders（opt-in 默认关）+ Apple 弃用 SiriKit；仅综述，须以 Microsoft 官方源复核。
+- **落库**：A 1（AppIntent 每日情报 2026-08-16）｜ B 净新增 2（意图风险元数据与鉴权策略棘轮 2026 / 端侧 Router 置信度门控与工具可达性收缩 2026）｜ B 既有增补 7（Apple AppIntents / Confirmation UI / ADI / SAN / Function Calling / Windows Copilot Actions / 数据溯源分级与单调棘轮）｜ D 1（AppIntent 每日情报速览 2026-08-16）｜ 看板已登记「本次新增（2026-08-16）」。
+- **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；库内补漏标真实日期（Needle 2 标 2026-08 中旬，厂商自述数字标非官方榜）；诚实标注媒体数字「待补」；双链指向既有 B 节点不新建重复；净新增 B 仅 2（均为窗口内/补漏高价值，无重复）。
+- **⚠️ 待办（两轴化）**：**【来源轴仍空白·最高优先】四平台意图元数据来源分级**（副作用轴 Apple 已解；来源轴 Apple `.appEntityIdentifier` 证伪为视图链接、Android `app_metadata` / HarmonyOS A2A / Windows 工具响应均无来源类型字段）；Needle 2 BFCL v4 42.6 厂商自述非官方榜；Windows Copilot Actions Insider build 号；Watch OS 26 是否 Trust Insights 类；Windows Agent Framework MIT 许可页/build 号；NowSecure / AgentAntibody 独立核验；Berkeley 官方 BFCL v4 博客原文；Chrome Origin Sets 官方 URL 逐字复核。
+
+### 2026-08-17（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-08-11→08-17。Horizon MCP 仍全部 disconnected（连续 15+ 日），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 自行综合，未调外部 gemini，无 429。
+- **本期最重（8/10）：连续第 8 日最高优先待办「四平台意图元数据来源分级」收口为确认结论** —— 经逐平台核验（Apple Session 347 逐字稿 / Android AppFunctions 元数据 / HarmonyOS insight_intent.json / Windows ODR connector 元数据），**四平台 OS intent Registry 层均无「数据来源 / 可信度」元数据字段**，来源轴空白从「待查」升级为「**架构性空白（confirmed）**」。Apple 用「副作用轴风险元数据 + 零信任输入处理（spotlighting/脱敏）」回答「动作多危险 / 数据可不可信」，但 Registry 本身不记 provenance；最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位，仍非完整 provenance。已建净 B 节点 [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+- **库内空白补漏 5 条（标真实日期·非 24h 新公告）**：① Apple **Core AI 框架（OS 级模型运行时，Apple Silicon / MSL Swift / AOT / 零服务器依赖）+ Dynamic Profiles（会话内切换模型/工具）+ 多模型 Foundation Models（Claude/Gemini 经 Language Model 协议）+ Evaluations 框架**（iOS 27 指南，2026-06）；② Session 347 逐字稿补 Foundation Models 侧确定性护栏 `.onToolCall`（执行前拦截）/ `.historyTransform`（spotlighting+脱敏）；③ **Apple Secure Enclave「Secure intent」硬件确认锚点**（物理按键→Secure Enclave，绕过 OS/AP，root 不可伪造）；④ **HarmonyOS A2UI 生成式 UI 精确定义 + insight_intent.json 三步（定义→注册→执行）+ 1200 底层能力 Skill 化**（HDC2026/2026-06，口径冲突 2100+ vs 1200+ 延续标注）；⑤ Needle 2 发布日锚定 2026-08-11 + Pebble Index 01 量产落地 + SAN arXiv 2607.18363。
+- **四大 OS 官方渠道经复核无新增可执行 API**，已在 A 层显式列「已复核·无净新增」清单避免重复检索；Windows 8-14 Copilot 改名 / 8-11 Patch Tuesday 属常规/安全更新，低于阈值排除。
+- **落库**：A 1（AppIntent 每日情报 2026-08-17）｜ B 净新增 1（四平台意图 Registry 来源轴与权限模型对比 2026）｜ B 既有增补 6（Apple AppIntents Schema Protocol 2026 / 意图风险元数据与鉴权策略棘轮 2026 / Confirmation UI 安全机制 / HarmonyOS Intents Kit 与 ArkAF 2026 / 端侧 Router 置信度门控与工具可达性收缩 2026 / Function Calling 端侧工具调用）｜ D 1（AppIntent 每日情报速览 2026-08-17）｜ 看板已登记「本次新增（2026-08-17）」。
+- **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；库内补漏标真实日期；诚实标注厂商/第三方数字「待补」（Needle 2 BFCL v4 42.6 / FunctionGemma v4 第三方聚合 27.03 均标非官方榜）；双链指向既有 B 节点不新建重复。
+- **⚠️ 待办**：Berkeley 官方 BFCL v4 博客原文；Windows Agent Framework MIT 许可页/build 号；Watch OS 26 是否 Trust Insights 类；NowSecure / AgentAntibody 独立核验；Chrome Origin Sets 官方 URL 逐字复核；HarmonyOS `insight_intent.json` 字段全量 + API level 冲突（26 vs 23）澄清；各平台具体 entitlement/字段名以官方文档为准。

@@ -47,6 +47,8 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 
 - 「隔离会话 + 低权限账号 + 签名 + ACL」是本地 Agent 安全执行的标杆范式，可迁移到任何 OS Agent（见 [[Agent Workspace 隔离执行]]）。
 - 高危动作必须显式同意 + OAuth，不能静默（见 [[Confirmation UI 安全机制]]）。
+- **把 Agent 当「用户」而不是「进程」来建模**：微软用「独立账号 + ACL 共享文件夹」复用了 40 年的多用户权限模型，而不是发明新的 Agent 权限体系。迁移结论：**能复用既有授权原语就别新造**——用户已经理解「给同事共享一个文件夹」，不需要再学一套 Agent 权限概念。
+- **隔离、检查、打标是三件不同的事，别互相当替身**：Agent Workspace 管「炸不到系统」，Project Perception 管「路上被拦下」，来源分级管「读进来的东西可不可信」。做 OS Agent 安全路线图时应按这三层独立排期，否则会用隔离的完成度掩盖检查的缺失。
 
 ## 2026-08-02 增补（EU AI Act Article 15 对 OS Agent 执行安全的合规抬高，来源 [[AppIntent 每日情报 2026-08-02]]）
 
@@ -104,10 +106,27 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 - 动态注册的安全闸口（是否需签名、是否受 08-02 记的 `Settings > System > AI components > Agent tools > Experimental agentic features` 同一 opt-in 开关管控）**待确认**。
 - 宿主调用注册 agent 的信任链（谁批准、是否用户可审计、XPIA 缓解如何覆盖 agent 实体而非仅工具调用）**待补**。
 
+## 2026-08-09 增补 · Build 2026 完整 OS Agent 执行框架（来源 [[AppIntent 每日情报 2026-08-09]]）
+
+> 本笔记 07/08 两月只记录了 Windows agent 安全的**四块拼图**（Copilot Actions / Agent Workspace / ODR / Agent Launchers）。本期把 Build 2026（2026-06-02）发布的**完整 OS Agent 执行框架**串成独立节点 [[Windows Agent Framework 端侧 Agent 执行框架 2026]]，此处只记与本笔记安全视角的衔接点：
+
+- **本笔记的「四支柱安全」是那个框架的「安全子集」**：Copilot Actions / Agent accounts / Agent Workspace / User Transparency 仍成立，但放到 Build 2026 框架里，它们只是 Runtime（OS 宿主）+ Store（分发）+ Mesh（联邦控制面）这一更大栈里的「运行时与权限」一层。
+- **新补的 OS 级拼图对安全的增量**：① Windows Agent Runtime 把 agent 注册为**系统服务**+沙箱（移动端式权限，安装时审阅），是 Agent accounts/Workspace 的**底座**；② Azure Agent Mesh 用 **Ed25519 DID + IATP + 动态信任评分**做 agent 间零信任，是跨设备执行的信任层（对接 EU AI Act 高风险）；③ Agent Store 的 85/15 分成 + 安全评审是**分发层**的准入闸。
+- **命名澄清**：官方叫 **Microsoft Agent Framework（MAF，SDK，2026-04-02 达 1.0 GA，合并 SK+AutoGen）**；「Windows Agent Framework」是第三方对 Build 2026 OS 栈的俗称。二者是「写 agent 的 SDK」vs「跑 agent 的 OS 宿主」两层，详见新节点。
+- ⚠️ 待补：MAF 官方 MIT 许可页、Runtime 具体 Insider build 号、Mesh GA 具体日期（均待官方源确认）。
+
 ## 关联
 
-- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-04]] ｜ [[AppIntent 每日情报 2026-08-05]]
+- 来源：[[AppIntent 跨平台情报简报 2026-07-30]] ｜ [[AppIntent 每日情报 2026-08-04]] ｜ [[AppIntent 每日情报 2026-08-05]] ｜ [[AppIntent 每日情报 2026-08-09]]
 - 安全：[[Agent Workspace 隔离执行]] ｜ [[XPIA 跨提示注入]] ｜ [[Confirmation UI 安全机制]] ｜ [[数据溯源分级与单调棘轮]] ｜ [[Agent Data Injection 数据注入攻击]]
-- 跨平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[HarmonyOS Intents Kit 与 ArkAF 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]]
+- 跨平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[HarmonyOS Intents Kit 与 ArkAF 2026]] ｜ [[Android AppFunctions 设备侧意图 2026]] ｜ [[Windows Agent Framework 端侧 Agent 执行框架 2026]]（Build 2026 完整 OS agent 栈 + MAF SDK）
+
+## 2026-08-16 增补：第三方综述 corroboration（来源 [[AppIntent 每日情报 2026-08-16]]）
+
+> 本窗口（2026-08-10→08-16）Windows 官方渠道**无新增 API**。本期补一份 **2026-08-13 第三方 tracker（agentinterface.app）** 的 corroboration，与本笔记既有记录互证；仅为综述，非官方 API 变更。
+
+- tracker 确认两点：① **Copilot Actions 正面向 Windows Insiders 在 Agent Workspace 之上铺开，仍 opt-in、默认关**——与本笔记 07 月「默认关闭 + 需 opt-in」一致；② **Apple 借 WWDC26 正式弃用 SiriKit，App Intents 成第三方 App 进 Siri 的唯一路径**——跨平台对照：Apple 走「系统级意图协议强制」，Windows 走「受控发现 + 隔离账号」，两条机制相反但都比「早期」成熟。
+- ⚠️ **层级纪律（延续）**：该 tracker 是第三方产品界面综述站，非 OS 官方文档；其「Copilot Actions 铺开」信号须以 Microsoft 官方 blog/build 说明复核（具体 Insider build 号待补，见本笔记 08-05 待补项）。
+- 四大 OS 意图框架在「意图元数据来源分级」维度仍全空白（详见 [[Agent Data Injection 数据注入攻击]] 08-16 演进）。
 
 #标签/Windows #标签/CopilotActions #标签/AgentWorkspace #标签/XPIA

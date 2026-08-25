@@ -55,4 +55,12 @@ tags: [AppIntent, 端侧Planner, SAN, FunctionCalling, 模型架构, 概念]
 - 路由：[[Intent Router 语义路由]] ｜ 端侧模型：[[Function Calling 端侧工具调用]]
 - Schema：[[Intent Schema Protocol 意图模式规范]] ｜ 方法：[[系统级 Intent 路由评估 SOP]]
 
+## 2026-08-16 增补：Needle 2 = 同架构的机制升级（来源 [[AppIntent 每日情报 2026-08-16]]）
+
+> 本笔记此前只记 Needle 26M（INT4 14MB，论证「无 FFN 能路由」）。本期补其继任者 **Needle 2（Cactus，2026-08 中旬）**，同走无 FFN（SAN）路线但**体积不变（14MB）下参数 26M→45M，并首次加安全闸**。完整机制见新建 [[端侧 Router 置信度门控与工具可达性收缩 2026]]。
+
+- Needle 2：45M 参数 / 14MB 二进制 / ~28MB RAM / **CQ2-bit（从预训练起做 2-bit，非事后量化）**；架构由 26M 的「12+8 层」升级为「27 层 / 512 宽 + Hadamard MLP + engram 记忆」。
+- **新增两道安全机制**：① **置信度门控**（置信分 = min(校准头, 解码概率)，离线返回空调用 `[]`）；② **工具可达性收缩**（>5 工具时对比检索头只放行 top-5，未选中工具当轮**不可达**）。
+- 对「无 FFN」论断的延续：SAN 的可推广性（「模型能访问外部结构化知识 → 可砍 FFN」）在 Needle 2 上继续成立，且证明「加安全闸不必然增体积」。
+
 #标签/SAN #标签/端侧Planner #标签/模型架构 #标签/FunctionCalling

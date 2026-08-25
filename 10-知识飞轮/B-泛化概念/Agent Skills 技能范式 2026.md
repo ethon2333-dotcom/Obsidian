@@ -35,6 +35,7 @@ Agent Skills 是 Anthropic 于 2025-10 提出的开放标准（2025-12-18 成为
 社区呼吁「skill 版 MCP」——统一描述 / 分发格式；目前 `SKILL.md` 是事实最广泛的兼容格式。
 
 ## 与既有笔记的关联
+- 索引：[[意图框架·跨体系索引 MOC]]
 - 端侧 / 低带宽友好 → [[Function Calling 端侧工具调用]]、[[Local Agent Bench 端侧智能体基准]]
 - 自我进化 → [[知识飞轮看板]]、长期记忆方向（obsidian-second-brain、claude-reflect）
 - 企业级治理 → [[企业级 Agent 平台与 Agent-as-Asset 2026]]
@@ -46,6 +47,17 @@ Agent Skills 是 Anthropic 于 2025-10 提出的开放标准（2025-12-18 成为
 2. 渐进式披露 = 端侧算力范式，可参考用于系统级 Skill 商店。
 3. 格式统一者掌握生态入口（类比 MCP 之于工具调用）。
 4. self-improving（从纠错回写长期记忆）是 2026 主线之一。
+
+## 反例与边界（Skill 范式的失效场景）
+
+- **上下文污染 / 过度召回**：Skill 被加载即获得领域指令权；若 `description` 写得过宽，通用 Agent 会错误触发或在错误上下文执行——这是 Skill 版的「过度召回」，须靠精准 description + 触发护栏缓解。
+- **恶意 Skill 注入**：非签名 Skill（尤其社区分发）可夹带指令注入，呼应 [[Agent Data Injection 数据注入攻击]]；企业场景必须有来源校验与签名（见 [[Agent 身份与硬件级审批]]）。
+- **格式碎片化反噬**：若「skill 版 MCP」统一呼吁失败，Skill 市场会重演 MCP 早期多格式并存的碎片化，反而抬高跨平台分发成本。
+
+## 最新进展（2026 一手来源）
+
+- **标准状态**：Anthropic 于 2025-12-18 将 Skill 定为跨平台开放标准并进入 Linux 基金会 AIDF；2026 年 OpenAI、Cursor、GitHub Copilot、Claude Code 等已采纳，`SKILL.md` 成为事实最广的兼容格式（详见上方「深化补充」）。
+- **生态动向**：2026 年「Agent Skill 市场 / 分发」成为企业级 Agent 平台竞争焦点，与 [[企业级 Agent 平台与 Agent-as-Asset 2026]] 互为表里；一手进展持续跟踪 [[AppIntent 每日情报速览]] 系列与 [[知识飞轮看板]]。
 
 ## 深化补充
 

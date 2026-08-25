@@ -12,6 +12,14 @@ created: 2026-07-30
 
 ## 🧭 主题地图（原子笔记）
 
+### 学习总入口
+
+- [[OS-PM-学习方向与能力地图]] —— OS PM 下一阶段能力模型、优先级、实践项目与 12 周路线
+- [[OS-PM-资料导航与阶段学习计划]] —— 按阶段整理现有资料、核心阅读顺序与每阶段产出
+- [[OS-PM-Agent平台治理与开发者生态]] —— OS Agent Platform Spec、Registry、开发者接入和指标治理
+- [[OS-PM-端侧AI Runtime 实测实验方案]] —— NPU、量化、延迟、内存、功耗和热性能实验
+- [[OS-PM-Agent Control Plane 安全与审计]] —— Capability、确认凭证、策略代理和审计 Trace
+
 ### A. 基础与全局视角
 - [[OS-PM-概览与四大核心领域]] —— PM 要深化的 4 大领域：架构/交互/生态/工程
 - [[OS-PM-系统架构与底层技术]] —— 5 层架构、能力解耦、资源调度与功耗、AI-Native OS 三件套
@@ -26,6 +34,7 @@ created: 2026-07-30
 - [[OS-PM-投机采样原理与能效优化]] —— 小模型猜、大模型验，把 Memory-Bound 变 Compute-Bound
 - [[OS-PM-AI Runtime动态调度与降级策略]] —— 温控/电量/内存三维下的 SpecDec 动态降级矩阵
 - [[OS-PM-系统AI Runtime vs 应用引擎]] —— 为什么 OS 要自研 AI Runtime（4 大护城河）
+- [[移动端 NPU 与推理编译栈 学习笔记]] —— 🌱 广度种子（存于 `AI模型基础/`）：硬件层（Hexagon/APU/ANE/Tensor/Exynos）+ 软件栈（QAIRT·NeuroPilot·LiteRT·ExecuTorch·Core ML）六层翻译视角，含 NNAPI 弃用与迁移路径
 
 ### D. 方法论 / 跨学科发散
 - [[PM 需求定义 跨学科发散]] —— 把"定义需求"辐射到需求工程/JTBD/情境调查/经济学/设计思维/敏捷/博弈论/合规/逻辑/FMEA/OKR，收敛给 PM 的 5 条启示，并落到 OS/Android PM 实战（系统级 App Intent 开放能力需求定义）

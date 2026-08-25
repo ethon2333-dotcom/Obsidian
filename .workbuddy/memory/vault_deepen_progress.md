@@ -1,0 +1,154 @@
+# Vault 全量深耕进度（共 137 篇）
+状态：pending / done ｜ 循环任务每轮处理下一批 pending，全部 done 后本轮 no-op。
+
+## 优先级 1 · B 泛化概念（30）
+- [done] 10-知识飞轮/B-泛化概念/A2A 端侧智能体协议.md
+- [done] 10-知识飞轮/B-泛化概念/Agent Data Injection 数据注入攻击.md
+- [done] 10-知识飞轮/B-泛化概念/Agent Skills 技能范式 2026.md
+- [done] 10-知识飞轮/B-泛化概念/Agent Workspace 隔离执行.md
+- [done] 10-知识飞轮/B-泛化概念/Agent 身份与硬件级审批.md
+- [done] 10-知识飞轮/B-泛化概念/Agentic OS 意图调度内核.md
+- [done] 10-知识飞轮/B-泛化概念/Android AppFunctions 设备侧意图 2026.md
+- [done] 10-知识飞轮/B-泛化概念/Apple AppIntents Schema Protocol 2026.md
+- [pending] 10-知识飞轮/B-泛化概念/Atomic Service 元服务.md
+- [pending] 10-知识飞轮/B-泛化概念/Confirmation UI 安全机制.md
+- [pending] 10-知识飞轮/B-泛化概念/Dual View 智能体数据视图隔离.md
+- [pending] 10-知识飞轮/B-泛化概念/Function Calling 端侧工具调用.md
+- [pending] 10-知识飞轮/B-泛化概念/HarmonyOS Intents Kit 与 ArkAF 2026.md
+- [pending] 10-知识飞轮/B-泛化概念/Intent Router 语义路由.md
+- [pending] 10-知识飞轮/B-泛化概念/Intent Routing Stack 六方意图路由分层对照 2026.md
+- [pending] 10-知识飞轮/B-泛化概念/Intent Schema Protocol 意图模式规范.md
+- [pending] 10-知识飞轮/B-泛化概念/Local Agent Bench 端侧智能体基准.md
+- [pending] 10-知识飞轮/B-泛化概念/OSWorld 计算机操作基准.md
+- [pending] 10-知识飞轮/B-泛化概念/Simple Attention Network 无FFN端侧路由.md
+- [pending] 10-知识飞轮/B-泛化概念/System Orchestrator 系统编排.md
+- [pending] 10-知识飞轮/B-泛化概念/Windows Copilot Actions 与 Agent Workspace 2026.md
+- [pending] 10-知识飞轮/B-泛化概念/XPIA 跨提示注入.md
+- [pending] 10-知识飞轮/B-泛化概念/企业级 Agent 平台与 Agent-as-Asset 2026.md
+- [pending] 10-知识飞轮/B-泛化概念/前沿 Agent 大模型 2026H2.md
+- [pending] 10-知识飞轮/B-泛化概念/带外防御与确定性门控.md
+- [pending] 10-知识飞轮/B-泛化概念/意图支付授权协议 APOP.md
+- [pending] 10-知识飞轮/B-泛化概念/数据溯源分级与单调棘轮.md
+- [pending] 10-知识飞轮/B-泛化概念/文档型 XPIA 自传播蠕虫.md
+- [pending] 10-知识飞轮/B-泛化概念/智能体互联国家标准与 AIP.md
+- [pending] 10-知识飞轮/B-泛化概念/端侧执行通道 GUI 与 MCP 路线之争.md
+- [pending] 10-知识飞轮/B-泛化概念/通用 AI Agent 评测基准 2026.md
+
+## 优先级 2 · 01-笔记/手机AI智能体（12）
+- [pending] 01-笔记/手机AI智能体/App Infra 应用基建.md
+- [pending] 01-笔记/手机AI智能体/App Intent 的核心作用.md
+- [pending] 01-笔记/手机AI智能体/Apple Intelligence 与 App Intents.md
+- [pending] 01-笔记/手机AI智能体/Apple Intelligence 端侧架构 学习笔记.md
+- [pending] 01-笔记/手机AI智能体/Context Engineering 学习笔记.md
+- [pending] 01-笔记/手机AI智能体/HarmonyOS 元服务 学习笔记.md
+- [pending] 01-笔记/手机AI智能体/MCP 与设备侧 MCP.md
+- [pending] 01-笔记/手机AI智能体/国内安卓厂商做 App Intent 的阻力.md
+- [pending] 01-笔记/手机AI智能体/安卓厂商意图识别破局策略.md
+- [pending] 01-笔记/手机AI智能体/工业级 GUI Agent 架构（VLM+无障碍树）.md
+- [pending] 01-笔记/手机AI智能体/意图框架·跨体系索引 MOC.md
+- [pending] 01-笔记/手机AI智能体/手机AI智能体知识库.md
+- [pending] 01-笔记/手机AI智能体/端侧大模型推理 学习笔记.md
+- [pending] 01-笔记/手机AI智能体/端侧意图框架 学习笔记.md
+
+## 优先级 3 · 知识飞轮 A/C/D 层
+- [pending] 10-知识飞轮/A-原始资料/AI Agent Skill 生态半月情报 2026-07-31.md
+- [pending] 10-知识飞轮/A-原始资料/AI Agent 半月情报简报 2026-07-31.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-07-31.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-08-01.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-08-02.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-08-03-晚.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-08-03.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-08-04.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 每日情报 2026-08-05.md
+- [pending] 10-知识飞轮/A-原始资料/AppIntent 跨平台情报简报 2026-07-30.md
+- [pending] 10-知识飞轮/A-原始资料/OS PM 近一月情报简报 2026-07-31.md
+- [pending] 10-知识飞轮/C-可复用方法/Agent 写回路径 XPIA 风险评估 SOP.md
+- [pending] 10-知识飞轮/C-可复用方法/Agent 读入路径可信数据边界 SOP.md
+- [pending] 10-知识飞轮/C-可复用方法/知识库搭建SOP.md
+- [pending] 10-知识飞轮/C-可复用方法/端侧执行通道选型 SOP.md
+- [pending] 10-知识飞轮/C-可复用方法/系统级 Intent 路由评估 SOP.md
+- [pending] 10-知识飞轮/D-输出内容/AI Agent 半月观察 2026-07-31.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-07-31.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-08-01.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-08-02.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-08-03-晚.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-08-03.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-08-04.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 每日情报速览 2026-08-05.md
+- [pending] 10-知识飞轮/D-输出内容/AppIntent 跨平台格局总览 2026.md
+- [pending] 10-知识飞轮/D-输出内容/OS PM 2026-07 月报：四平台新增进展.md
+- [pending] 10-知识飞轮/D-输出内容/最近一个月热门 AI Agent Skill 整理 2026-07-31.md
+
+## 优先级 4 · 01-笔记 其余子目录
+- [pending] 01-笔记/AI Agent 框架/AI Agent 框架 MOC.md
+- [pending] 01-笔记/AI Agent 框架/Agent 协议生态 学习笔记.md
+- [pending] 01-笔记/AI Agent 框架/Agent 框架生态与竞品.md
+- [pending] 01-笔记/AI Agent 框架/Graph Engineering 图谱工程.md
+- [pending] 01-笔记/AI Agent 框架/LangChain vs LangGraph 对比.md
+- [pending] 01-笔记/AI Agent 框架/LangChain 实战代码库.md
+- [pending] 01-笔记/AI Agent 框架/LangChain 概览.md
+- [pending] 01-笔记/AI Agent 框架/LangChain 菜鸟教程.md
+- [pending] 01-笔记/AI Agent 框架/LangGraph 实战代码库.md
+- [pending] 01-笔记/AI Agent 框架/LangGraph 概览.md
+- [pending] 01-笔记/AI Agent 框架/Loop Engineering 实战代码库.md
+- [pending] 01-笔记/AI Agent 框架/Loop Engineering 循环工程.md
+- [pending] 01-笔记/AI Agent 框架/Loop Engineering 跨学科发散.md
+- [pending] 01-笔记/AI Agent 框架/RAG 检索增强生成.md
+- [pending] 01-笔记/AI Agent 框架/RAG 详细学习笔记.md
+- [pending] 01-笔记/AI Agent 框架/向量数据库 学习笔记.md
+- [pending] 01-笔记/AI Agent 框架/应用层 Agent 框架 vs 系统级意图框架 对照.md
+- [pending] 01-笔记/AI 工程/AI 工程 MOC.md
+- [pending] 01-笔记/AI 工程/LLM 跨学科发散.md
+- [pending] 01-笔记/AI模型基础/AI模型类型与架构.md
+- [pending] 01-笔记/AI模型基础/外挂适配式 vs 原生多模态架构.md
+- [pending] 01-笔记/AI模型基础/大模型四类型：LLM VLM MLLM LMM.md
+- [pending] 01-笔记/AI模型基础/端侧模型量化 学习笔记.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-3B模型内存预算推演.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-AI Runtime动态调度与降级策略.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-Agent Control Plane 安全与审计.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-Agent平台治理与开发者生态.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-PagedAttention与KV Cache剪枝.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-学习方向与能力地图.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-性能与稳定性指标体系.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-投机采样原理与能效优化.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-概览与四大核心领域.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-端侧AI Runtime 实测实验方案.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-端侧大模型系统级挑战.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-系统AI Runtime vs 应用引擎.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-系统架构与底层技术.md
+- [pending] 01-笔记/OS产品经理知识库/OS-PM-资料导航与阶段学习计划.md
+- [pending] 01-笔记/OS产品经理知识库/OS产品经理知识库 MOC.md
+- [pending] 01-笔记/OS产品经理知识库/PM 需求定义 跨学科发散.md
+- [pending] 01-笔记/PM决策层/GUI Agent vs 原生 API 产品决策树.md
+- [pending] 01-笔记/PM决策层/PM决策层 MOC.md
+- [pending] 01-笔记/PM决策层/端侧意图路由选型 PM Checklist.md
+- [pending] 01-笔记/PRD学习笔记/OS PM PRD 专项.md
+- [pending] 01-笔记/PRD学习笔记/OS 系统级 Agent PRD 范例.md
+- [pending] 01-笔记/PRD学习笔记/PRD MOC.md
+- [pending] 01-笔记/PRD学习笔记/PRD_Template.md
+- [pending] 01-笔记/PRD学习笔记/PRD写作SOP.md
+- [pending] 01-笔记/PRD学习笔记/PRD学习笔记.md
+- [pending] 01-笔记/原型与Figma/Figma 学习笔记.md
+- [pending] 01-笔记/原型与Figma/原型与Figma MOC.md
+- [pending] 01-笔记/原型与Figma/安卓系统功能原型规格模板.md
+- [pending] 01-笔记/发散图谱/Agent 记忆与个性化意图理解.md
+- [pending] 01-笔记/发散图谱/发散图谱 MOC.md
+- [pending] 01-笔记/发散图谱/意图框架的商业与生态博弈.md
+- [pending] 01-笔记/发散图谱/端侧 AI 基建与算力预算.md
+- [pending] 01-笔记/发散图谱/跨端与多设备意图流转.md
+- [pending] 01-笔记/安全/Agent 执行安全（PM视角）.md
+- [pending] 01-笔记/安全/Confirmation UI 分级与产品责任边界.md
+- [pending] 01-笔记/安全/安全 MOC.md
+- [pending] 01-笔记/安全/工具调用安全 学习笔记.md
+- [pending] 01-笔记/深耕拓展/深耕拓展总览.md
+- [pending] 01-笔记/竞品情报/HarmonyOS 意图框架竞品观察.md
+- [pending] 01-笔记/竞品情报/Windows Copilot Actions 竞品观察.md
+- [pending] 01-笔记/竞品情报/竞品情报 MOC.md
+- [pending] 01-笔记/编程语言/Go 实战代码库.md
+- [pending] 01-笔记/编程语言/Go 概览.md
+- [pending] 01-笔记/编程语言/Rust 实战代码库.md
+- [pending] 01-笔记/编程语言/Rust 概览.md
+- [pending] 01-笔记/编程语言/编程语言 MOC.md
+
+## 优先级 5 · 02-项目
+- [pending] 02-项目/Codex_Obsidian_自生长知识库.md

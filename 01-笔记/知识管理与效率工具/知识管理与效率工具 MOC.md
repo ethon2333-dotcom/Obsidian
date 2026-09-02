@@ -18,6 +18,7 @@ created: 2026-08-09
 - [[AI 编程助手与 Agentic Coding 工具生态 学习笔记]] —— 🌱 广度种子：AI 编程助手谱系（Copilot/Cursor/Claude Code/Codex/Windsurf/Devin/通义灵码 等）+ 从补全到自主 SWE Agent 的演进，与 [[AI Agent 框架 MOC]] 互链
 - [[低代码无代码 Agent 搭建平台 学习笔记]] —— 🌱 广度种子：低代码/无代码 Agent 搭建平台全景（对话式/工作流/LLM 应用平台/企业级中台四类 + Coze/Dify/n8n/元器 等横向 + 2025-2026 平台爆发与 MCP/A2A 普及），与 [[AI 编程助手与 Agentic Coding 工具生态 学习笔记]]（开发者编码工具）互补
 - [[AI 搜索与 RAG 问答产品生态 学习笔记]] —— 🌱 广度种子：**产品层**视角（不讲技术原理，原理见 [[RAG 详细学习笔记]]）——三层品类格局（AI 搜索 / 个人知识库 AI 化 / 企业 RAG 平台，语料所有权决定护城河）+ Perplexity/Genspark/秘塔/纳米/Felo 速查 + Obsidian 插件系与本地优先 RAG + 2025-2026 六条进展（AI 搜索红海、集体向 Agent 逃逸、GEO 泡沫），是 [[PKM 方法论与 Obsidian 生态 学习笔记]] 向「知识库 AI 化」的外沿延伸
+- [[AI 原生浏览器与 Agent 浏览器 学习笔记]] —— 🌱 广度种子：从"效率工具/知识管理"向外辐射 → **浏览器作为 AI Agent 载体**（Comet/Dia/Opera Neon/Atlas/Chrome+Gemini，代搜索/代填表/代操作网页）。与 [[AI 搜索与 RAG 问答产品生态 学习笔记]]（独立搜索产品，是内核）互补、区别于 [[PKM 方法论与 Obsidian 生态 学习笔记]]（个人知识管理方法论）；覆盖玩家格局、产品形态、2025-2026 进展、与 Agent 框架/MCP 关系、隐私与数据归属张力
 
 ## 🧭 核心张力（这一层的主线问题）
 

@@ -28,6 +28,7 @@ updated: 2026-08-04
 - [[多智能体协作与编排 学习笔记]] —— 🌱 广度种子：多 agent 协作模式与编排框架全景（orchestrator-worker / supervisor / debate + AutoGen / CrewAI / LangGraph multi-agent / Anthropic Many hands / A2A·AGP），与 [[Loop Engineering 循环工程]]（单 agent 循环）、[[Agent 协议生态 学习笔记]]（协议）互补
 - [[Agent 记忆系统 学习笔记]] —— 🌱 广度种子：Agent 长期记忆工程架构（记忆分层 episodic/semantic/procedural + 工作记忆 · 记忆中间件 Mem0/Letta/LangMem/Zep · 与上下文工程的接口），与 [[多智能体协作与编排 学习笔记]]（多 agent 共享记忆一致性）、[[个性化与端侧用户记忆 学习笔记]]（端侧个性化建模 vs 记忆系统）互补
 - [[Agent 可观测性 LLM Observability 学习笔记]] —— 🌱 广度种子：Agent 可观测性/LLM Observability 全景（tracing/eval/cost&latency/用户 feedback 回路 + LangSmith/Langfuse/Phoenix/Datadog/Traceloop 等横向 + OpenTelemetry/OpenInference 语义约定 + 端侧 Agent 监控意义），与 [[Agent 评测与基准 学习笔记]]（离线基准）互补
+- [[GraphRAG 与知识图谱增强 Agent 学习笔记]] —— 🌱 广度种子：GraphRAG 方案横向全景（MS GraphRAG·LazyGraphRAG·LightRAG·HippoRAG 2·KAG·腾讯 Youtu-GraphRAG·Graphiti/Zep·Neo4j）+ 按"成本花在哪"分的六种范式 + 2025-2026 进展（独立评测反转口径、上下文膨胀）+ 与 Agent 结合四面（图作工具/agentic 图检索/图作记忆/决策留痕），与 [[RAG 详细学习笔记]]（向量检索原理）、[[Graph Engineering 图谱工程]]（图谱构建方法论）、[[Agent 记忆系统 学习笔记]]（记忆层）分工互补
 - [[Agent 推理成本优化 学习笔记]] —— 🌱 广度种子：Agent 推理成本优化工程面（prompt caching / KV cache 复用·prefix sharing / batching / 模型路由 / 上下文裁剪 / 成本可观测），与 [[多智能体协作与编排 学习笔记]]（多 agent 扇出放大成本）、[[Agent 可观测性 LLM Observability 学习笔记]]（成本归因·预算告警）咬合
 
 ## 实战代码库（可直接抄）
@@ -75,7 +76,7 @@ flowchart TB
 - 端侧运行时：[[OS-PM-系统AI Runtime vs 应用引擎]]
 - 检索增强生成：[[RAG 检索增强生成]]（RAG 是 LangChain 核心应用场景，检索内容亦属 [[Agent Data Injection 数据注入攻击]] 靶面）
 - 循环工程：[[Loop Engineering 循环工程]]（agent 循环即控制流，可观测/安全边界与 ADI 主题咬合）
-- 图谱工程：[[Graph Engineering 图谱工程]]（知识图谱/GraphRAG，注意与 LangGraph 执行图区分）
+- 图谱工程：[[Graph Engineering 图谱工程]]（知识图谱/GraphRAG，注意与 LangGraph 执行图区分）｜方案选型与 Agent 结合见 [[GraphRAG 与知识图谱增强 Agent 学习笔记]]
 - LLM 基础与跨学科：[[LLM 跨学科发散]]（信息论/语言学/连接主义/压缩/Transformer/Scaling/涌现/对齐向外辐射 LLM 构件根脉，见 [[AI 工程 MOC]]）
 
 ## 待补 / 待核实

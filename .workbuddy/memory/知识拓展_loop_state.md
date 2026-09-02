@@ -51,6 +51,12 @@
 - Embodied AI 与机器人 Agent（VLA/机器人基础模型/玩家格局）｜`01-笔记/发散图谱/Embodied AI 与机器人 Agent 学习笔记.md`【合并升级既有 08-19 旧版】
 - Agent 推理成本优化（prompt caching/batching/prefix sharing/模型路由）｜`01-笔记/AI Agent 框架/Agent 推理成本优化 学习笔记.md`【合并升级既有 08-19 旧版】
 
+### 2026-09-02（第 8 轮）
+- 端侧推理框架生态（TF Lite/LiteRT·MNN·NCNN·ONNX Runtime Mobile·ExecuTorch 跨平台推理运行时对比；区别于 NPU 编译栈与端侧量化）｜`01-笔记/手机AI智能体/端侧推理框架生态 学习笔记.md`【新增】
+- GraphRAG 与知识图谱增强 Agent（MS GraphRAG/LightRAG/HippoRAG/私有KG+RAG；区别于向量 RAG 与 Agent 记忆）｜`01-笔记/AI Agent 框架/GraphRAG 与知识图谱增强 Agent 学习笔记.md`【新增】
+- AI 原生浏览器与 Agent 浏览器（Comet/Dia/Perplexity/Arc；浏览器作为 Agent 代操作入口；区别于 AI 搜索产品）｜`01-笔记/知识管理与效率工具/AI 原生浏览器与 Agent 浏览器 学习笔记.md`【新增】
+- AI 视频与多模态生成（Sora2/Kling/Veo3/Runway/MJ/Flux/Suno；扩散+时空一致性/自回归/世界模型范式；热点新知）｜`01-笔记/发散图谱/AI 视频与多模态生成 学习笔记.md`【新增】
+
 > ⚠️ 本轮重大发现：状态文件此前止于 08-17，但库内 08-18~08-19 已批量新增大量笔记（Context Engineering、个性化与端侧用户记忆、Agent 协议生态、RAG 详细、端侧大模型推理、Apple Intelligence 端侧架构、HarmonyOS 元服务、安卓厂商意图识别等），导致本轮初选 2 主题撞车（已改为合并升级）。下方黑名单已据真实库容全面刷新。
 
 ## 下轮候选（避免重复，可直接取用）
@@ -99,7 +105,7 @@
 
 ## 已覆盖主题黑名单（据真实库容 2026-09-01 全面刷新，勿重复立题）
 
-RAG(详细) / 向量数据库 / Context Engineering / 端侧大模型推理 / 端侧模型量化 / 端侧 SLM 模型家族 / 移动端 NPU 与推理编译栈 / 端云协同推理与混合部署 / 模型蒸馏与师生训练 / 合成数据与模型后训练 / 世界模型与仿真合成环境 / 多模态 GUI 理解与 UI Grounding / 端侧多模态 VLM / 端侧 AI 功耗与散热约束 / 端侧 AI 芯片架构谱系 / 语音交互与端侧 ASR TTS / 隐私计算与端云协同 / 端侧模型安全与越狱 / 工具调用安全 / Apple Intelligence 端侧架构 / HarmonyOS 元服务 / 端侧意图框架 / 个性化与端侧用户记忆 / 安卓厂商意图识别破局策略 / Agent 协议生态 / Agent 评测与基准 / Agent 可观测性 LLM Observability / Agent 推理成本优化 / 多智能体协作与编排 / Agent 记忆系统 / MCP 与设备侧 MCP / LangChain / LangGraph / Loop Engineering / Graph Engineering / 投机采样 / PagedAttention·KV Cache / AI Runtime 调度 / App Intents / Confirmation UI / GUI Agent 架构 / AI 眼镜与可穿戴意图入口 / 智能座舱与车机 HMI 意图入口 / Embodied AI 与机器人 Agent / 无障碍 Accessibility 与 GUI Agent 同源技术栈 / Agentic UX 交互设计模式 / 用户研究方法 / 增长模型 / 数据飞轮与 AI 产品度量 / 意图框架开发者生态与平台经济 / 时序事件驱动与 Agent 主动服务 / PKM 方法论与 Obsidian 生态 / AI 编程助手与 Agentic Coding / 低代码无代码 Agent 搭建平台 / AI 搜索与 RAG 问答产品生态 / Figma / Go / Rust
+RAG(详细) / 向量数据库 / Context Engineering / 端侧大模型推理 / 端侧模型量化 / 端侧 SLM 模型家族 / 移动端 NPU 与推理编译栈 / 端云协同推理与混合部署 / 模型蒸馏与师生训练 / 合成数据与模型后训练 / 世界模型与仿真合成环境 / 多模态 GUI 理解与 UI Grounding / 端侧多模态 VLM / 端侧 AI 功耗与散热约束 / 端侧 AI 芯片架构谱系 / 语音交互与端侧 ASR TTS / 隐私计算与端云协同 / 端侧模型安全与越狱 / 工具调用安全 / Apple Intelligence 端侧架构 / HarmonyOS 元服务 / 端侧意图框架 / 个性化与端侧用户记忆 / 安卓厂商意图识别破局策略 / Agent 协议生态 / Agent 评测与基准 / Agent 可观测性 LLM Observability / Agent 推理成本优化 / 多智能体协作与编排 / Agent 记忆系统 / MCP 与设备侧 MCP / LangChain / LangGraph / Loop Engineering / Graph Engineering / 投机采样 / PagedAttention·KV Cache / AI Runtime 调度 / App Intents / Confirmation UI / GUI Agent 架构 / AI 眼镜与可穿戴意图入口 / 智能座舱与车机 HMI 意图入口 / Embodied AI 与机器人 Agent / 无障碍 Accessibility 与 GUI Agent 同源技术栈 / Agentic UX 交互设计模式 / 用户研究方法 / 增长模型 / 数据飞轮与 AI 产品度量 / 意图框架开发者生态与平台经济 / 时序事件驱动与 Agent 主动服务 / PKM 方法论与 Obsidian 生态 / AI 编程助手与 Agentic Coding / 低代码无代码 Agent 搭建平台 / AI 搜索与 RAG 问答产品生态 / Figma / Go / Rust / 端侧推理框架生态 / GraphRAG 与知识图谱增强 Agent / AI 原生浏览器与 Agent 浏览器 / AI 视频与多模态生成
 
 ## 下轮候选（刷新·库内未覆盖，可直接取用）
 
@@ -115,3 +121,12 @@ RAG(详细) / 向量数据库 / Context Engineering / 端侧大模型推理 / �
 - GraphRAG / 知识图谱增强 Agent（区别于 Graph Engineering、RAG 详细）
 - 模型服务化与 LLM 网关（区别于已覆盖的 Agent 推理成本优化）
 - 推理服务可观测与成本护栏产品（区别于 Agent 可观测性）
+
+### 2026-09-02 补充候选（本轮未取，下轮可直取）
+- 端侧扩散模型 / 端侧图像生成（与本轮「AI 视频与多模态生成」呼应，但聚焦端侧落地，区别于端侧 VLM 视觉理解）
+- 多模态评测基准（MMMU / SEED-Bench / MMWorld，区别于 Agent 评测基准）
+- AI 监管与合规落地（EU AI Act 实施、中国生成式 AI 办法、AI 备案，区别于隐私计算信任技术）
+- 模型服务化与 LLM 网关（区别于已覆盖的 Agent 推理成本优化）
+- ANN 索引算法专题（HNSW/IVF-PQ/DiskANN 深潜）——⚠️ `向量数据库` 已覆盖概览，需做深度差异化（聚焦索引算法本身）
+- 提示词工程→上下文工程演进史与 Prompt Ops（⚠️ `Context Engineering` 已覆盖概念，本文聚焦工程化演进史 + prompt 管理工具链差异化）
+- 端侧推理框架生态已覆盖，相关纵深（如 ONNX 生态、TFLite 历史）留待 Ethon 补充，勿重复立题

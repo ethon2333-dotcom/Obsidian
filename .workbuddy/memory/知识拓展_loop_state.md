@@ -43,6 +43,16 @@
 - 低代码/无代码 Agent 搭建平台（Coze/Dify/n8n/元器 等四类 + 2025-2026 平台爆发；区别于 AI 编程助手与 Agentic Coding）｜`01-笔记/知识管理与效率工具/低代码无代码 Agent 搭建平台 学习笔记.md`
 - 端侧模型安全与越狱（on-device prompt injection/jailbreak/extraction/poisoning + on-device guardrail + EU AI Act；区别于工具调用安全与隐私计算）｜`01-笔记/安全/端侧模型安全与越狱 学习笔记.md`
 
+### 2026-09-01（第 7 轮）
+- 端侧 AI 芯片架构谱系（NPU/GPU/ASIC/DSP 微架构对比 + 主流 SoC NPU 布局；区别于 NPU 编译栈与功耗约束）｜`01-笔记/手机AI智能体/端侧 AI 芯片架构谱系 学习笔记.md`【新增】
+- 世界模型与仿真合成环境（JEPA/Genie/GameNGen/Dreamer + 仿真平台 Isaac/Omniverse 等；合成数据上游技术）｜`01-笔记/AI模型基础/世界模型与仿真合成环境 学习笔记.md`【新增】
+- AI 搜索与 RAG 问答产品生态（Perplexity/秘塔/Genspark + 知识库 AI 化工具；区别于 RAG 技术原理）｜`01-笔记/知识管理与效率工具/AI 搜索与 RAG 问答产品生态 学习笔记.md`【新增】
+- Agent 记忆系统（Mem0/Letta/分层记忆；区别于个性化建模）｜`01-笔记/AI Agent 框架/Agent 记忆系统 学习笔记.md`【新增】
+- Embodied AI 与机器人 Agent（VLA/机器人基础模型/玩家格局）｜`01-笔记/发散图谱/Embodied AI 与机器人 Agent 学习笔记.md`【合并升级既有 08-19 旧版】
+- Agent 推理成本优化（prompt caching/batching/prefix sharing/模型路由）｜`01-笔记/AI Agent 框架/Agent 推理成本优化 学习笔记.md`【合并升级既有 08-19 旧版】
+
+> ⚠️ 本轮重大发现：状态文件此前止于 08-17，但库内 08-18~08-19 已批量新增大量笔记（Context Engineering、个性化与端侧用户记忆、Agent 协议生态、RAG 详细、端侧大模型推理、Apple Intelligence 端侧架构、HarmonyOS 元服务、安卓厂商意图识别等），导致本轮初选 2 主题撞车（已改为合并升级）。下方黑名单已据真实库容全面刷新。
+
 ## 下轮候选（避免重复，可直接取用）
 
 - ANN 索引算法专题（HNSW/IVF-PQ/DiskANN 深潜）——⚠️ 注意：`向量数据库 学习笔记` 第四节已覆盖概览，需做**深度差异化**否则重复
@@ -87,16 +97,21 @@
 - ANN 索引算法专题（HNSW/IVF-PQ/DiskANN 深潜）——⚠️ `向量数据库` 已覆盖概览，需深度差异化
 - 提示词工程→上下文工程演进史（⚠️ 查 `Context Engineering` 重叠度）
 
-## 已覆盖主题黑名单（库内已有笔记，勿重复立题）
+## 已覆盖主题黑名单（据真实库容 2026-09-01 全面刷新，勿重复立题）
 
-RAG / 向量数据库 / Context Engineering / MCP 与设备侧 MCP / Agent 协议生态 / LangChain / LangGraph / Loop Engineering / Graph Engineering / 端侧量化 / 端侧推理 / 投机采样 / PagedAttention·KV Cache / AI Runtime 调度 / App Intents / HarmonyOS 元服务 / GUI Agent 架构 / 工具调用安全 / Confirmation UI / 用户研究方法 / 增长模型 / Figma / Go / Rust / Agent 评测基准 / 移动端 NPU 编译栈 / PKM 与 Obsidian 生态 / Agentic UX / **端侧 SLM 模型家族** / **语音 ASR·TTS** / **隐私计算·TEE·PCC** / **AI 眼镜与可穿戴** / **数据飞轮与 AI 产品度量** / **AI 编程助手与 Agentic Coding** / **智能座舱与车机 HMI 意图入口** / **合成数据与模型后训练** / **模型蒸馏与师生训练** / **多模态 GUI 理解与 UI Grounding** / **无障碍 Accessibility 与 GUI Agent 同源技术栈** / **时序事件驱动与 Agent 主动服务** / **端侧多模态 VLM** / **端云协同推理与混合部署** / **意图框架开发者生态与平台经济** / **多智能体协作与编排** / **端侧 AI 功耗与散热约束** / **Agent 可观测性 LLM Observability** / **低代码无代码 Agent 搭建平台** / **端侧模型安全与越狱**
+RAG(详细) / 向量数据库 / Context Engineering / 端侧大模型推理 / 端侧模型量化 / 端侧 SLM 模型家族 / 移动端 NPU 与推理编译栈 / 端云协同推理与混合部署 / 模型蒸馏与师生训练 / 合成数据与模型后训练 / 世界模型与仿真合成环境 / 多模态 GUI 理解与 UI Grounding / 端侧多模态 VLM / 端侧 AI 功耗与散热约束 / 端侧 AI 芯片架构谱系 / 语音交互与端侧 ASR TTS / 隐私计算与端云协同 / 端侧模型安全与越狱 / 工具调用安全 / Apple Intelligence 端侧架构 / HarmonyOS 元服务 / 端侧意图框架 / 个性化与端侧用户记忆 / 安卓厂商意图识别破局策略 / Agent 协议生态 / Agent 评测与基准 / Agent 可观测性 LLM Observability / Agent 推理成本优化 / 多智能体协作与编排 / Agent 记忆系统 / MCP 与设备侧 MCP / LangChain / LangGraph / Loop Engineering / Graph Engineering / 投机采样 / PagedAttention·KV Cache / AI Runtime 调度 / App Intents / Confirmation UI / GUI Agent 架构 / AI 眼镜与可穿戴意图入口 / 智能座舱与车机 HMI 意图入口 / Embodied AI 与机器人 Agent / 无障碍 Accessibility 与 GUI Agent 同源技术栈 / Agentic UX 交互设计模式 / 用户研究方法 / 增长模型 / 数据飞轮与 AI 产品度量 / 意图框架开发者生态与平台经济 / 时序事件驱动与 Agent 主动服务 / PKM 方法论与 Obsidian 生态 / AI 编程助手与 Agentic Coding / 低代码无代码 Agent 搭建平台 / AI 搜索与 RAG 问答产品生态 / Figma / Go / Rust
 
-### 2026-08-17 补充候选（刷新，移除已覆盖项）
-- 端侧 AI 芯片架构谱系（NPU vs GPU vs ASIC vs DSP，区别于 NPU 编译栈与功耗约束）
-- Embodied AI / 机器人 Agent（与端侧智能同源，发散图谱外辐射）
-- 个性化与端侧用户记忆（on-device personalization，⚠️ 与 `Agent 记忆与个性化意图理解` 区分个性化建模 vs 记忆系统）
-- Agent 推理成本优化（cache / batching / prefix sharing，区别于已覆盖的投机采样）
-- 世界模型 World Model 与仿真合成环境（合成数据上游技术）
-- AI 搜索与 RAG 问答工具（个人知识库 AI 化，⚠️ 查 `RAG 检索增强生成` 重叠度）
-- ANN 索引算法专题（HNSW/IVF-PQ/DiskANN 深潜）——⚠️ `向量数据库` 已覆盖概览，需深度差异化
-- 提示词工程→上下文工程演进史（⚠️ 查 `Context Engineering 学习笔记` 重叠度）
+## 下轮候选（刷新·库内未覆盖，可直接取用）
+
+- ANN 索引算法专题（HNSW/IVF-PQ/DiskANN 深潜）——⚠️ `向量数据库` 已覆盖概览，需做深度差异化（聚焦索引算法本身）
+- 提示词工程→上下文工程演进史与 Prompt Ops（⚠️ `Context Engineering` 已覆盖概念，本文可聚焦"工程化演进史 + prompt 管理工具链"差异化）
+- 端侧推理框架生态（TF Lite / MNN / NCNN / ONNX Runtime Mobile，区别于厂商 NPU 编译栈与端侧推理概念）
+- AI 原生浏览器 / Agent 浏览器（Comet / Perplexity 浏览器 / Dia，效率工具锚点外辐射）
+- AI 视频与多模态生成（Sora / Kling / 可灵 / Veo，发散图谱外辐射）
+- 数字人 / 虚拟人（发散图谱外辐射，与端侧智能/可穿戴同源）
+- AI 监管与合规落地（EU AI Act 实施、中国生成式 AI 办法、AI 备案，区别于隐私计算信任技术）
+- 多模态评测基准（MMMU / SEED-Bench / MMWorld，区别于 Agent 评测基准）
+- 端侧扩散模型 / 端侧图像生成（区别于端侧 VLM 视觉理解）
+- GraphRAG / 知识图谱增强 Agent（区别于 Graph Engineering、RAG 详细）
+- 模型服务化与 LLM 网关（区别于已覆盖的 Agent 推理成本优化）
+- 推理服务可观测与成本护栏产品（区别于 Agent 可观测性）

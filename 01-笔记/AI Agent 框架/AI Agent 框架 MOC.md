@@ -26,7 +26,9 @@ updated: 2026-08-04
 - [[应用层 Agent 框架 vs 系统级意图框架 对照]] —— 桥接应用层框架与 App Intents/AppFunctions/Intents Kit：同构映射 + 两层差异 + 端侧 Planner
 - [[Agent 评测与基准 学习笔记]] —— 🌱 广度种子：通用/工具调用/GUI-OS/编码/RAG 五类基准地图（GAIA·τ-bench·OSWorld·AndroidWorld·SWE-bench…）+ 轨迹评测转向、污染与可信度危机 + 对 OS PM 的验收指标启发
 - [[多智能体协作与编排 学习笔记]] —— 🌱 广度种子：多 agent 协作模式与编排框架全景（orchestrator-worker / supervisor / debate + AutoGen / CrewAI / LangGraph multi-agent / Anthropic Many hands / A2A·AGP），与 [[Loop Engineering 循环工程]]（单 agent 循环）、[[Agent 协议生态 学习笔记]]（协议）互补
+- [[Agent 记忆系统 学习笔记]] —— 🌱 广度种子：Agent 长期记忆工程架构（记忆分层 episodic/semantic/procedural + 工作记忆 · 记忆中间件 Mem0/Letta/LangMem/Zep · 与上下文工程的接口），与 [[多智能体协作与编排 学习笔记]]（多 agent 共享记忆一致性）、[[个性化与端侧用户记忆 学习笔记]]（端侧个性化建模 vs 记忆系统）互补
 - [[Agent 可观测性 LLM Observability 学习笔记]] —— 🌱 广度种子：Agent 可观测性/LLM Observability 全景（tracing/eval/cost&latency/用户 feedback 回路 + LangSmith/Langfuse/Phoenix/Datadog/Traceloop 等横向 + OpenTelemetry/OpenInference 语义约定 + 端侧 Agent 监控意义），与 [[Agent 评测与基准 学习笔记]]（离线基准）互补
+- [[Agent 推理成本优化 学习笔记]] —— 🌱 广度种子：Agent 推理成本优化工程面（prompt caching / KV cache 复用·prefix sharing / batching / 模型路由 / 上下文裁剪 / 成本可观测），与 [[多智能体协作与编排 学习笔记]]（多 agent 扇出放大成本）、[[Agent 可观测性 LLM Observability 学习笔记]]（成本归因·预算告警）咬合
 
 ## 实战代码库（可直接抄）
 

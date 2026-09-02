@@ -192,4 +192,15 @@ enum AssetType { ... }
 
 → **对 OS PM 的含义**：Core AI = 苹果把「端侧推理运行时」从 FM 框架里抽出来变成一等公民框架，意味着**第三方 OS 级 agent 也能自带模型上设备**；Dynamic Profiles 则把「端侧→云端升级」从架构决策降级为运行时旋钮——与 [[端侧 Router 置信度门控与工具可达性收缩 2026]] 的「置信阈值 = 系统确定性触发器」同构。⚠️ 上述均来自 iOS 27 官方指南（2026-06），以正式文档为准；Core AI 具体 API 名与最低系统版本待补。
 
+## 2026-08-26 增补：App Intents Testing 框架（iOS 27 Beta，来源 [[AppIntent 每日情报 2026-08-26]]）
+
+> 接续 08-17 的 Core AI / Evaluations 框架。本期补 App Intents 2.0 体系的**官方验证闭环** —— 这是本笔记此前只零散提到「Evaluations 框架」之后，Apple 给出的**另一条**质量/安全左移路径（进程外、按真实系统路径测意图集成）。
+
+- **App Intents Testing 框架（iOS 27.0+ Beta，官方 `developer.apple.com/documentation/AppIntentsTesting`）**：让开发者**进程外**运行并测试 app intents / entities / enums / query 逻辑，以及它们与 Siri / Spotlight 等系统能力的集成；提供**类型擦除 API**（`AnyAppIntent` / `AnyAppEntity` / `AnyEntityQuery` / `AnyAppEnum` / `AnyTransientAppEntity`），可按名引用意图、设参、运行，**无需 link 到 app target**；`IntentDefinitions` 汇总 app 的意图/枚举/实体/查询目录；`ViewAnnotation` 测试把视图标注为实体供系统感知。
+- **价值（对 OS PM 最关键）**：把「意图集成质量 + 安全（参数错配 / 实体解析失败 / 跨 App 联动断裂）」**左移到发布前**，无需 UI 自动化即可早发现——补齐本库长期记录的「Apple 侧无运行时动态可见性 API（[[Android AppFunctions 设备侧意图 2026]] 08-03 节）」之外的**另一短板：可测试性**。与 [[Confirmation UI 安全机制]] 的「运行时拦截」正交，形成「发布前测试 + 运行时确认」双层。
+- **与 Evaluations / Core AI 的集群关系（iOS 27 官方指南 `developer.apple.com/wwdc26/guides/ios` 确认）**：App Intents 框架 = Siri 连接更多 App 操作 + 实体架构贡献 Spotlight 语义索引 + **View Annotations（视图→实体映射）** + **App Intents Testing（真实系统路径验证）**；Core AI = 自带模型上设备；Evaluations = 动态条件下验证 AI 功能。四者共同构成 iOS 27 的「声明 → 索引 → 感知 → 验证」闭环。
+- ⚠️ 诚实标注：本轮命中为 Apple CDN 镜像域（`msc-kobol-public-prod.apple.com` / `ma-kobol-public-prod.apple.com`），**canonical `developer.apple.com` 路径与最小 Beta 版本号待补**；框架随 iOS 27 Beta，具体 GA 对应版本未独立确认。
+
+→ **对 OS PM 的含义**：做 OS 级意图框架时，「可测试性」与「运行时护栏」同等重要——Registry 里声明了能力不等于能力被正确集成，Apple 用进程外测试框架把集成验证变成一等公民，是端侧意图总线成熟度的一个新标杆。
+
 #标签/Apple #标签/AppIntent #标签/SchemaProtocol

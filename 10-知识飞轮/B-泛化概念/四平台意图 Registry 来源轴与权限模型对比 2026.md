@@ -88,4 +88,27 @@ tags: [概念, Registry对比, 权限模型, 来源轴, 执行安全, 跨平台,
 - 安全同构：[[意图风险元数据与鉴权策略棘轮 2026]]（副作用轴）｜ [[Confirmation UI 安全机制]]（确认/触发器）｜ [[XPIA 跨提示注入]] ｜ [[Agent Data Injection 数据注入攻击]]（来源轴空白的攻击面）｜ [[数据溯源分级与单调棘轮]]（治理层来源分级，OS 层缺失的对照）｜ [[隔离执行]]（Windows Agent Workspace）
 - 枢纽：[[意图模式规范]] · [[语义路由]] · [[端侧工具调用]] · [[确认机制]] · [[元服务]] · [[A2A 端侧智能体协议]] · [[XPIA 跨提示注入]]
 
+## 2026-08-31 增补：Per-Intent Privacy Manifest 待办收口（来源 [[AppIntent 每日情报 2026-08-31]]）
+
+> 接续本笔记「来源轴四平台全空白（confirmed）」结论，与 08-02 起悬挂的「Per-Intent Privacy Manifest 是否为独立 App Intents API」最高优先待办。本期用**官方文档直查 + 多源检索**做最终判定：**该 API 不存在**，第三方博客说法是推测/混淆。
+
+- **判定方法**：① WebFetch 官方 App Intents 框架文档（`developer.apple.com/documentation/appintents`）逐节核对——全文**无任何 per-intent privacy manifest / 按意图声明云-端路由的 API**；② WebFetch 官方 Privacy manifest files 文档——只有 iOS 17 起的通用 `PrivacyInfo.xcprivacy`（声明数据收集类型 / required-reason API / 跟踪域名），**与 App Intents 意图路由无关**；③ 多源检索 "per-intent privacy manifest App Intents cloud on-device routing" 仅命中 iOS 17 通用隐私清单 + 一篇第三方博客（byteiota 的 SiriKit 弃用文称「Apple introduced per-intent privacy manifest declarations at WWDC 2026」），**无任何 Apple 官方文档支撑**。
+- **结论**：「Per-Intent Privacy Manifest / 按意图粒度声明云或端路由」**不是真实存在的 App Intents API**。第三方博客疑似把 iOS 17 通用隐私清单机制或对未来能力的推测，误读为「App Intents 新增的 per-intent 路由声明」。本笔记 08-02 节原标注「待官方文档确认」，现升级为**已证伪（confirmed non-existent）**。
+- **对来源轴结论的影响**：**不改变**「来源/溯源轴四平台全空白」结论——反而进一步夯实：Apple 意图层既无 provenance 字段（08-17 证伪 `.appEntityIdentifier` 为视图链接），也无 per-intent 路由声明。来源轴空白从「待查」→「架构性空白」→ 现再经本轮排除一个常见误传，**证据更干净**。
+- ⚠️ 诚实标注：判定基于 2026-08-31 当日官方文档快照；若 Apple 在 iOS 27 正式版（约 2026-09-14）新增此类 API，需重新评估。当前以「不存在」记录，避免后续轮次被二手说法反复带偏。
+
+## 2026-09-01 增补：DMA 跨助手可发现性维度 + Android 门控 API 迁移（来源 [[AppIntent 每日情报 2026-09-01]]）
+
+> 接续本笔记「来源轴四平台全空白」与 08-31「Per-Intent Privacy Manifest 证伪」结论。本期补两个增量：**① 监管强制的跨助手可发现性维度**；**② Android alpha11 把动态门控 API 从 `setAppFunctionEnabled` 迁到 `AppFunctionState`**。
+
+**① 跨助手可发现性（新增对比维度，受监管强制）**
+- 欧盟 DMA 要求 Google 在 2027-08 前向竞品助手开放 11 项 Android AI 能力；AppFunctions Registry 使函数可被**任一认证助手**发现，`EXECUTE_APP_FUNCTIONS` 在 EU 下沉为「认证闸门」。
+- 含义：四平台里**仅 Android 侧的 Registry 可发现性被外力（监管）强制横向开放**；Apple/Windows 走平台治理（App Review / Agent ID），HarmonyOS 走小艺单一入口。这是本对比表此前缺的「可发现性是否被强制开放」维度。详见 [[AppFunctions 跨助手可发现性与 DMA 强制开放 2026]]。
+
+**② Android 动态门控 API 迁移（更新「运行时动态可见性 API」行）**
+- 原表记 Android 运行时动态可见性 API = `setAppFunctionEnabled` / `isAppFunctionEnabled`（08-03）。**`alpha11`（2026-08-26）起改为 state-based**：`AppFunctionState` + `AppFunctionManager#getAppFunctionStates` 取代 `AppFunctionMetadata#isEnabled`，元数据显示态与状态分离。
+- **修正**：Android 仍是四平台里**唯一有公开动态可见性 API** 的平台，但 API 形态已迁移；原「setAppFunctionEnabled」应标注「alpha11 起改为 `getAppFunctionStates` 状态查询」。
+
+→ 对来源轴结论无影响：DMA 强制的是「可发现性」而非「provenance」——跨助手开放仍不解决「数据从哪来、可不可信」的来源轴空白（见 [[Agent Data Injection 数据注入攻击]]）；最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位。
+
 #标签/跨平台 #标签/Registry #标签/权限模型 #标签/来源轴 #标签/执行安全 #标签/IntentFramework

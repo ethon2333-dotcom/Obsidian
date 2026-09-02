@@ -71,4 +71,14 @@ aliases: [Needle2, 端侧Router门控, 工具可达性收缩]
 - **架构论文锚定**：Simple Attention Network 升级版对应 arXiv **2607.18363**（Hadamard MLP 替代 FFN + engram 记忆），与 [[Simple Attention Network 无FFN端侧路由]] 同源。
 - ⚠️ 厂商自述数字（500 tok/s 等）仍**无独立复现**；Pebble 落地为厂商披露，以产品固件实测为准。
 
+## 2026-09-01 增补：Needle 2 升级契约第三方确认（来源 [[AppIntent 每日情报 2026-09-01]]）
+
+> 接续 08-16/08-17。本期补 aibacon 对 Needle 2 的**独立第三方确认**与「升级契约」的明确表述。
+
+- **BFCL v4 = 42.6% 获独立确认**（aibacon，第三方）：与 Cactus 自报一致；并明确给出设计契约——**置信分趋零时返回空调用 `[]`，而非编造最接近的工具**，把「端侧→云端升级」做成确定性旋钮（呼应本笔记 08-16 的「阈值 = 产品参数」主张）。
+- **许可与落地广度**：MIT 代码 + Apache-2.0 权重；可编译到 RISC-V / MIPS32el；实测落 ESP32（28MB RAM）、树莓派 5（500+ tok/s）、Meta Quest 3S / Apple Vision Pro（400–1,500 tok/s）、<$200 安卓手机（300–700）。是「小 action 模型坐在本地 ASR 与确定性应用代码之间」的量产级样本之一。
+- **与 ADI 防护的关系再强化**：「未选中工具物理不可达（unreachable）+ 低置信返回空而非硬猜」共同构成 ADI 的两道低成本闸门——前者防误召回写动作，后者防硬编不存在的调用；二者都不依赖模型「变乖」，而是结构/协议层强制（与 [[带外防御与确定性门控]] 同构）。详见 [[Agent Data Injection 数据注入攻击]]。
+
+⚠️ aibacon 为第三方技术媒体，数字为 Cactus 模型卡 + Berkeley 榜引述；无独立复现，以产品固件实测为准。
+
 #标签/Needle2 #标签/端侧Planner #标签/置信度门控 #标签/工具可达性 #标签/FunctionCalling

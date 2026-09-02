@@ -130,4 +130,22 @@ Windows Copilot Vision 通过**屏幕像素 + 语义文件索引**扩展读取�
 - 数据注入（拐点③）：[[Agent Data Injection 数据注入攻击]] ｜ 学习型防御（拐点④）：[[AgentAntibody 自适应免疫防御 2026]]
 - 平台：[[Windows Copilot Actions 与 Agent Workspace 2026]] ｜ iOS 27 攻击面：[[Apple AppIntents Schema Protocol 2026]]
 
+## 2026-08-26 增补：间接提示注入已成 web 级 operational 现象（CSA 数据 + Black Hat USA 2026，来源 [[AppIntent 每日情报 2026-08-26]]）
+
+> 接续 08-09晚 的 NCSC「confused deputy / 架构缺陷非可修 bug」定性。本期补**量化证据**：间接提示注入从「demo」推为「web 级运营现象」，直接抬高 OS Agent 读路径治理优先级。
+
+**① CSA（Cloud Security Alliance）研究笔记实测的 web 级规模**
+- 引 Google 安全数据：每月爬取约 **20–30 亿页**，其中携带恶意注入指令的页面占比在 **2025-11 → 2026-02 相对 +32%**。
+- 含义：注入不再是「针对性攻击」，而是 **SEO 垃圾式广撒网**——成本趋零、坐等任意 agent 来读；payload 已 seeding 到全网，不挑目标。
+- 与库内 [[Agent Data Injection 数据注入攻击]] 的「ADI 伪造结构化元数据」同源：读路径越长（屏幕/Copilot Vision/索引/文档），被污染数据进入 Agent 上下文的概率越高。
+
+**② Black Hat USA 2026：被分析的每一个 AI 浏览器都易受提示注入**
+- 会议结论：**every browser analyzed proved vulnerable**——不是「多数」，是「每一个」。根因是 AI 浏览器助手「读页面内容（攻击者可控）+ 在已登录会话内代用户行动」这两件事本就合一，能力与漏洞同源。
+- 与 08-09晚 NCSC「confused deputy」定性一致：**OWASP 仍称 prompt injection 驱动多数生产 AI 失败且 unsolved**；过滤/定界/分类器只降命中率，非参数化隔离。
+
+**③ 对 OS Agent 的含义（落回本笔记结论）**
+- 本笔记既有元判断「假定注入必然发生，用权限与边界压爆炸半径」获 operational 证据支撑——XPIA 防御重心应在**边界**（[[Chrome Agent Origin Sets 与用户对齐评判器 2026]] 的读写源集 / [[Agent Workspace 隔离执行]] 的隔离会话）而非**检测**。
+- 回流动作：把 CSA「月 20–30 亿页 / +32%」作为量化论据，纳入 [[Agent 读入路径可信数据边界 SOP]] 的「为什么会读到污染数据」一节。
+- ⚠️ 诚实标注：CSA/Black Hat 为安全研究口径（Safeguard.sh 转述 CSA + Black Hat 报告），具体页面样本与统计方法**待一手报告复核**。
+
 #标签/XPIA #标签/安全 #标签/注入

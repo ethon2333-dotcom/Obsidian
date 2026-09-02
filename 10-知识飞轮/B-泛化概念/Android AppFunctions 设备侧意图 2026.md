@@ -127,4 +127,29 @@ blognone 等报道：Galaxy S26 / Pixel 10 将带来 AppFunctions + 本地 MCP �
 - 兜底执行：[[工业级 GUI Agent 架构（VLM+无障碍树）]]（互补：未适配长尾）
 - 范式：[[MCP 与设备侧 MCP]]（上游）｜ [[Intent Schema Protocol 意图模式规范]]（上游）
 
+## 2026-08-26 增补：Samsung Gallery + Gemini 真机闭环 + UI Automation 兜底框架（来源 [[AppIntent 每日情报 2026-08-26]]）
+
+> 接续 08-15 的 Galaxy S26 / Pixel 10 真机有限预览。本期补**首个公开的真机部署样本**与配套的**非 AppFunctions 兜底通道**。
+
+- **Samsung Gallery + Gemini 真机闭环（Galaxy S26 系列）**：用户可说「显示 Lisa 旅行照片」→ Gemini 处理请求 → 触发 Samsung Gallery 的 AppFunction → 结果直接呈现在 Gemini app 内，**无需切换应用**；语音/文本输入，检索内容可用于后续动作（如把选中图分享到消息）。这是 AppFunctions 首个公开的「真机跑通端到端」样本，标志 Android 端侧意图总线从「API 定义」走向「用户可感知的闭环」。
+- **UI Automation 框架（非 AppFunctions 兜底通道）**：对未实现 AppFunctions 的 App，Android 开发**通用 UI 自动化框架**，让 Gemini 在应用内执行多步任务（长按电源键触发，Gemini app 内 beta）；首发支持外卖/生鲜/打车（美韩），如「下单定制餐食 / 协调多段打车 / 重下杂货」；执行前**预警 + 用户可随时接管**，敏感动作（如购买）**执行前确认**。
+- **通道分工再确认**：`built-in intents`（拉起履约）/ `AppFunctions`（带类型参数 + 结构化返回）/ `UI Automation`（长尾兜底，失执行控制权）三层并存——「不接入也有覆盖，但失去执行控制权」（见 [[端侧执行通道 GUI 与 MCP 路线之争]]）。
+
+→ **对 OS PM 的含义**：AppFunctions 的价值此前停留在「实验态/私测」假设，Galaxy S26 样本把它推进到「可观测真机闭环」；但覆盖仍限三星 Gallery + 美韩 + 精选类目，**生态广度仍是最大未知数**（呼应 08-03 节「有限数量应用与系统智能体」准入）。UI Automation 兜底则保证「未适配长尾不裸奔」，与鸿蒙 GUI 双轨（[[HarmonyOS Intents Kit 与 ArkAF 2026]]）殊途同归。⚠️ Samsung Gallery 闭环为厂商披露/媒体整理，具体 App 名与成功率**待一手核实**。
+
+## 2026-09-01 增补：alpha11 动态注册 + 门控 API 迁移 + DMA 跨助手开放（来源 [[AppIntent 每日情报 2026-09-01]]）
+
+> 接续 08-03/08-26。本期补 **官方 Jetpack Release Notes 的 `alpha11`（2026-08-26）净新增 API**，并补 **DMA 监管迫使 Registry 跨助手开放** 这一跨平台维度。
+
+**A. `1.0.0-alpha11`（2026-08-26，官方 Release Notes，窗口内净新增）**
+- **`@AppFunctionSignature`（experimental public API）**：支持**通过 Jetpack 动态注册 AppFunction**（b/501032667）——此前函数须编译期静态声明，现可在运行时注入签名。Registry 从「编译期 schema」走向「运行时可塑」。
+- **`AppFunctionState` + `AppFunctionManager#getAppFunctionStates` 取代 `AppFunctionMetadata#isEnabled`**（b/494238383）：**元数据与状态彻底分离**——本库 08-03 记的 `setAppFunctionEnabled` / `isAppFunctionEnabled` 动态门控**机制仍在，但 API 形态迁移到 state-based 查询**。
+- 其余：`getAppFunctionActivityStates`（b/542075714）、`ExtensionsAppFunctionService`（sidecar 支持，b/524941402）、`observeAppFunctions` 对齐平台 API。
+- Bug 修复：修复 OOBE 阶段调用 `setAppFunctionEnabled` 因缺运行时元数据崩溃（b/536750020）——印证动态门控已进真机初始化路径。
+- ⚠️ alpha11 前的 alpha10（2026-07-01，`AppFunctionServiceEntryPoint`）已录于 08-03；alpha11 为窗口内唯一净新增版本。
+
+**B. 通道对比（官方口径补全）**：AppFunctions = 设备内注解 Kotlin 函数 + KDoc（On device，运行在 App 进程内）；Computer Control = 设备内驱动 UI 虚拟窗口（On device，无需改代码）；Remote MCP = 云端 HTTP 服务（Cloud）。三者在「运行位置 / 实现成本 / 平台覆盖 / 权限闸门」四轴正交——AppFunctions 让你把操作变「故意的、类型化、可观测」，Computer Control 让助手无论你是否适配都能操作 UI。选型见 [[端侧执行通道 GUI 与 MCP 路线之争]]。
+
+**C. DMA 强制跨助手开放（监管维度）**：欧盟 DMA 要求 Google 在 **2027-08 前**向竞品助手（ChatGPT/Claude/欧洲本土）开放 11 项 Android AI 能力；AppFunctions Registry 使函数可被**任一认证助手**发现，`EXECUTE_APP_FUNCTIONS` 在 EU 下沉为「认证闸门」。详见新建 [[AppFunctions 跨助手可发现性与 DMA 强制开放 2026]]；具体 11 项清单与官方文本措辞**待补**。
+
 #标签/Android #标签/AppFunctions #标签/设备侧MCP

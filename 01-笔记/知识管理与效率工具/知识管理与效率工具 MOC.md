@@ -17,6 +17,7 @@ created: 2026-08-09
 - [[PKM 方法论与 Obsidian 生态 学习笔记]] —— 🌱 广度种子：八大流派对比（Zettelkasten / PARA / BASB / LYT-MOC / ACCESS / Johnny.Decimal / Evergreen / Progressive Summarization）+ 八款工具横向 + Obsidian 插件生态与 2025-2026 官方进展 + **AI×PKM 的批判性张力**（AI 代写笔记是否摧毁学习效果）+ 对本库现有结构的诚实点评
 - [[AI 编程助手与 Agentic Coding 工具生态 学习笔记]] —— 🌱 广度种子：AI 编程助手谱系（Copilot/Cursor/Claude Code/Codex/Windsurf/Devin/通义灵码 等）+ 从补全到自主 SWE Agent 的演进，与 [[AI Agent 框架 MOC]] 互链
 - [[低代码无代码 Agent 搭建平台 学习笔记]] —— 🌱 广度种子：低代码/无代码 Agent 搭建平台全景（对话式/工作流/LLM 应用平台/企业级中台四类 + Coze/Dify/n8n/元器 等横向 + 2025-2026 平台爆发与 MCP/A2A 普及），与 [[AI 编程助手与 Agentic Coding 工具生态 学习笔记]]（开发者编码工具）互补
+- [[AI 搜索与 RAG 问答产品生态 学习笔记]] —— 🌱 广度种子：**产品层**视角（不讲技术原理，原理见 [[RAG 详细学习笔记]]）——三层品类格局（AI 搜索 / 个人知识库 AI 化 / 企业 RAG 平台，语料所有权决定护城河）+ Perplexity/Genspark/秘塔/纳米/Felo 速查 + Obsidian 插件系与本地优先 RAG + 2025-2026 六条进展（AI 搜索红海、集体向 Agent 逃逸、GEO 泡沫），是 [[PKM 方法论与 Obsidian 生态 学习笔记]] 向「知识库 AI 化」的外沿延伸
 
 ## 🧭 核心张力（这一层的主线问题）
 

@@ -195,3 +195,22 @@
 - **落库**：A 1（AppIntent 每日情报 2026-08-17）｜ B 净新增 1（四平台意图 Registry 来源轴与权限模型对比 2026）｜ B 既有增补 6（Apple AppIntents Schema Protocol 2026 / 意图风险元数据与鉴权策略棘轮 2026 / Confirmation UI 安全机制 / HarmonyOS Intents Kit 与 ArkAF 2026 / 端侧 Router 置信度门控与工具可达性收缩 2026 / Function Calling 端侧工具调用）｜ D 1（AppIntent 每日情报速览 2026-08-17）｜ 看板已登记「本次新增（2026-08-17）」。
 - **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；库内补漏标真实日期；诚实标注厂商/第三方数字「待补」（Needle 2 BFCL v4 42.6 / FunctionGemma v4 第三方聚合 27.03 均标非官方榜）；双链指向既有 B 节点不新建重复。
 - **⚠️ 待办**：Berkeley 官方 BFCL v4 博客原文；Windows Agent Framework MIT 许可页/build 号；Watch OS 26 是否 Trust Insights 类；NowSecure / AgentAntibody 独立核验；Chrome Origin Sets 官方 URL 逐字复核；HarmonyOS `insight_intent.json` 字段全量 + API level 冲突（26 vs 23）澄清；各平台具体 entitlement/字段名以官方文档为准。
+
+### 2026-08-26（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-08-19→08-26。Horizon MCP 仍全部 disconnected（连续 20+ 日），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 自行综合，未调外部 gemini，无 429。
+- **本期主线（两条 ★7/10）**：① Apple **App Intents Testing 框架（iOS 27 Beta）** —— 进程外类型擦除 API（`AnyAppIntent/AnyAppEntity/AnyEntityQuery`/`AnyAppEnum`/`AnyTransientAppEntity`）+ `ViewAnnotation` 测试，把意图集成质量/安全验证左移到发布前；② **IFFC 解耦路由范式（arXiv 2608.22472，2026-08）** —— 工具选择从主 LLM 解耦为独立 SRM（0.5B–15B）+ 用「指令遵循上下文」替代「工具调用上下文」提升小模型路由准确率，为端侧 Planner 提供架构级解法。已建净 B 节点 [[端侧函数调用解耦路由与指令遵循范式 IFFC 2026]]。
+- **四条 ★6/10 上下文（均补库）**：BFCL v4 公开榜 08-22 快照（LFM2.5-2.6B 56.9% / Needle 2 42.6% / Nexus-TinyFunction-1.2B 94.25% simple）+ LFM2.5-350M 微调 96–98%；CSA web 级 IPI（月 20–30 亿页 / 2025-11→2026-02 +32%）+ Black Hat USA 2026「每个 AI 浏览器都脆弱」；HarmonyOS 端侧 Skill 同名冲突静默优先端侧 / 3 秒超时 / A2UI 静默失败；Samsung Gallery + Gemini AppFunctions 真机闭环 + UI Automation 兜底框架。
+- **四大 OS 官方渠道经复核无新增可执行 API**（iOS 27 Beta 7 仅修 Bug / AppFunctions alpha10 稳定 / HarmonyOS 7 SP8 消费版 / Windows 四支柱一致），已在 A 层显式列「已复核·无净新增」清单避免重复检索。
+- **落库**：A 1（AppIntent 每日情报 2026-08-26）｜ B 净新增 1（端侧函数调用解耦路由与指令遵循范式 IFFC 2026）｜ B 既有增补 5（Apple AppIntents Schema Protocol 2026 / Android AppFunctions 设备侧意图 2026 / HarmonyOS Intents Kit 与 ArkAF 2026 / Function Calling 端侧工具调用 / XPIA 跨提示注入）｜ D 1（AppIntent 每日情报速览 2026-08-26）｜ 看板已登记「本次新增（2026-08-26）」。
+- **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；库内补漏标真实日期；诚实标注厂商/第三方数字（CDN 镜像域 `msc-/ma-kobol-public-prod.apple.com`、安全研究引用）；双链指向既有 B 节点不新建重复；净新增 B 仅 IFFC 一个。
+- **⚠️ 待办**：核验 App Intents Testing canonical 路径与最小 iOS 27 Beta 版本（本轮命中 CDN 镜像域）；IFFC 是否给出 BFCL v4（当前仅 v3）；CSA 数据回流至 [[Agent 读入路径可信数据边界 SOP]]；Berkeley 官方 BFCL v4 博客原文；Watch OS 26 是否 Trust Insights 类；NowSecure / AgentAntibody 独立核验；Chrome Origin Sets 官方 URL 逐字复核；六方 Registry/权限 Checklist（仍仅 Android 填全）。
+
+## 2026-08-31（21:00 版，本次）
+
+- **状态**：完成（A/B/D 三层落库 + 看板登记）。7 日滚动窗口 2026-08-25→08-31。Horizon MCP 仍全部 disconnected（连续 21+ 日），继续 WebSearch/WebFetch 直取官方源 + 本 Agent 综合，未调外部 gemini，无 429。
+- **窗口内四平台 OS 官方框架层经逐条复核无净新增 API**：Apple iOS 27 Beta 8 Release Notes 的 App Intents 段落（含 `notes.createNote`/`notes.updateNote` 的 `AttributedString` name 参数）与 08-15 已录 Beta 5 **逐字一致（同 bug 号 173431080）**，初检误判为净新增、比对后确认已覆盖，不重复计数；Android AppFunctions 守 alpha10；HarmonyOS 7 消费版无新 API；Windows agentic security 四支柱一致；BFCL v4 公开榜端侧分数均已在 08-26 入表。**关键纪律**：遇到「Beta N 新功能」必须先与库内既有 Beta 记录按 bug 号去重。
+- **核心产出（★8/10 分析价值）= 收口悬挂 8+ 天的最高优先待办**：「Per-Intent Privacy Manifest 是否真实 App Intents API」经**官方文档直查 + 多源检索**判定为「**不存在**」——WebFetch 官方 App Intents 框架文档 + Privacy manifest files 文档均无 per-intent 隐私/路由声明接口（iOS 17 起仅有通用 `PrivacyInfo.xcprivacy`，与意图路由无关）；第三方博客（byteiota SiriKit 弃用文）说法系误读 iOS 17 通用隐私清单 / 未来推测。原 08-02「待官方确认」升级为「confirmed non-existent」。不新建 B 节点（负结果归并至既有来源轴对比笔记）。
+- **落库**：A 1（AppIntent 每日情报 2026-08-31）｜ B 既有增补 1（四平台意图 Registry 来源轴与权限模型对比 2026，Per-Intent Privacy Manifest 证伪 + 来源轴待办收口）｜ D 1（AppIntent 每日情报速览 2026-08-31）｜ 看板已登记「本次新增（2026-08-31）」。本窗口**净新增 B 节点 = 0**（无通过阈值的全新概念，全部为待办收口 + 无净新增复核）。
+- **运行纪律延续**：同日不重跑全窗口只补净新增 + 显式列无净新增；诚实标注 Beta 8 无净新增 / Per-Intent Privacy Manifest 已证伪 / BFCL v4 数字已在 08-26；双链指向既有 B 节点不新建重复。
+- **⚠️ 待办**：若 iOS 27 正式版（约 2026-09-14）新增 per-intent 路由/来源声明 API，重评来源轴结论；把「来源轴空白 + Per-Intent Privacy Manifest 证伪」回流至 [[Agent 读入路径可信数据边界 SOP]]；延续 Berkeley 官方 BFCL v4 博客原文、Watch OS 26 Trust Insights 类、NowSecure/AgentAntibody 复核、Chrome Origin Sets 官方 URL 逐字复核。

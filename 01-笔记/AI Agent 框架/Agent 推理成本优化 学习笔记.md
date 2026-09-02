@@ -1,86 +1,78 @@
 ---
-title: "Agent 推理成本优化"
-tags: [广度种子, Agent, 推理成本, 成本优化]
-created: 2026-08-19
-source: "WebSearch/WebFetch 联网核实 + 公开资料综述"
+title: Agent 推理成本优化 学习笔记
+tags: [llm-cost, inference-optimization, prompt-caching, agent, agent-cost, 广度种子]
+created: 2026-09-01
+source: "WebSearch/WebFetch 联网核实（Anthropic/OpenAI 官方文档 + vLLM/SGLang 资料 + 2025-2026 路由/网关综述）"
 ---
 
-> **一句话心智模型**：Agent 反复调用 LLM，推理成本优化 = 让"重复的算力只算一次"（cache / prefix sharing / batching）+ "用对的模型做对的事"（模型路由 / 端侧兜底），把 token、延迟、$ 三笔账一起压下来。
+> **一句话心智模型**：Agent 的成本不在单次生成，而在多轮长上下文的重复计算——复用缓存与分级路由是核心，把"token / 延迟 / $"三笔账一起压下来。
 
----
-
-## 1. 推理成本的构成：为什么 Agent 比单次对话更烧钱
-
-> 辐射锚点：AI Agent 框架。Agent 不是"一次问答"，而是**反复、多路径**地调 LLM，成本被结构性放大。
-
-| 成本维度 | 含义 | 备注（联网核实） |
-|---|---|---|
-| **Token 数** | input + output 分别计费；output 通常比 input 贵 **2–4×** | 来源：intellineers / thread-transfer 2025 成本结构分析 |
-| **延迟** | TTFT（首 token）、TPOT（每 token）、端到端步数 | Agent 多步链路把延迟"乘"起来 |
-| **$** | 云 API 按 token 计费；自托管按 GPU·小时 | 生产 LLM 系统常 50–70% 推理成本花在"非必要"工作（aimenta 2025） |
-
-**Agent 特有的"烧钱放大器"**（区别于单次对话）：
-
-- **多轮 tool call / 反思循环**：每轮重发 system prompt + 历史上下文 → 上下文 token 线性累积。
-- **多 agent 扇出**：一个任务拆成 N 个子 agent，共享同一份长 system prompt 与项目上下文，重复计算爆炸（见 [[多智能体协作与编排 学习笔记]]）。
-- **重试 / 回退**：路由失败、429 限流重试会重复烧 token。
+本笔记是从 [[多智能体协作与编排 学习笔记]]（多 agent 扇出放大成本）与 [[Agent 可观测性 LLM Observability 学习笔记]]（成本归因、预算告警）向外辐射的广度种子，聚焦"成本优化工程面"。已覆盖的「投机采样」「PagedAttention·KV Cache」机制不在此重复，本文只谈它们作为**省钱杠杆**怎么用。
 
 ---
 
-## 2. 优化手段表（点到为止，BREADTH > DEPTH）
+## 一、成本优化技术对比表（点到为止）
 
-| 手段 | 一句话 | 代表实现 / 厂商特性 | 大致收益（待核实口径见末尾） |
+| 技术 | 机制（一句话） | 节省点 | 适用场景 |
 |---|---|---|---|
-| **Prompt Caching（厂商侧）** | 把稳定前缀的"计算结果"存下来，重复调用只付零头 | Anthropic：显式 `cache_control`，read 0.10× / write 1.25×/2.0×（5min/1h TTL），1024 token 起，≤4 断点；OpenAI：自动，≥1024 token，cached input **50% off**；Gemini 2.5+：隐式/显式，cached ≈0.25× 或 10%（**冲突，待核实**） | Anthropic 自报最长前缀 **最高 90% 降本、85% 降延迟**（2025） |
-| **KV Cache 复用 / Prefix Sharing（引擎侧）** | 跨请求复用相同前缀的 KV 张量，共享前缀"只算一次" | vLLM：PagedAttention + Automatic Prefix Caching（v1 默认开）；SGLang：RadixAttention 基数树 token 级匹配（默认开，多 agent 扇出强）；HiCache 层级缓存 GPU→CPU→disk | 活跃会话命中率可达 **95%+**；共享前缀越多优势越大（turion.ai / flexera 2026） |
-| **Batching / 请求合并** | 把非实时请求攒批，摊薄固定开销、提升 GPU 利用率 | Continuous batching（token 级调度）；Batch API（OpenAI `/v1/batches`、Anthropic Message Batches）折扣 **最高 50%** | 适合离线标注、审核、批量摘要；云 API 省 $、自托管省 GPU |
-| **Semantic Cache（语义缓存）** | 用 embedding 相似度命中"意思相同"的请求，直接返缓存 | GPTCache、Helicone 内置；Redis + 向量相似度 | 命中率常见 30–50%；2024 arXiv 研究称最高减少 API 调用 **68.8%**（语义缓存有"答非所问"风险，需校验） |
-| **模型路由 Model Routing** | 简单任务走小/便宜模型，难题才上大模型 | LLMProxy、OpenRouter、Portkey（含 fallback 级联）；router 本身跑小模型 | 60–80% 请求走便宜模型 → 平均降本 **50–65%**（aimenta 2025） |
-| **量化与成本的协同** | 低精度让"更小模型/更省显存"成立，从根上降本 | 权重量化：FP8 <1% 损、INT8 ~2%、INT4 8–10%；**KV Cache 量化 FP8/INT8 显存减半、提速**；端侧 SLM 跑本地免云费 | 与端侧部署强耦合（见 [[端侧大模型推理 学习笔记]]） |
+| **Prompt Caching（厂商侧前缀缓存）** | 把稳定前缀的 KV 计算结果存服务器，重复调用只付零头 | input 缓存命中按 ~10% 计费（约 90% off），且跳过重算降延迟 | 长 system prompt、工具定义、长文档/RAG、多轮对话（前缀稳定） |
+| **Prefix Sharing / KV Cache 复用（引擎侧）** | 跨请求复用相同前缀的 KV 张量，共享前缀"只算一次" | 多请求同前缀免重复 prefill；命中率越高越省 | 自托管高并发、多 agent 共享同一长上下文、tree-of-thought 分支 |
+| **Batching（请求合并）** | 非实时请求攒批 / token 级连续批处理，摊薄固定开销、拉高 GPU 利用率 | Batch API 约 50% off；自托管连续批处理提升吞吐数倍 | 离线标注、批量摘要、eval、embedding 回填（非亚秒级 SLA） |
+| **模型路由 Model Routing** | 简单任务走小/便宜模型，难题才上大模型（甚至级联回退） | 60–80% 请求走便宜模型 → 平均降本 40–85%（口径见尾） | 分类/抽取/简单 QA 走 SLM，规划/复杂推理才上前沿模型 |
+| **上下文裁剪 Context Trimming** | 压缩/摘要历史、截断旧消息、保留比例截断，控制上下文长度 | 直接砍 input token 数与 KV 占用，避免无限膨胀 | 超长多轮 Agent、Realtime/流式会话、显存紧张端侧 |
+
+> 五者大多可叠加：缓存省重复前缀、路由省"杀鸡用牛刀"、裁剪省"越长越贵"、批处理省异步请求、prefix sharing 在引擎层把前三者做实。
 
 ---
 
-## 3. 2025–2026 进展（联网核实）
+## 二、主流方案 / 厂商表（数字标「待核实」）
 
-- **厂商普遍上线 prompt caching**：Anthropic（自动 + 显式双模式）、OpenAI（自动；GPT-5.6+ 改显式、write 1.25×）、Google Gemini（隐式/显式）、AWS Bedrock（checkpoint 模式，Claude 1 小时 TTL 于 2026-01 GA）、Azure OpenAI（与直连 API 同机制）。
-- **KV Cache 跨请求复用成为引擎默认能力**：vLLM v1 prefix caching 默认开；SGLang RadixAttention 默认开；层级缓存（HiCache）把热 KV 留在 GPU、冷 KV 沉降到 CPU/磁盘。
-- **推理引擎格局变化**：Hugging Face TGI 于 2025-12 进入维护模式，SGLang 成为主流替代之一（turion.ai 2026）。
-- **成本可观测成为标配**：LangSmith / Langfuse / Helicone / Phoenix / Portkey / OpenLLMetry 均支持 per-user、per-feature、per-model 的成本归因与预算告警——与 [[Agent 可观测性 LLM Observability 学习笔记]] 直接呼应。
-
----
-
-## 4. 代表产品 / 玩家
-
-| 类别 | 代表 | 与成本优化的关系 |
+| 厂商 / 方案 | 缓存 / 路由策略 | 关键参数（联网核实，部分待核实） |
 |---|---|---|
-| 云厂商 cache 政策 | Anthropic、OpenAI、Google Gemini、AWS Bedrock、Azure OpenAI | 前缀缓存折扣梯度不同（50%–90% off），TTL/断点策略各异 |
-| 推理服务引擎 | vLLM（PagedAttention）、SGLang（RadixAttention）、TensorRT-LLM、llama.cpp | 自托管按 GPU·小时计费，prefix sharing 提升"每 GPU 服务请求数" |
-| 成本追踪 / 可观测 | LangSmith、Langfuse、Helicone（含内置缓存/路由）、Portkey、OpenLLMetry（OTel） | 把"哪条链路在烧钱"变成可度量、可告警 |
-| 语义缓存 / 路由中间件 | GPTCache、Helicone、LLMProxy、OpenRouter | 在网关层做命中与级联，免改业务代码 |
+| **Anthropic Prompt Caching** | 显式 `cache_control` 断点；标准 5min TTL，2025 起新增 **extended 1h TTL**（额外费用，官方称相对 5min 是 12× 提升） | 缓存 read ≈ 0.10× base、write ≈ 1.25× base（Claude Sonnet 4.6 口径，第三方综述）；官方自报最长前缀 **最高 90% 降本 / 85% 降延迟**（上限值，非均值）｜⚠️ 待核实 |
+| **OpenAI Prompt Caching** | 默认**自动**；GPT-5.6+ 改显式 cache breakpoint + `prompt_cache_key`；24h retention 在 GPT-5.5 等系列为默认 | 缓存命中 input 约 **10% of base（≈90% off）**；最小 1024 token；按前缀哈希路由到同机提命中｜官方文档口径，价格随档期变动 ⚠️ 待核实 |
+| **vLLM Batching / Prefix Cache** | Continuous Batching（迭代级调度，V1 默认）+ PagedAttention + Chunked Prefill + Automatic Prefix Caching | 相比朴素 PyTorch 循环可达 **3–5×**（高并发 up to 24×，arXiv 2025）；`--max-num-seqs` / `--max-num-batched-tokens` 调吞吐｜基准数字 ⚠️ 待核实 |
+| **SGLang RadixAttention** | 基数树做 token 级前缀匹配，多 agent 扇出/分支复用强 | prefix-heavy agentic 负载默认开；与 vLLM APC 互为替代｜命中率缺一手基准 ⚠️ 待核实 |
+| **推理网关路由**（LiteLLM / Portkey / OpenRouter / Vercel AI Gateway / Azure AI Foundry Model Router / Cloudflare AI Gateway） | 网关层统一路由 + 语义缓存 + 预算/成本追踪 + failover | 路由策略：规则 / 意图分类 / 复杂度 / 级联 / 延迟 / 合规；成本降 **40–85%** 多为厂商/案例口径 ⚠️ 待核实 |
 
 ---
 
-## 5. 对 OS PM / Agent 产品的意义
+## 三、2025–2026 进展（联网核实）
 
-> 端侧 Agent 没有"token 账单"，但有一套等价的**算力 / 功耗预算**——成本优化的思路在端侧换了一种货币。
-
-- **成本结构不同**：端侧没有按 token 扣费，约束来自 NPU 利用率、内存（含 KV Cache 占用）、电池、散热与响应延迟 SLO。成本优化 → 同样预算下能跑更长上下文、更大模型，或同样体验更省电。
-- **端云协同 = 模型路由的端侧版本**：简单意图走端侧小模型（SLM，免云调用费、隐私好、零网络延迟），复杂任务才上云大模型——正是第 2 节"模型路由"的产品化落地（见 [[端云协同推理与混合部署 学习笔记]]）。
-- **量化是端侧降本的基石**：INT4/INT8 让 3B 级模型跑在端侧，直接省掉云端推理费；KV Cache 量化（FP8/INT8）在长上下文 Agent 里尤其关键——否则多轮 + 多 agent 的 KV 会先撑爆内存。
-- **Prefix sharing 在端侧同样成立**：一个系统里多个 agent / 多用户共享同一份系统提示与项目上下文，端侧引擎的 prefix 复用能避免重复 prefill，降低首 token 延迟。
-- **可观测性的端侧翻译**：云上的"成本归因"在端侧变为"功耗 / 延迟 / 内存归因"——哪些 tool call、哪条反思循环最费电，需要同样的可追踪能力（呼应 [[Agent 可观测性 LLM Observability 学习笔记]]）。
-- **路由效果要评测兜底**：路由把简单请求降级到小模型，必须用 [[Agent 评测与基准 学习笔记]] 的指标体系验证"降本不降质"，否则静默退化。
+- **缓存成标配**：Anthropic（自动+显式双模式、extended 1h TTL）、OpenAI（自动→GPT-5.6+ 显式）、Google Gemini、AWS Bedrock、Azure OpenAI 均已上线前缀缓存，折扣梯度 50%–90% off 不一。
+- **Prefix Sharing 进引擎默认**：vLLM v1 Automatic Prefix Caching、SGLang RadixAttention 默认开；层级缓存（GPU→CPU→disk）把热 KV 留住。
+- **模型路由从研究变基础设施**：RouteLLM（Berkeley/LMSYS，ICLR 2025，MT Bench 上 85% 降本 @ 95% GPT-4 质量，但为该基准特定口径）、vLLM Semantic Router（2026-01，Rust/Golang + Candle BERT，K8s/Envoy 部署）、Martian / NotDiamond 商用 router。
+- **Agent 专用成本网关兴起**：LiteLLM / Portkey / OpenRouter / Vercel AI Gateway（2025-08 GA，零加价、40+ 厂商、cost/ttft/tps 排序）把"路由 + 语义缓存 + per-feature 成本归因 + 预算"合一，切换模型成配置而非重构。
+- **可观测与成本归因合一**：LangSmith / Langfuse / Helicone / Phoenix / Portkey / OpenLLMetry（OTel/OpenInference）均支持 per-user、per-feature、per-model 成本归因与预算告警——直接呼应 [[Agent 可观测性 LLM Observability 学习笔记]]。
 
 ---
 
-## 待解问题
+## 四、代表工具 / 框架（按层）
 
-- [ ] 厂商 cache 折扣口径（尤其 Gemini cached token 是 10% 还是 25% of base）应以哪一版官方文档为准？
-- [ ] RadixAttention vs vLLM Automatic Prefix Caching，在多 agent 扇出场景的真实命中率差异有多大（缺一手基准）？
-- [ ] 语义缓存的"相似误命中"在 Agent 多步链路里如何设安全边界（避免答非所问被缓存放大）？
-- [ ] 端侧 KV Cache 量化（FP8/INT4）对 tool-calling、长上下文任务的质量退化阈值是多少？
-- [ ] 模型路由的 router 自身成本与延迟，何时会"为省钱反而更贵"（小模型路由 + 回退次数多）？
-- [ ] 端侧 Agent 的"功耗/延迟预算"应如何建模成与云端 $ 可比的 ROI 指标？
+| 层 | 代表 | 与成本优化的关系 |
+|---|---|---|
+| 云厂商 cache 政策 | Anthropic / OpenAI / Gemini / Bedrock / Azure | 前缀缓存折扣梯度与 TTL 策略各异，是"零代码改动"的第一杠杆 |
+| 自托管推理引擎 | vLLM / SGLang / TensorRT-LLM / llama.cpp | 按 GPU·小时计费，prefix sharing 提升"每 GPU 服务请求数" |
+| 语义缓存中间件 | GPTCache / Helicone 内置 / Redis+向量 | "意思相同"的请求直接返缓存，免新模型调用 |
+| 网关 / 路由器 | LiteLLM / Portkey / OpenRouter / Vercel AI Gateway / Azure AI Foundry Model Router | 一层统一路由 + 缓存 + 成本追踪 + failover |
+| 成本可观测 | LangSmith / Langfuse / Helicone / Phoenix / OpenLLMetry | 把"哪条链路在烧钱"变成可度量、可告警 |
+
+---
+
+## 五、与辐射锚点的咬合
+
+- **多智能体协作与编排**：orchestrator-worker / supervisor 模式里，N 个子 agent 共享同一份长 system prompt 与项目上下文，重复计算会爆炸；prefix sharing + 统一前缀缓存是必须，否则多 agent 扇出直接放大账单（见 [[多智能体协作与编排 学习笔记]]）。
+- **Agent 可观测性**：没有成本归因就谈不上优化——per-route、per-feature、per-model 的 token/$ 追踪与预算告警，是把"降本不降质"从口号变成可验证指标的前提（见 [[Agent 可观测性 LLM Observability 学习笔记]]）。
+
+---
+
+## 待解问题（深度盲区，留白给 Ethon）
+
+- [ ] 多 Agent 共享 KV cache 的**跨会话**可行性？同一前缀在租户/会话间能否复用，安全隔离边界在哪（KV 与输入 token 存在唯一对应关系，跨用户共享有泄漏/投毒风险，NDSS 2025）？
+- [ ] 端侧 Agent 成本优化手段？端侧没有 token 账单，等价货币是 **NPU 利用率 / 内存 / 电池 / 散热**，如何用 prefix sharing + SLM 路由 + KV 量化翻译这套思路？
+- [ ] 上下文裁剪的"该砍哪段"策略？摘要式压缩 vs 保留比例截断（如 OpenAI Realtime `retention_ratio`）在长链路 Agent 里对质量/缓存命中的权衡？
+- [ ] 模型路由的 router 自身成本/延迟何时"为省钱反而更贵"（小模型路由 + 多次回退）？级联（先小后大）的置信度阈值怎么定？
+- [ ] 语义缓存的"相似误命中"在 Agent 多步链路里如何设安全边界，避免答非所问被缓存放大？
 
 ---
 
@@ -88,24 +80,25 @@ source: "WebSearch/WebFetch 联网核实 + 公开资料综述"
 
 | 来源 | 主题 | 获取方式 |
 |---|---|---|
-| Anthropic Prompt Caching 文档（2025，经 promptvlt / hashlytics / thread-transfer 综述） | 厂商侧前缀缓存机制与折扣 | WebSearch 综述 |
-| OpenAI / Google Gemini 官方 caching 说明（经上述综述） | 自动/隐式缓存、50% off、0.25× 口径 | WebSearch 综述 |
-| Flexera "Prompt Caching breakdown"（2026） | AWS Bedrock checkpoint、各厂商模式对照 | WebSearch |
-| turion.ai "vLLM vs SGLang 2026" / aimadetools / dreaming.press | RadixAttention vs PagedAttention、prefix caching 命中率 | WebSearch |
-| intellineers / aimenta / aronhack / eidm "LLM cost optimization"（2025） | 语义缓存、模型路由、批处理、成本结构 | WebSearch |
-| zylos.ai "AI Inference Optimization 2025-2026"、ai-master.cc、majid-mazouchi | 量化（FP8/INT8/INT4）、KV Cache 量化、压缩 | WebSearch |
-| integritystudio / zenml / comet "LLM Observability 2025" | LangSmith/Langfuse/Helicone/Portkey/OpenLLMetry 成本归因 | WebSearch |
+| Anthropic「Prompt caching」官方文档 +「agent-capabilities-api」新闻（2025） | extended 1h TTL、缓存折扣与延迟上限 | WebFetch 官方 |
+| OpenAI「Prompt caching」开发者文档 + Prompt Caching 201 cookbook（2025-2026） | 自动/显式缓存、prompt_cache_key、24h retention、Realtime retention_ratio | WebFetch 官方 |
+| vLLM / SGLang / LLM Serving Architecture 资料（hld.handbook、aiengineeringfromscratch、cloudai.pt，2025-2026） | Continuous Batching、PagedAttention、Chunked Prefill、RadixAttention、吞吐基准 | WebSearch |
+| zylos.ai / digitalapplied / lushbinary / akshayghalme「LLM Routing & Gateway 2026」 | RouteLLM、vLLM Semantic Router、LiteLLM/Portkey/OpenRouter/Vercel、降本区间 | WebSearch |
+| therouter.ai / respan.ai「Prompt Caching 2025-2026 对比」 | OpenAI/Anthropic/DashScope 缓存折扣与路由参数 | WebSearch |
+| HalfSugar「大模型 API 缓存机制深度解析」（2026-07） | DeepSeek V4 Flash 98% 折扣、FlashMemory、DSA——**单篇中文博客，数字⚠️ 待核实** | WebSearch |
+| integritystudio / zenml / comet「LLM Observability 2025」 | LangSmith/Langfuse/Helicone/Portkey/OpenLLMetry 成本归因 | WebSearch |
 
 ---
 
 ## ⚠️ 待核实清单
 
-- **Gemini 缓存折扣冲突**：promptvlt 称 Gemini 2.5 cached token 为 standard input 的 **10%**；thread-transfer / hashlytics 称 **0.25×（25%）**。两者不一致，需以 Google 官方最新文档为准，本文未采用确定值。
-- **Anthropic cache 命中率/折扣**：90% 降本、85% 降延迟为 Anthropic 官方自报的"最长前缀"上限值，非平均；实际取决于前缀长度、TTL 命中与流量形态。
-- **语义缓存 68.8% 降幅**：来自 2024 arXiv 研究，针对特定 query 类别，非通用生产均值；30–50% 命中率为多来源共识区间。
-- **模型路由 50–65% 降本**：依赖"60–80% 请求可走便宜模型"且小模型成本为前沿模型 1/10 的假设，需结合自有 eval 验证。
-- **端侧量化质量退化**：INT4 在 math/code/long-context/tool-calling 上退化大于闲聊，阈值未统一，待针对目标模型实测。
+- **各家缓存折扣口径**：Anthropic/OpenAI 官方称缓存命中 ≈ 10% of base（≈90% off）；Gemini 各源在 10%–25% 间不一致；DeepSeek V4 Flash 98% 折扣来自单篇博客，未交叉验证，本文未采用为确定值。
+- **Anthropic「90% 降本 / 85% 降延迟」**：官方自报"最长前缀"上限值，非平均；实际取决于前缀长度、TTL 命中与流量形态。extended 1h TTL 的"12× vs 5min"亦为厂商口径。
+- **模型路由 40–85% 降本**：多为厂商/案例口径；RouteLLM 85% 仅限 MT Bench（GPT-4 Turbo vs Mixtral 8x7B），非通用均值，需自有 eval 验证。
+- **vLLM 3–5× / 24× 吞吐**：来自 arXiv 2025 与厂商基准，依赖并发/模型/硬件，非普适。
+- **TGI 维护模式 / SGLang 替代**：Hugging Face TGI 2026-03 转只读（据 hld.handbook），以官方公告为准。
+- **价格随档期变动**：所有 $/MTok 数字会随厂商调价变化，落地前以各官网 pricing 页复核。
 
 ---
 
-#标签/Agent #标签/推理成本 #标签/成本优化 #标签/AI Agent框架
+#标签/推理优化 #标签/Agent成本 #标签/LLM

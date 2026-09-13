@@ -129,4 +129,46 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 - ⚠️ **层级纪律（延续）**：该 tracker 是第三方产品界面综述站，非 OS 官方文档；其「Copilot Actions 铺开」信号须以 Microsoft 官方 blog/build 说明复核（具体 Insider build 号待补，见本笔记 08-05 待补项）。
 - 四大 OS 意图框架在「意图元数据来源分级」维度仍全空白（详见 [[Agent Data Injection 数据注入攻击]] 08-16 演进）。
 
+## 2026-09-03 增补：26H2 档期 + Ask Copilot 意图搜索 + Sysmon 内置（来源 [[AppIntent 每日情报 2026-09-03]]）
+
+> 接续 08-16 的「Copilot Actions 仍 opt-in 默认关」。本期补 **26H2 具体 GA 窗口**与两个此前未记录的框架层意图入口/安全件。
+
+- **26H2 GA 窗口**：Windows 11 26H2 预计 **2026 年 9 月下旬~10 月初**以 **enablement package**（轻量特性开关，非重装）交付；消费版支持 24 个月、企业版 36 个月。来源：<https://www.pcworld.com/article/3063498/windows-11-26h2-is-coming-meet-all-the-new-features.html>（PCWorld / TechRepublic / WinCentral 多源一致）。
+- **🔑 Ask Copilot（搜索层意图路由入口，新机制）**：经典任务栏搜索框可替换为可选的「Ask Copilot」自然语言搜索——**Copilot 解读用户意图并将查询链接到 apps / files / 系统设置（如「调亮屏幕」「打开 Downloads」）**，底层仍是 Windows 搜索索引，但加了**意图理解层**；文件/图片上传 + Copilot Vision（读打开的应用内容）后续扩展。⚠️ 这是**搜索层的意图理解**，非新 Registry API；与 08-05 记的 Agent Launchers / ODR 是不同层（搜索分发 vs agent/工具注册），二者互补而非替代。
+- **Sysinternals System Monitor（Sysmon）内置**：原第三方威胁检测套件变为 Windows 可选组件，记录系统事件入 Windows 事件库、可配置文件过滤，用于隐藏威胁与系统错误检测——是 agent 行为审计 Telemetry 的**系统级补齐**（与本笔记 08-04「Project Perception 检查 agent loop」同方向，但 Sysmon 在 OS 内、Perception 在 Defender 端点侧）。
+- ⚠️ **层级纪律（延续）**：26H2 为路线图/预览汇总，非新 API 公告；具体 Insider build 号、Ask Copilot 是否受 08-02 同一 `Settings > System > AI components > Agent tools > Experimental agentic features` opt-in 开关管控仍待补。Copilot Actions / Agent Workspace / ODR 四支柱安全设计自 08-09 以来无变化。
+- → 对 OS PM：**Windows 的「系统级意图框架」现在有四层可对照**——搜索意图（Ask Copilot）/ agent 注册（Agent Launchers）/ 工具注册（ODR）/ 执行隔离（Agent Workspace）；其「用现有多用户权限原语建模 Agent」的范式（本笔记 07 月「能复用既有权限就别新造」）在 26H2 延续。
+
+## 2026-09-12 增补：具体 Insider build 号 + Settings「Agents」面板 +「@」调 Agent + 悬停监控（来源 [[AppIntent 每日情报 2026-09-12]]）
+
+> 接续 09-03 的「26H2 GA 窗口 + Ask Copilot + Sysmon」。本期补**第三方 tracker 披露的具体 build 号与交互细节**，把此前「默认关、需 opt-in」的抽象描述落到可验证的工程面。⚠️ 来源为 petri.com / gbhackers.com / mundobytes.com 等第三方媒体，**非 Microsoft 官方 blog**；具体 build 号与 GA 对应版本仍待官方源确认（见本笔记 08-05 待补项）。
+
+**① 具体 build 号（首次进入公开视野）**
+- Agentic 体验（任务栏 Agent）随 **Build 26200.8313**（Release Preview 通道）铺开。
+- **Agent Workspace** 在实验特性中见 **Build 26220.7262**（为独立 Windows 会话，专属账号 + 虚拟化桌面）。
+
+**② Settings 面板路径细化**
+- 此前记 `Settings > System > AI components > Agent tools > Experimental agentic features`；本期 tracker 给出更细的 **`Settings > System > AI Components > Agents`** 路径，每个 Agent 可单独配置「能做什么 / 禁触哪些文件」，Documents/Pictures/Desktop 等敏感文件夹 consent 三档（Allow Always / Ask every time / Never allow）——与 07 月「scoped file access 六文件夹 + 三档同意」一致，仅面板命名细化。
+
+**③ 交互细节（用户始终在环的具象化）**
+- **「@」调 Agent**：在 Copilot 搜索框 / 工具菜单用「@」唤起特定 Agent（如 `@Researcher`），列本机可用 Agent 清单——把 08-05 的 Agent Launchers 注册表变成用户可感知的入口。
+- **悬停监控**：Agent 运行进任务栏后，鼠标悬停 Copilot 图标即看实时进度，无需切到 Agent 窗口——把「用户可观测」做成零摩擦交互。
+- **首个内建 MCP 服务器**：File Explorer + System Settings（与 08-05 ODR 连接器一致），Agent 经 ODR 受控访问核心体验。
+
+→ **对 OS PM 的含义**：Windows 把「隔离执行 + 受控发现 + 用户始终在环」从安全白皮书落成**可点可配的交互**（@ 唤起 / 悬停进度 / 文件夹级 consent），是四平台里**用户侧可感知度最高**的 Agent 执行总线实现；其「复用既有多用户权限原语建模 Agent」范式（本笔记 07 月「能复用既有权限就别新造」）在本窗口无变化。⚠️ 仍待 Microsoft 官方 blog 复核 build 号与 `Experimental agentic features` 同一 opt-in 开关是否覆盖上述交互。
+
+## 2026-09-13 增补：IFA 2026 Microsoft Execution Containers（Agent 沙箱容器隔离，来源 [[AppIntent 每日情报 2026-09-13]]）
+
+> 接续 09-12 的「具体 build 号 + @ 唤起 + 悬停监控」。本期补 **IFA 2026（2026-09）微软公布的 OS 内建 Agent 隔离新原语**——把本笔记「四支柱安全」（Agent accounts / Agent Workspace / ODR / User Transparency）里的「隔离」从「独立账号+ACL」升级为**容器级**。详见 [[Agent Workspace 隔离执行]] 09-13 增补。
+
+**① Microsoft Execution Containers（新命名隔离原语）**
+- IFA 2026 披露：Windows 内建 **Microsoft Execution Containers**，把 AI Agent **隔离在沙箱容器内**，严格执行企业安全策略 + **记录全部活动日志**。这是比 07 月「独立低权限账号 + ACL」更明确的**容器隔离**表述，且把 08-04 记的「Project Perception 检查 agent loop」与「Agent Workspace 隔离会话」收拢为一个内建安全机制。
+- 同期整合第三方 agent 框架：**NVIDIA OpenShell / Hermes Agent / OpenClaw** 直接接入 Execution Containers。
+- → 对 OS PM：四平台里 Windows 现拥有**最明确的 OS 内建 Agent 容器隔离原语**（非仅 Defender 端点侧检查），与 Apple（Extensions 经 App Review + Confirmations）、Android（系统代持一次性授权）、HarmonyOS（芯片级可信根）形成对照。详见 [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+
+**② IFA 2026「Unmetered Intelligence」定位（非意图框架增量，仅作背景）**
+- Mark Linton 提出「unmetered intelligence」：把日常 AI 负载从云端 token 经济移到本地 PC；RTX Spark（NVIDIA，1 PFLOP / 128GB 统一内存）/ **Project Zenith**（9-4 公布，64GB 统一内存 + 250GB/s 带宽门槛，本地跑 30B+ 参数）属**硬件/定位**，不计入意图框架 API 增量（按规则丢弃泛 AI 营销稿，仅 Execution Containers 入表）。
+
+⚠️ **层级纪律（延续）**：IFA 2026 为微软高层 keynote + 安全媒体转述，**非 Windows agentic security 官方文档逐字**；Execution Containers 的具体实现（是否复用 Agent Workspace 容器、是否受 08-02 `Experimental agentic features` 同一 opt-in 管控、与 ODR 注册关系）仍待 Microsoft 官方 blog/learn 文档复核（见本笔记 08-05 待补项）。四平台意图 Registry 来源轴空白结论不变（见 [[Agent Data Injection 数据注入攻击]]）。
+
 #标签/Windows #标签/CopilotActions #标签/AgentWorkspace #标签/XPIA

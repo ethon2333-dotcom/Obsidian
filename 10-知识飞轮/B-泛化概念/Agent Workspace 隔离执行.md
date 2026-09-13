@@ -58,6 +58,13 @@ DualView（arXiv 2607.03821）提出了一个比进程/账号隔离**粒度更�
 - **隔离 ≠ 免疫注入**：隔离把爆炸半径锁死，但 Agent 在隔离域内仍可能被注入并执行域内动作；须与 [[Confirmation UI 安全机制]]（敏感操作确认）+ 流量级检测（[[Agent Data Injection 数据注入攻击]] 的 Project Perception）组合。
 - **实现成本门槛**：独立低权限账号 + 签名 + ACL 在移动端接口形态未标准化，Android / iOS 能否直接复用 Windows 范式待补（见上方待办）。
 
+## 2026-09-13 增补：Microsoft Execution Containers 把隔离升为容器级（来源 [[AppIntent 每日情报 2026-09-13]]）
+
+> 接续 08-03 的「数据形态隔离是正交维度」与 08-04 的「Project Perception 流量级检查」。本期 Windows 在 IFA 2026 公布的 **Microsoft Execution Containers** 把本笔记「独立低权限账号 + ACL」的进程/账号隔离进一步落为**内建沙箱容器**——隔离粒度更明确，且强制企业安全策略 + 全量活动日志。
+
+- 这是四平台里**最明确的 OS 内建 Agent 容器隔离原语**：此前 Windows 用「独立账号 + ACL + 受控文件夹」（07 月四支柱），现在命名并强化了容器层；与 Apple（Extensions 经 App Review + Confirmations）、Android（系统代持一次性授权 + EXECUTE_APP_FUNCTIONS blanket）、HarmonyOS（芯片级可信根）形成对照。详见 [[Windows Copilot Actions 与 Agent Workspace 2026]] 09-13 增补 + [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+- ⚠️ 仍待 Microsoft 官方文档确认：Execution Containers 是否复用 Agent Workspace 容器、是否受 `Experimental agentic features` 同一 opt-in 管控、与 ODR 注册关系。
+
 ## 关联
 
 - 索引：[[意图框架·跨体系索引 MOC]]

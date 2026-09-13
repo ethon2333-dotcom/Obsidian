@@ -321,4 +321,74 @@ EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
 
 → 沿用结论：本笔记 08-04 起「每个分数标版本号 + BFCL v3 / NexusRaven / BFCL v4 三列并存」纪律不变；Apple FM / LittleLamb / Gemma 4 三项均**待 Berkeley 官方榜复核**，引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
 
+## 2026-09-03 增补：Luxand LLM SDK BFCL v4 端侧 Agentic Score 快照（来源 [[AppIntent 每日情报 2026-09-03]]）
+
+> 接续 09-01 的 Apple FM 61.7% / LittleLamb 0.3B。本期补一份**新的第三方 BFCL v4 端侧实测**（厂商 SDK 自测，非 Berkeley 官方榜），给出多模型「Agentic Score」横向。
+
+- **Luxand LLM SDK 基准**（luxand.com/llm-sdk/benchmarks，自测 agentic subsets of BFCL v4，~40k tasks，全离线 CPU/Metal/CUDA；**第三方 SDK 自测，非官方榜行**）按 **Agentic Score**（半数权重在多轮 agentic 场景）排序：
+
+| 模型 | Agentic Score | 下载体积 | 参数 | 许可 |
+|---|---|---|---|---|
+| Qwen3.6 35B A3B（4-bit） | **73.4%** | 22.1 GB | 36B·3B active | Apache-2.0 |
+| Gemma 4 26B A4B（2-bit） | **71.8%** | 10.5 GB | 25.2B·3.8B active | Apache-2.0 |
+| Qwen3.5 4B（4-bit） | **67.0%** | 2.7 GB | 4.66B dense | Apache-2.0 |
+| Mellum2 12B A2.5B Thinking（4-bit） | 63.2% | 8.1 GB | 12B·2.5B active | Apache-2.0 |
+| LFM2.5-8B-A1B（4-bit） | 62.3% | 5.2 GB | 8.3B·1.5B active | LFM Open v1.0 |
+| Gemma 4 E4B（4-bit） | 53.7% | 5.3 GB | 8B·4.5B active | Apache-2.0 |
+| Gemma 4 E2B（4-bit, 2026-07-16） | 51.1% | 2.8 GB | 5.44B·2B active | Apache-2.0 |
+
+- **对端侧选型的增量信息**：① 主流可量产档（Qwen3.5-4B 67% / LFM2.5-8B-A1B 62.3%）的 **Agentic Score** 比本笔记 08-26 镜像站 BFCL v4（LFM2.5-8B-A1B 49.7%）高约 12 点——差异源于「Agentic Score」把多轮权重调到一半，与 08-04 记的官方 v4 权重（Agentic 40% + Multi-Turn 30%）方向一致；② 给出「手机可塞下限」档（Gemma 4 E2B 2.8GB / 51.1%、Qwen3.5-4B 2.7GB / 67.0%）的对照，**4B 级成新甜点下沿**；③ 与 09-01 的 Apple FM 61.7% / LittleLamb 0.3B 51.55% 同属第三方引述，**均待 Berkeley 官方榜复核**。
+- ⚠️ **口径纪律（延续本库铁律）**：Luxand 为厂商 SDK 自测、量化/硬件/提示模板与官方榜不同；「Agentic Score」是其自定义聚合口径，非 Berkeley 官方总分；引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？），且每个数字标 BFCL 版本号。本笔记 08-04「v4 加权最重的 agentic+multi-turn 恰是端侧小模型最弱处」结论不变。
+
+## 2026-09-12 增补：Needle 2 跨模型 BFCL v4 单轮对照 + Seal-Tools 域外居首（来源 [[AppIntent 每日情报 2026-09-12]]）
+
+> 接续 09-01/09-03 的 Needle 2（42.6%）与 Apple FM（61.7%）零散数字。本期补 **aibacon 第三方拆解给出的跨模型单轮 BFCL v4 横向对照**，把多个孤立数字并成一张可比表（机制见 [[端侧 Router 置信度门控与工具可达性收缩 2026]]）。⚠️ aibacon 为第三方技术媒体，数字为 Cactus 模型卡 + Berkeley 榜引述，无独立复现，以官方榜复核为准。
+
+**A. BFCL v4 单轮对照（3,641 行，第三方 aibacon 引 Berkeley 榜）**
+
+| 模型 | 规模 | **BFCL v4 单轮** | 定位 |
+|---|---|---|---|
+| **Apple on-device Foundation Model** | — | **61.7%** | 设备端 FM 首登公开榜，端侧 Planner 锚点 |
+| **LFM2.5-230M（LiquidAI）** | 230M | **60.8%** | 亚 1B 里最高 |
+| **FunctionGemma 270M（Google）** | 270M | **46.1%** | 官方 BFCL v4 聚合 27.03（v4 把 70% 权重压 agentic+multi-turn） |
+| **Needle 2（Cactus）** | 45M | **42.6%** | CQ2-bit / 14MB，消费设备语料偏向 |
+
+→ 同表把「Apple FM 61.7%」确立为**设备端 Planner 的公开可比锚点**；Needle 2（45M）在 14MB 体积下逼近 FunctionGemma（270M）的 46.1%，体积效率突出但绝对分仍低——印证本笔记 08-04「v4 加权最重的 agentic+multi-turn 恰是端侧小模型最弱处」。
+
+**B. Seal-Tools 域外（out-of-domain，654 行）反直觉结论**
+
+| 模型 | 规模 | **Seal-Tools OOD** |
+|---|---|---|
+| **Needle 2（Cactus）** | 45M | **28.7%（居首）** |
+| LFM2.5-230M | 230M | 17.0% |
+| FunctionGemma 270M | 270M | 15.6% |
+
+→ **同一模型、相反结论**：Needle 2 在 Seal-Tools OOD 第一、在 BFCL v4 单轮垫底（42.6% vs Apple 61.7%）。说明其优势在被设计去做的窄域工具调用，而非通用；与 09-01 已记「Needle 2 是 base 而非 drop-in 通用助手」一致。**引用前必须看基准分裂**，否则会误读「45M 吊打 5~70× 大模型」的标题。
+
+**C. well-formed 输出率（跨模型同档）**
+- Needle 2 在 BFCL 上 **93.4%** 语法合法调用，与 LFM2.5 / Apple FM **同档（差 1 个点内）**——源于 **byte-level grammar 约束解码**（详见 [[端侧 Router 置信度门控与工具可达性收缩 2026]] 09-12 增补）。结论：「吐合法 JSON」不靠模型变乖，靠**解码期语法约束**，这是小模型堪用的前提。
+
+**D. 沿用纪律**：本笔记 08-04 起「每个分数标 BFCL 版本号 + v3 / NexusRaven / v4 三列并存」不变；Apple FM / Needle 2 / FunctionGemma 三项均**待 Berkeley 官方榜复核**，引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
+
+## 2026-09-13 增补：BFCL v4 官方榜单上线（Berkeley Gorilla 维护，收口「官方榜」待办）+ 端侧校准（来源 [[AppIntent 每日情报 2026-09-13]]）
+
+> 接续 09-12 的跨模型单轮对照。本期**BFCL v4 官方可查榜单上线**，把本笔记连续多轮（08-04/08-05/09-01/09-03/09-12）「待 Berkeley 官方榜复核」的待办**收口为可复核状态**。⚠️ 经第三方聚合镜像（DataLearnerAI / llm-stats）呈现，非逐字官方博客，但镜像源自 gorilla.cs.berkeley.edu 官方行，口径可信度高于此前厂商/媒体自报。
+
+**A. 官方 v4 榜单现况（DataLearnerAI，更新 2026-09-07）**
+
+| 模型 | 参数 | **BFCL v4 Overall** | 许可 |
+|---|---|---|---|
+| **MiniCPM5-2B（OpenBMB）** | 2.5B | **66.60（SOTA）** | Free Commercial |
+| 科大 Spark-X2.5-4B（Thinking） | 4.1B | 65.10 | Free Commercial |
+
+→ **关键含义**：① **端侧级小模型（2.5B）首次登上官方 v4 榜首**——此前榜首长期是闭源大模型（Qwen3.7 Max 75.0%），现在开源 2.5B 把差距压到 ~8 点；② 本笔记既有第三方数字（Apple FM 61.7% / LFM2.5-230M 60.8% / Needle 2 42.6% / FunctionGemma 27–46%）**现在可逐一拿官方榜复核**，长期待办「Berkeley 官方 BFCL v4 博客原文」从「待补」升为「镜像可查、官方博客逐字待补」。
+
+**B. 端侧模型在 v4 的重新定位**
+- v4 Overall 被 Agentic 40% + Multi-Turn 30% 主导（08-04/08-05 已核实权重），MiniCPM5-2B 66.60 仍是其**单轮+轻多轮**强项体现；亚 1B（Needle 2 45M 42.6% / LFM2.5-230M 21.0%）与 1B（MiniCPM5-1B 25.1%）在 v4 仍集中于 20–43%，**印证 08-04「v4 加权最重的 agentic+multi-turn 恰是端侧小模型最弱处」结论不变**。
+- 选型纪律维持：BFCL **v3**（格式合规）/ **NexusRaven**（语义理解）/ **BFCL v4**（多轮+该不该调）三列并存、每分标版本号；新增「以官方 v4 榜为锚点复核第三方引述」一步。
+
+**C. ⚠️ 口径冲突（诚实标注）**：某中文综述（腾讯云开发者，2026-09）称「BFCL V4 工具调用准确率 88.5%」作「2026 前沿水平」——与官方 Overall 66.60 矛盾，**疑为该数字指单轮子集或厂商自报口径，非官方 Overall**；引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？），该 88.5% 标待补。
+
+**D. 收口待办**：① 关闭本笔记 08-04/08-05「Berkeley 官方博客原文逐字待补」→ 升为「官方镜像可查（DataLearnerAI/llm-stats），逐字博客待补」；② Apple FM / LittleLamb / FunctionGemma / Needle 2 四项「待 Berkeley 官方榜复核」→ 升为「官方榜已上线，可复核（逐项核对中）」。
+
 #标签/FunctionCalling #标签/端侧Planner #标签/评测

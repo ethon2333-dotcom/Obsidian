@@ -81,4 +81,22 @@ aliases: [Needle2, 端侧Router门控, 工具可达性收缩]
 
 ⚠️ aibacon 为第三方技术媒体，数字为 Cactus 模型卡 + Berkeley 榜引述；无独立复现，以产品固件实测为准。
 
+## 2026-09-12 增补：attention-only 架构消融 + grammar-constrained 解码 + well-formed 跨模型同档（来源 [[AppIntent 每日情报 2026-09-12]]）
+
+> 接续 09-01 的「升级契约第三方确认」。本期补 aibacon 对 Needle 2 的**架构级拆解**与「well-formed 输出率」跨模型对照，把 08-16/08-17 的机制描述补上**可量化消融证据**。⚠️ 第三方媒体 + Cactus 模型卡，无独立复现。
+
+**① attention-only 架构消融（arXiv 2607.18363，《A Controlled Study of Attention-Only Transformers》）**
+- 去掉 FFN（前馈层）使困惑度上升 **0.47 nats**；把这部分预算**重新分配到注意力**后，差距收窄到 **0.006 nats**——即「无 FFN 能路由」不是靠小模型硬扛，而是**注意力被显式加强后几乎无损**。
+- 这是对本笔记 08-16「Needle 26M 论证无 FFN 能路由」的**定量背书**：端侧 router 的参数量可以大幅砍在 FFN 上，因为「工具调用是检索与组装、不是推理」的论断在消融实验中成立。
+
+**② byte-level grammar 约束解码（为什么 well-formed 93.4%）**
+- Needle 2 在输出阶段用**从 JSON schema 编译出的字节级 grammar 编译器**直接约束成合法函数调用格式，**跳过最多 98% 的词表投影**（只投影合法 next-token）。
+- 结果：BFCL 上 well-formed 输出率 **93.4%**，与 LFM2.5 / Apple FM **差 1 个点内**——证明「吐合法 JSON 调用」不靠模型变乖，靠**解码期语法约束**。这把 [[Function Calling 端侧工具调用]] 08-15 节「FunctionGemma 严格语法免 JSON repair」的结论推广到极小模型。
+- **可迁移启发（对 OS PM）**：做端侧 Planner 时，**语法可靠性应作为选型第 4 维度（与准确率/BFCL/云端逃逸率并列）**，且优先用「受约束解码」而非「模型自学格式」。
+
+**③ 与 ADI 防护的关系再强化**
+- 「未选中工具物理不可达（unreachable）+ 低置信返回空 `[]` 而非硬猜 + grammar 约束保证即使调也是合法调用」构成 **ADI 三道低成本闸门**，都不依赖模型行为变好，而是**结构/协议层强制**（与 [[带外防御与确定性门控]] 同构）。详见 [[Agent Data Injection 数据注入攻击]]。
+
+⚠️ aibacon 为第三方技术媒体，数字为 Cactus 模型卡 + Berkeley 榜引述；arXiv 2607.18363 为学术预印本，消融结论待更多模型复现。
+
 #标签/Needle2 #标签/端侧Planner #标签/置信度门控 #标签/工具可达性 #标签/FunctionCalling

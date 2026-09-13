@@ -20,6 +20,7 @@ updated: 2026-08-04
 - [[LangChain 菜鸟教程]] —— 菜鸟教程 landing 页整理（入门、首个程序、核心组件、参考文档）
 - [[RAG 检索增强生成]] —— 检索增强生成全流程 + 2026 Advanced/GraphRAG/Agentic RAG 演进与工程落地
 - [[RAG 详细学习笔记]] —— RAG 进阶 companion：Embedding 深潜 / 切分 / ANN 索引 / 混合检索 / 重排 / GraphRAG / 评估 / 生产取舍（入门见 [[RAG 检索增强生成]]）
+- [[ANN 索引算法专题 学习笔记]] —— 🌱 广度种子：ANN 近似最近邻索引算法全景（HNSW / IVF-PQ / DiskANN / ScaNN / LSH + PQ·SQ 量化 + 2025-2026 GPU / 十亿级进展），与 [[RAG 详细学习笔记]]（ANN 在 RAG 中的位置）、[[向量数据库 学习笔记]]（产品生态）分工互补
 - [[Loop Engineering 循环工程]] —— 把 agent 循环本身当工程对象：ReAct、五大部件、10 模式、失败目录、安全边界
 - [[Loop Engineering 跨学科发散]] —— 向外辐射：控制论/OODA/PDCA/K8s 协调循环/生物学稳态/形式化验证/元认知/伦理，老智慧映射 agent loop
 - [[Graph Engineering 图谱工程]] —— 知识图谱 / GraphRAG 工程化：构建五阶段、Schema 优先、三种集成模式、Vector vs Graph、本体
@@ -30,6 +31,8 @@ updated: 2026-08-04
 - [[Agent 可观测性 LLM Observability 学习笔记]] —— 🌱 广度种子：Agent 可观测性/LLM Observability 全景（tracing/eval/cost&latency/用户 feedback 回路 + LangSmith/Langfuse/Phoenix/Datadog/Traceloop 等横向 + OpenTelemetry/OpenInference 语义约定 + 端侧 Agent 监控意义），与 [[Agent 评测与基准 学习笔记]]（离线基准）互补
 - [[GraphRAG 与知识图谱增强 Agent 学习笔记]] —— 🌱 广度种子：GraphRAG 方案横向全景（MS GraphRAG·LazyGraphRAG·LightRAG·HippoRAG 2·KAG·腾讯 Youtu-GraphRAG·Graphiti/Zep·Neo4j）+ 按"成本花在哪"分的六种范式 + 2025-2026 进展（独立评测反转口径、上下文膨胀）+ 与 Agent 结合四面（图作工具/agentic 图检索/图作记忆/决策留痕），与 [[RAG 详细学习笔记]]（向量检索原理）、[[Graph Engineering 图谱工程]]（图谱构建方法论）、[[Agent 记忆系统 学习笔记]]（记忆层）分工互补
 - [[Agent 推理成本优化 学习笔记]] —— 🌱 广度种子：Agent 推理成本优化工程面（prompt caching / KV cache 复用·prefix sharing / batching / 模型路由 / 上下文裁剪 / 成本可观测），与 [[多智能体协作与编排 学习笔记]]（多 agent 扇出放大成本）、[[Agent 可观测性 LLM Observability 学习笔记]]（成本归因·预算告警）咬合
+- [[模型服务化与 LLM 网关 学习笔记]] —— 🌱 广度种子：模型服务化 / LLM 网关基础设施层（统一 API 接入·模型路由·限流配额·密钥管理·负载均衡 fallback·守护·可观测埋点·缓存 + LiteLLM/Portkey/Cloudflare/OpenRouter/Azure/Kong 对比 + 2025-2026 进展），与 [[Agent 推理成本优化 学习笔记]]（成本技巧的承载层）、[[Agent 可观测性 LLM Observability 学习笔记]]（span 汇入）、[[Agent 协议生态 学习笔记]]（网关≠MCP/A2A 协议层）、[[多智能体协作与编排 学习笔记]]（per-agent 预算路由）正交互补
+- [[数据 Agent 与 Text-to-SQL 学习笔记]] —— 🌱 广度种子：让 Agent 把"人话"翻译成 SQL/分析动作并自我纠错，聚焦**结构化数据/数据库**的 Agent 化问答（区别于 [[RAG 检索增强生成]]/[[RAG 详细学习笔记]] 的非结构化文档检索），与 [[模型服务化与 LLM 网关 学习笔记]]（模型路由承载层）、[[Agent 可观测性 LLM Observability 学习笔记]]（SQL 执行 tracing）正交互补
 
 ## 实战代码库（可直接抄）
 

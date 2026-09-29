@@ -72,4 +72,20 @@ DualView（arXiv 2607.03821）提出了一个比进程/账号隔离**粒度更�
 - 平台：[[Windows Copilot Actions 与 Agent Workspace 2026]]
 - 安全：[[Confirmation UI 安全机制]] ｜ [[XPIA 跨提示注入]] ｜ [[Dual View 智能体数据视图隔离]]
 
+## 2026-09-15 增补：Agent 代码签名 + 证书校验/吊销把隔离范式补上「身份可信」（来源 [[AppIntent 每日情报 2026-09-15]]）
+
+> 接续 09-13 的「Microsoft Execution Containers 容器级隔离」。本期 Windows 在隔离范式上补了**身份级**一块：Agent 二进制须数字签名 + 证书校验，被入侵或行为不当可吊销。
+
+- 此前本笔记记录的 Windows 隔离范式 = 独立低权限账号 + ACL + 受控文件夹 + 容器级 Execution Containers（09-13）；本次新增**签名/吊销**意味着隔离不仅是「跑在哪儿、权限多大」，还管「**这个 Agent 主体本身是否可信、能否被撤销**」——把 07 月「Agent 须数字签名」从一句话落成可撤销的身份机制。
+- 与 Android（系统特权签名 `EXECUTE_APP_FUNCTIONS_TRUSTED`）、HarmonyOS（芯片级可信根 TEE）形成对照：三者都用「签名/可信根」给 Agent 主体背书，但 Windows 额外强调**运行时可吊销**，是身份级治理最显式的样本。详见 [[Windows Copilot Actions 与 Agent Workspace 2026]] 09-15 增补 + [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+- ⚠️ 仍待 Microsoft 官方文档确认：签名/吊销是否纳入 ODR 注册信任链、是否受同一 opt-in 开关管控。
+
 #标签/隔离执行 #标签/AgentWorkspace #标签/安全
+
+## 2026-09-26 增补：Copilot Managed Runtime = 租户内沙盒执行总线的 SaaS 侧样板（来源 [[AppIntent 每日情报 2026-09-26-晚]]）
+
+> 接续 09-13「Microsoft Execution Containers 容器级隔离」与 09-15「Agent 代码签名/吊销」。本期把微软 09-25 Copilot 重架构中的 **Copilot Managed Runtime** 映射到本笔记「隔离执行」范式——它是 SaaS 层而非 OS 层的隔离产物。
+
+- **Managed Runtime 把「隔离 + 身份 + 审计」落到租户级**：Code 生成的 App 跑在 M365 租户内的**隔离环境**，由 IT 治理、出现在 M365 管理中心供策略审查；这与本笔记 07 月「独立低权限账号 + ACL + 受控文件夹」、09-13「Execution Containers 容器级」构成**跨层级呼应**——隔离范式的核心三件套（跑在哪儿/权限多大/能否被审计吊销）在 SaaS 侧被微软产品化。
+- **与四平台 OS 隔离范式对照**：Windows（Agent Workspace 容器 + 独立账号 + 签名/吊销）/ Android（系统特权签名 `EXECUTE_APP_FUNCTIONS_TRUSTED`）/ HarmonyOS（芯片级可信根 TEE）/ **M365 Managed Runtime（租户沙箱）**——四者都在回答「agent 在哪跑、权限多大、能否被治理」，但层级不同（OS 内核级 vs SaaS 租户级）。
+- ⚠️ 层级纪律：Managed Runtime 属 M365/Entra 治理与执行层，**不是 Windows OS 执行总线（ODR/Agent Workspace）的扩展**；勿写成「Windows OS 已内建托管运行时」。来源为微软 09-25 官方博文转述（byteiota/codiot/gadgetbond），沙箱语法/SDK 与 GA 日期待 learn.microsoft.com 复核。

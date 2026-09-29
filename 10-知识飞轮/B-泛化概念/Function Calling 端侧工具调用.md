@@ -392,3 +392,57 @@ EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
 **D. 收口待办**：① 关闭本笔记 08-04/08-05「Berkeley 官方博客原文逐字待补」→ 升为「官方镜像可查（DataLearnerAI/llm-stats），逐字博客待补」；② Apple FM / LittleLamb / FunctionGemma / Needle 2 四项「待 Berkeley 官方榜复核」→ 升为「官方榜已上线，可复核（逐项核对中）」。
 
 #标签/FunctionCalling #标签/端侧Planner #标签/评测
+
+## 2026-09-15 增补：BFCL v4 榜单稳定 + qwen3-0.6b-tool-router 补子集分（来源 [[AppIntent 每日情报 2026-09-15]]）
+
+> 接续 09-13 的 BFCL v4 官方榜上线（MiniCPM5-2B 66.60）。本期补**最新公开快照的稳定性确认**与**一个既有条目的子集补齐**。
+
+**A. BFCL v4 公开榜稳定（BenchLM，数据核实 2026-09-08，⚠️ 镜像/聚合站，非 Berkeley 官方全量）**
+- **Qwen3.7 Max（Alibaba）75.0% 仍领先**；Ling 3.0 Flash 73.0% / Qwen3.7 Plus 72.9% / Pokee-Isaac 28B 70.9% / LFM2.5-2.6B 56.9% / LFM2.5-8B-A1B 49.7% / Needle 2 45M 42.6% / MiniCPM5-1B 25.1% / LFM2.5-230M 21.0%——**与本库 08-04/08-05/08-26/09-13 历次快照一致，榜单无净变化**。
+- ⚠️ 口径冲突延续：DataLearnerAI（更新 2026-09-07）标「MiniCPM5-2B 66.60 榜首」，疑为**子集/滞后镜像口径**（开源 2.5B 在非全量榜中居首），与 BenchLM 全量镜像「Qwen3.7 Max 75.0% 闭源榜首」不矛盾；引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
+
+**B. qwen3-0.6b-tool-router 补 BFCL v4 子集分（HF 模型卡，既有 07-30 表条目细化）**
+- 本笔记 07-30 表已录该 0.6B 确定性边缘 router（禁 CoT + 严格 JSON）：BFCL Multi-Turn Base **90.42%** / Relevance **90.89%**。本次 HF 模型卡（AryanNsc/qwen3-0.6b-tool-router）补全 BFCL 子集：
+  - **Non-Live Parallel AST 83.50%** ｜ **Live Simple AST 62.86%** ｜ **Live Parallel AST 52.00%** ｜ Multi-Turn Base 90.42%（续）｜ Relevance 90.89%（续）。
+- → 画像：**离线/非实时子集强（并行 AST 83.5%、多轮 90.4%），实时（Live）子集明显弱（简单 62.9%、并行 52.0%）**——印证本笔记 08-04「v4 加权最重的 agentic+multi-turn 恰是端侧小模型最弱处」；但作为 0.6B 禁 CoT 确定性 router，其离线多轮 90.4% 仍是窄域边缘路由的强样本（须窄域微调 + 严格约束，见 07-31 纪律）。
+- ⚠️ 数字来自 HF 模型卡自报、非 Berkeley 官方榜行；引用前仍须三问。
+
+**C. 沿用纪律**：BFCL **v3**（格式合规）/ **NexusRaven**（语义理解）/ **BFCL v4**（多轮+该不该调）三列并存、每分标版本号；「以官方 v4 榜为锚点复核第三方引述」一步维持。Apple FM / Needle 2 / FunctionGemma 四项「官方榜已上线、可复核」状态维持（09-13 收口）。
+
+## 2026-09-26 增补：MLPerf Edge Agentic 把 BFCL v4 纳为精度门（行业基准机构采纳，来源 [[AppIntent 每日情报 2026-09-26]]）
+
+> 接续 09-15 的「BFCL v4 官方榜稳定」。本期**不是新模型/新分数，而是评测基础设施升级**——MLPerf Inference 新增 **Edge Agentic** 工作负载，**以 BFCL v4 作精度基准**，意味着 BFCL v4 从「学术/厂商榜」进入「行业 ML 基准」的 gate。
+
+**① MLPerf Edge Agentic（BFCL v4）设计**
+- 参考实现走 `mlcommons/endpoints`，参考模型 **Qwen/Qwen3.6-27B（Q4_K_M GGUF）** 跑在 **NVIDIA Jetson AGX Thor**（llama.cpp, `--reasoning off`, temp 0 确定性）。
+- **Gated（精度门）只看单轮**：non_live / live / hallucination 三子集各采样到 ~995 点稳定估计；**gated 单轮 overall = 86.23%（≥83.64% 通过）**，其中 non_live(AST) 82.59% / live 84.12% / hallucination 97.16%。
+- **多轮为 optional 非 gated**：完整 200 条 multi_turn_base 实测 140/200 = 70.00%（parity evalscope）。
+- 硬件无关（temp 0 固定种子确定性），阈值跨设备同适用；校准集 `bfcl_calib.jsonl`（364 条，仅估量化 scale，不评分）。
+
+**② 对端侧 Planner 选型的含义**
+- BFCL v4 现在是**两种独立基准**的精度锚：Berkeley 官方榜（模型排名）+ MLPerf Edge（设备/量化实现 gate）。二者方向一致但用途不同——前者比模型，后者比「某量化实现能否在边缘设备达标」。
+- → 与 08-04 确立的「BFCL v4 重 Agentic+Multi-Turn（70%）恰是端侧小模型最弱处」形成闭环：MLPerf 用 27B 参考模型定 gate、而真·端侧 Planner 仍落在亚 1B~8B 区间（MiniCPM5-2B 66.6 / LFM2.5-8B-A1B 49.7 / Needle 2 42.6），**gate 与选型的模型规模差一个数量级**——提示「端侧能达标」与「边缘设备能达标」是两层问题。
+- 选型纪律升级为四轴并存、每分标来源与版本：BFCL **v3**（格式合规）/ **NexusRaven**（语义理解）/ **BFCL v4**（多轮+该不该调）/ **MLPerf Edge Agentic gate**（量化实现达标度）。
+
+⚠️ 诚实标注：MLPerf Edge Agentic 参考模型 Qwen3.6-27B 为 MLPerf 选的**参考实现**（非最小端侧 Planner）；gated 86.23% 为 Jetson AGX Thor 上 Q4_K_M 参考点；本笔记端侧 Planner 评测表（Needle 2 / FunctionGemma / qwen3-0.6b-tool-router 等）的 BFCL 分数仍为 Berkeley 榜/模型卡口径，与 MLPerf gate 不可混算。
+
+## 2026-09-26 晚增补：Qwen3-0.6B 在 2017 Note8 驱动真实桌面 Chrome（来源 [[AppIntent 每日情报 2026-09-26-晚]]）
+
+> 接续 09-26 的「MLPerf Edge Agentic gate」。本期补一份**社区端侧 Planner 实证**——把「端侧小模型真的能驱动真实浏览器 Agent」的样本从 LocalCowork（笔记本，LFM2.5-8B-A1B）补到**2017 年老旧手机 + 0.6B 模型**。⚠️ 口径：e2llm/edge-browser-agent 社区仓库（r/LocalLLaMA 镜像，AGI Hunt / prismix 转述），仅 3 个固定任务、名称匹配与抄写，**非通用 benchmark、非 BFCL**，引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
+
+**① 实验设置（极小模型 + 极老设备）**
+- **Qwen3-0.6B（Q4_K_M）** 跑在 **2017 年三星 Note8（6GB RAM）**——一颗 ~0.6B 模型压在 8 年前的手机上，是「端侧小模型路由」的下限压力测试。
+
+**② 结构化页面感知层是前提**
+- 模型**不接收原始 HTML**，而是接收外围栈生成的**结构化页面表示（~200 token 的命名链接/字段清单）**，模型只负责「按名选链接」「把事实抄成 JSON」，点击/验证由外围栈完成。
+- 三个可验证任务（命名匹配、链接选择、事实抄写）**10/10 通过**；12 个小模型横向对比中该配置表现最优。
+
+**③ 结构化 vs 原始 HTML 的量化反差**
+- 沙盒命名匹配任务：**结构化 ~500 token / 80s** 完成 vs **原始 HTML 12k token / 22min**（结构化快约 16×、token 省约 24×）；
+- 维基页：46.7 万字符 HTML 在 **16k 上下文只装下 9%、0/3** 失败；结构化表示则可容纳。
+- → 强化本笔记 07-31 / 08-04 长期结论：「**端侧路由吃结构化输入、不吃原始页面**」是更小模型（尤其亚 1B）堪用的前提；与 [[端侧 Router 置信度门控与工具可达性收缩 2026]]「结构化感知 + 小模型」范式一致。
+
+**④ 对端侧 Planner 选型的增量**
+- 把「端侧小模型驱动真实 Agent」的可用样本从 LocalCowork（笔记本、LFM2.5-8B-A1B）补到**老手机 + 0.6B 模型**，进一步压低「端侧能跑」的设备/模型下限；但**方法学**：结构化感知层是外围贡献、任务固定且窄，不能直接当作端侧 Planner 通用准确率证据（延续 09-26 诚实标注）。
+
+⚠️ 诚实标注：e2llm 为社区仓库、仅 3 个固定任务、名称匹配与抄写非通用，**非 BFCL、非官方榜**；「结构化感知远优于原始 HTML」是方法学洞察，与其直接比端侧 Planner 准确率不严谨。

@@ -68,3 +68,18 @@ Agent Skills 是 Anthropic 于 2025-10 提出的开放标准（2025-12-18 成为
 - [ ] 当 Skill 被 OS 系统 Agent 动态加载并执行写回操作时，其安全边界归属 App 还是系统？需明确责任链。
 - [ ] 企业级 Skill 市场（见 [[企业级 Agent 平台与 Agent-as-Asset 2026]]）如何做来源校验与签名，避免恶意 Skill 注入（呼应 [[Agent Data Injection 数据注入攻击]]）？
 - [ ] 端侧低带宽下，Skill 的渐进式披露与 [[Simple Attention Network 无FFN端侧路由]] 的轻量路由能否共用同一套「按需加载」运行时？
+
+## 2026-09-20 增补：技能层供应链投毒 —— 从概念警告到实证攻击类（来源 [[AppIntent 每日情报 2026-09-20]]）
+
+> 接续本笔记「反例与边界」里的「恶意 Skill 注入」概念警告（line 54）与「企业级 Skill 市场来源校验与签名」待办（line 69）。本期把该警告补上**实证攻击数据**，并显式映射到四平台 Skills / A2A 分发层。
+
+- **三篇 2026-02 arXiv 实证（首次入库，库内空白补漏）**：
+  - **Skill-Inject（arXiv 2602.20156，Schmotz et al.）**：基准测主流 LLM agent 在**恶意指令嵌入 skill 文件**时的遵从率，证明被污染 skill 可让 agent 执行有害动作——**agent 生态新供应链攻击面**。
+  - **Malicious Agent Skills in the Wild（arXiv 2602.06547，Liu et al.）**：分析 **~100,000 个 agent skills**，识别恶意行为与漏洞，揭示被污染 skill 可触发**多阶段攻击链（数据外泄 + agent 劫持）**。
+  - **SkillJect（arXiv 2602.14211，Jia et al.）**：用**闭环反馈**自动生成 stealthy 恶意 skill，主动提升注入有效性（攻击侧自我进化，与 [[XPIA 跨提示注入]] 09-17 SIR 同源）。
+- **对 Skill 范式的安全含义（落回本笔记）**：
+  - Skill 的「渐进式披露」三层级（YAML 元数据 → SKILL.md → 关联文件）本就是**把领域指令权交给通用 Agent**；若 `description` 过宽会过度召回（本笔记已记），而**非签名 / 社区分发 skill 夹带指令**现在有了实证——「恶意 Skill 注入」从待办升级为**已证实攻击类**。
+  - **与四平台 Skills 层直接映射**：HarmonyOS ArkAF 2.0 **Skills 上架**（端侧/云端 Skill 同名冲突、A2UI Schema 版本兼容）、Android AppFunctions **agent skill**、A2A 协议——这些「Skill = 能力分发单位」机制正是 Skill-Inject 靶面；**OS 级 Skill Registry 若不做来源校验 + 签名，等于把供应链投毒面原样搬进系统层**。
+  - **新增设计护栏**：Skill manifest 须**来源校验 + 签名 + 权限最小化**（与 [[Agent 身份与硬件级审批]] 同构）；企业级 Skill 市场（[[企业级 Agent 平台与 Agent-as-Asset 2026]]）须把恶意 Skill 注入纳入准入扫描；端侧低带宽下仍须保留签名校验（不能为了渐进式披露牺牲来源可信）。
+- → 与 [[XPIA 跨提示注入]] 的协同：本库 XPIA 威胁模型新增「**能力描述（Skill）注入**」靶面，即意图框架的声明层本身成为注入面；OS Agent 执行安全须把 Skill 来源完整性纳入爆炸半径边界。
+- ⚠️ 诚实标注：三篇均 2026-02 arXiv 预印本、由本轮检索首次入库（非 24h 新发布）；具体 benchmark 数字待一手论文复核，先不写精确百分数。

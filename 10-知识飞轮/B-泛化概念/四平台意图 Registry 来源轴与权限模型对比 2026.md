@@ -112,3 +112,40 @@ tags: [概念, Registry对比, 权限模型, 来源轴, 执行安全, 跨平台,
 → 对来源轴结论无影响：DMA 强制的是「可发现性」而非「provenance」——跨助手开放仍不解决「数据从哪来、可不可信」的来源轴空白（见 [[Agent Data Injection 数据注入攻击]]）；最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位。
 
 #标签/跨平台 #标签/Registry #标签/权限模型 #标签/来源轴 #标签/执行安全 #标签/IntentFramework
+
+## 2026-09-15 增补：Per-Intent Privacy Manifest 待办重开（08-31 证伪结论 GA 后重评估，来源 [[AppIntent 每日情报 2026-09-15]]）
+
+> 接续本笔记 08-31「Per-Intent Privacy Manifest 证伪 + 来源轴待办收口」。iOS 27 正式版（2026-09-14）已落地，按 08-31 自身注明的「若 iOS 27 正式版新增此类 API 需重新评估」，本期重开该待办。
+
+- **重评估结论**：08-31 基于当日官方文档直查判定该 API「confirmed non-existent」；现 GA 后，**WWDC 2026 多源报道（Lushbinary / ByteIota / TechTimes / AlgeriaTech）一致称 Apple 引入 per-intent privacy manifest declarations，让开发者按意图声明「Siri 交互可否上云 / 必须留端」**。但**官方 post-GA「What's New in iOS 27」页（developer.apple.com/ios/whats-new）未逐字列出该 API**（仅列 Entity/Intent schemas、View Annotations、App Intents Testing、Foundation Models 多模型等）。
+- **判定**：由「confirmed non-existent」升为 **「GA 后多源一致报道、但官方页未确认 → 待官方文档逐字复核」**——**不推翻**本笔记「意图 Registry 来源/可信度（provenance）轴四平台全空白」结论，因为即便确认，它也是**数据路由目的地（cloud vs on-device）声明**，与本笔记证明的「来源/可信度 provenance」**不同轴**。
+- **新增评估维度（若确认）**：Apple 将获得一条**「路由轴」声明**（数据可否离开设备），与 provenance 轴正交——本对比表可补「路由轴」维度，区别于现有「来源/可信度轴」。但**在官方文档确认前不写入对比表正文**，避免再次被二手说法带偏（08-31 的教训）。
+- ⚠️ 诚实标注：判定基于 2026-09-15 当日检索；Apple 若在 iOS 27.x 后续或官方隐私清单文档补充该 API，需再次评估。当前以「GA 后待官方复核」记录。
+
+## 2026-09-16 增补：Per-Intent Privacy Manifest 官方页重核（来源 [[AppIntent 每日情报 2026-09-16]]）
+
+> 接续本笔记 09-15「Per-Intent Privacy Manifest 待办重开（GA 后待官方复核）」。本期用**官方「What's New in iOS 27」页（developer.apple.com/ios/whats-new）**再次直查，做闭环复核。
+
+- **复核结论**：官方 post-GA 页 App Intents 段落仅列 **Entity schemas / Intent schemas / View Annotations API / App Intents Testing / Foundation Models 多模型路由**——**无任何 per-intent privacy manifest / 按意图声明云-端路由的 API**。
+- **判定**：维持 09-15「GA 后多源一致报道（Lushbinary/ByteIota/TechTimes/AlgeriaTech）、但官方页未确认 → 待官方文档逐字复核」状态；**不关闭**该待办（因多源报道仍未证伪），但**维持**本笔记「意图 Registry 来源/provenance 轴四平台全空白」结论——即便确认亦属「路由目的地 cloud vs on-device」轴，与 provenance 正交（见 09-15 增补「路由轴 vs 来源轴」区分）。
+- **对对比表的影响**：在 Apple 官方文档逐字确认前，**不写入对比表正文**（延续 08-31「不被二手说法带偏」纪律）。当前「来源轴」行 Apple = ❌ 无、结论 = 架构性空白（confirmed）不变。
+
+⚠️ 诚实标注：复核基于 2026-09-16 当日官方页快照；Apple 若在 iOS 27.x 后续或官方隐私清单文档补充该 API，需再次评估。
+
+## 2026-09-25 增补：Android alpha12 加入 `scope` 维度 + `serialize` 元数据信号（来源 [[AppIntent 每日情报 2026-09-25]]）
+
+> 接续本笔记 09-01「Android 动态门控 API 迁移（alpha11）」与 09-15/09-16「Per-Intent Privacy Manifest 维持待复核」。本期由官方 Jetpack Release Notes 确认 **AppFunctions `1.0.0-alpha12`（2026-09-23）** 在 Registry/权限模型上有两个增量，并更新对比表。
+
+**① `scope` 字段加入 `AppFunctionMetadata` 与 `AppFunctionSearchSpec`（更新「权限/Registry 模型」对比行）**
+- Android 的 Registry 元数据现新增 **`scope` 维度**——四平台里**首个由官方 Jetpack 显式加入元数据/搜索规格的「作用域」字段**，直接服务「谁能发现这个函数」的可见性/权限模型。
+- **修正「运行时动态可见性 API」行**：Android 仍是四平台唯一有公开动态可见性 API 的平台（`getAppFunctionStates` 状态查询 + 现新增 `scope` 维度）；原 `setAppFunctionEnabled` 应标注「alpha11 起改为 `getAppFunctionStates` 状态查询、alpha12 新增 scope」。
+- ⚠️ `scope` 具体语义（调用方可见性作用域 vs 功能分类域）**待 developer.android.com/ai/appfunctions 官方文档逐字段确认**，在确认前不写入对比表正文（延续 08-31「不被二手说法带偏」纪律）。
+
+**② `AppFunctionData#serialize` 要求调用方提供元数据（对照「来源/溯源轴」待办）**
+- alpha12 起序列化须由调用方附带元数据。**可能是 provenance 信号，但须谨慎**——此处「元数据」更可能是序列化结构元数据，未必等于「数据从哪来/可不可信」的 intent 来源 provenance。
+- **结论不变**：本笔记「意图 Registry 来源/可信度（provenance）轴四平台全空白（confirmed）」结论**不因此改变**；即便 `serialize` 元数据被证实含来源语义，也须官方文档逐字段确认后才升级待办。最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位。
+
+**③ 参数级安全约束补强（更新「权限/Registry 模型」对比行「鉴权/确认」旁注）**
+- 新增 `AppFunctionUriValueConstraint` 公共 API，对 Uri 类型参数/返回值施加约束（scheme/路径限制）——是 AppFunctions 约束族（Int/String/Uri）的参数级安全补强，与「最小权限工具作用域」方向一致。
+
+→ 对来源轴结论：alpha12 在「可见性作用域（scope）+ 参数约束（Uri）」上有实质推进，但**仍未触及「数据从哪来、可不可信」的来源轴**——本库最高优先待办的「来源轴四平台全空白」结论延续。

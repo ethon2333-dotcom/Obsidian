@@ -14,6 +14,15 @@ created: 2026-08-05
 - [[LLM 跨学科发散]] —— 把 LLM 每个构件映射回学科先辈：信息论/语言学/连接主义/压缩/Transformer/Scaling/涌现/对齐/IR/软件工程/经济学/哲学/安全，收敛 5 条用 LLM 的启示
 - [[提示词工程到上下文工程演进与 Prompt Ops 学习笔记]] —— 广度种子：提示词工程→上下文工程演进史 + Prompt Ops 工具链/治理（与 [[Context Engineering 学习笔记]] 互补）
 
+## 推理与服务化
+
+- [[服务端 LLM 推理引擎生态 学习笔记]] —— 广度种子：服务端/云端推理引擎与运行时生态（vLLM/SGLang/TensorRT-LLM 等 + 优化技术 + 2025-2026 进展），与 [[端侧推理框架生态 学习笔记]]、[[模型服务化与 LLM 网关 学习笔记]]、[[端侧大模型推理 学习笔记]] 互补
+- [[推理引擎的量化与稀疏化集成 学习笔记]] —— 广度种子：服务端引擎如何集成量化与稀疏化（AWQ/GPTQ/FP8/NVFP4、KV cache 量化、2:4 稀疏）来加速降本，与 [[端侧模型量化 学习笔记]] 形成"云 vs 端"镜像
+
+## 相关广度种子
+
+- [[提示词与上下文鲁棒性评测基准 学习笔记]] —— 广度种子：提示词/上下文鲁棒性评测基准与工具（PromptBench·AdvGLUE·FLAMES·OpenCompass·Garak·ReliabilityBench），与 [[提示词工程到上下文工程演进与 Prompt Ops 学习笔记]]、[[Context Engineering 学习笔记]] 互补
+
 ## 与其它知识库的关联
 
 - 应用层 Agent 框架：[[AI Agent 框架 MOC]]（RAG / Graph Engineering / Loop Engineering 在此发散联动）

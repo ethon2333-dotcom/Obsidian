@@ -70,3 +70,30 @@ aliases: [Agent 365, Entra Agent ID, 智能体控制平面]
 - 枢纽：[[意图模式规范]] · [[语义路由]] · [[确认机制]] · [[XPIA 跨提示注入]]
 
 #标签/智能体治理 #标签/控制平面 #标签/身份基座 #标签/Registry #标签/跨平台参照
+
+## 2026-09-21 增补：Foundry 托管智能体网络出网控制 public preview（来源 [[AppIntent 每日情报 2026-09-21]]）
+
+> 接续 08-18 的「Agent 365 = 治理/身份层控制平面（与 Windows ODR / Agent Workspace 执行层正交）」。本期补 **Azure 更新批次（09-18，CSDN 09-20 报道）** 在 Agent 365 治理层新增的**第三项出网治理能力**——把「托管智能体运行时能连谁」从「不可控」变为「可写有序规则」。
+
+- **托管智能体的网络出网控制进入公开预览**：管理员可写**一组有序规则，按目标主机匹配**，支持 `*.contoso.com` 这样的 **FQDN 通配**；动作有四种——**允许 / 拒绝 / 改写出站请求头 / 改写目的地**。
+- **与既有治理三块拼图构成完整句**：① 从 Foundry 直接把智能体发布到 Microsoft 365 Copilot 与 Teams（正式可用，不再需自建部署流水线，且继续走 Entra + Agent 365 治理）；② Agent 365 治理界面里 Foundry 智能体现有**启用/停用**两个管理员动作（Microsoft 管理中心，提权模式与其他 agent 应用动作一致）；③ 出网控制（public preview）。
+- → 对 OS PM 的含义：Agent 365 把「治理层控制平面」从「发现/审批/身份」扩展到「**运行时出网边界**」——这是治理层对 [[XPIA 跨提示注入]]「假定注入必然发生、用边界压爆炸半径」元判断的组织级落地（对照 [[Chrome Agent Origin Sets 与用户对齐评判器 2026]] 的客户端读写源集）。对本库「六方 Registry/权限 Checklist」补强：治理层现含**出网白名单 + 动作改写**维度。
+⚠️ 层级纪律：这是 **Azure Foundry + Agent 365 + Entra 治理/身份层**，非 Windows OS 执行总线（ODR / Agent Workspace）；勿写成「Windows OS 已内建出网控制」。来源为 CSDN 微软技术日报（09-20）对 Azure 09-18 更新批次的转述，具体 GA 日期与规则语法**待 learn.microsoft.com 逐字复核**。
+
+## 2026-09-25 补捕：Declarative Agents 支持 Skills 转入 GA（来源 [[AppIntent 每日情报 2026-09-25]]）
+
+> 接续 08-18「Agent 365 = 治理/身份层控制平面」与 09-21「Foundry 出网控制」。本期补 **Microsoft 365 Copilot Declarative Agents 支持 Skills（Message Center MC1476977，2026-09-22 公布，9 月中~月底全球 GA）**——把「智能体技能打包 + 安全沙箱执行」补进治理层拼图。
+
+- **Skills = 模块化可复用能力单元**：把指令、脚本、模板、关联资源打包为一个可加进 agent 的模块；按需加载（改善上下文效率与响应质量），跨多个 agent 复用；脚本执行走**安全沙箱**，skill 文件上的 **MIP 敏感度标签保留并生效**，既有治理控制继续适用。
+- → 对 OS PM 的含义：微软治理层把「Agent Skill 上架 + 沙箱执行 + 敏感度标签」做成生产级能力，与 HarmonyOS Skills Framework（统一 SKILL.md + 标准化运行时）、Android AppFunctions agent skill（SDK 注释优化 KDoc）形成跨平台「Agent Skill 范式」三足；本库 [[Agent Skills 技能范式 2026]]（09-20 实证 + manifest 签名护栏）与 [[隔离执行]]（沙箱）得到微软侧官方背书。
+⚠️ 层级纪律：这是 **M365 / Declarative Agents 治理与扩展层**，非 Windows OS 执行总线（ODR / Agent Workspace）；勿写成「Windows OS 已内建 skill 沙箱」。来源为 MWPro 对 Message Center MC1476977 的转述（2026-09-22），精确 GA 日期与沙箱语法**待 learn.microsoft.com 逐字复核**。
+
+## 2026-09-26 增补：Copilot 重架构——Autopilot 常驻托管智能体 + Managed Runtime 租户沙盒（来源 [[AppIntent 每日情报 2026-09-26-晚]]）
+
+> 接续 08-18「Agent 365 = 治理/身份层控制平面」、09-21「Foundry 出网控制」、09-25「Declarative Agents Skills GA」。本期补 **微软 09-25 官方博文（Jared Spataro）重新设计 Copilot（Home/Code/Autopilot）** 在 Agent 365 治理层新增的**两层拼图**——把「常驻托管智能体」与「租户内沙盒执行总线」产品化。
+
+- **Autopilot = 常驻托管智能体（persistent agent）**：由 Build 2026 内部代号 Scout 改名；给一个 agent 名字、角色、目标，它**云托管、用户离开仍续跑**（watch channels / follow up / 跑 recurring work / days later 续项目）；在租户内拥有**自身身份（identity）、记忆（memory）、工作区（workspace）**，权限/审计/治理在身后——与 08-18 记的 Entra Agent ID「三运行模式」中「Own access / autonomous（自主后台）」一致，但更显式地产品化为「带工位的数位同事」。
+- **Copilot Managed Runtime = 租户内沙盒执行总线**：Code 用自然语言生成的 App/仪表盘/自动化**托管运行在 M365 租户内的隔离环境**，由 IT 治理；发布 npm 包 `@microsoft/managed-apps`（核心 SDK）/ `-cli`（scaffold/preview/deploy/version）/ `-vite-plugin`（Vite 8 构建集成），默认模板 React+TS+Vite 8，CLI 生成 typed TypeScript services 直连 Microsoft Graph 数据连接器。
+- **计费二分 USL vs UBB**：USL（封顶订阅）含 Chat/Office/Auto 路由（OpenAI+Anthropic）；UBB（按量）含 Cowork/Code/Autopilot 与前沿模型（Astra/Fable）——把「agent 工作负载比聊天贵」显式化，Admin 可用 Graph API 设 tenant/group/user 级预算策略。
+- → 对 OS PM 的含义：微软治理层把「**统一注册表（Agent 365）+ agent 身份（Entra Agent ID）+ 租户内沙盒执行总线（Managed Runtime）+ 常驻托管智能体（Autopilot）**」拼成完整句——这是本库「治理层控制平面 ↔ OS 执行层隔离」二分法的 SaaS 侧完整样板，与 [[Agent Workspace 隔离执行]]（Windows OS 容器/账号隔离）形成跨厂商对照；但**层级纪律不变**：这是 M365/Entra 治理与执行层，**非 Windows OS 执行总线（ODR/Agent Workspace）新 API**。
+⚠️ 来源为 byteiota/codiot/gadgetbond/compsmag 对微软 09-25 官方博文的转述；Home/Code 经 Frontier 数周内铺开、Autopilot 9 月底私有预览，**均非 GA**；Managed Runtime 沙箱语法/SDK 版本与 GA 日期**待 learn.microsoft.com 逐字复核**；纳德拉「工作 OS」为定位表述，勿写成「Windows 已内建」。

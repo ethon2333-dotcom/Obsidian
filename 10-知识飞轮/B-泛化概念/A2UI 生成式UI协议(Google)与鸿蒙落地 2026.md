@@ -49,3 +49,13 @@ aliases: [A2UI, 生成式UI协议, AGenUI]
 - [ ] A2UI 与 Apple App Intents 的 `View Annotations` / SwiftUI 渲染、Windows Copilot Vision 的屏幕感知渲染，三者能否映射到同一 UI-intent schema？（**待补**，跨平台对比缺口）。
 
 #标签/A2UI #标签/生成式UI #标签/HarmonyOS #标签/跨平台
+
+## 2026-09-25 增补：A2UI 1.0.0-alpha01 官方落地 Android Jetpack（来源 [[AppIntent 每日情报 2026-09-25]]）
+
+> 接续本笔记「高德 AGenUI 基于 Google A2UI 协议（09-12）」。本期补 **Google A2UI 协议的官方 Android 实现首版**——把 A2UI 从「鸿蒙侧第三方开源落地（AGenUI）」补上「**Android 官方 Jetpack 原生实现**」，四平台里 **Android 率先给出 A2UI 的官方 OS 级库**。
+
+- **官方发布（2026-09-23，Jetpack alpha-channel）**：新增 artifact 组 `androidx.a2ui` / `androidx.a2ui.compose` + `androidx.compose.material3:material3-a2ui`，均为 **1.0.0-alpha01**。来源：<https://developer.android.com/jetpack/androidx/versions/alpha-channel> + compose-material3 release notes。
+- **协议定位（wpnews.pro 分析）**：A2UI = Google 自家的 **agent-defined UI 规范**——一个 **JSON Lines（JSONL）文档**，LLM 在其中描述 UI，由客户端渲染；目标是以比纯文本聊天更丰富、又不把 LLM 锁死在特定屏幕/弹窗的形式与用户交互。模型**只生成 UI intent、不生成像素/HTML**，宿主原生渲染。
+- **Material3 基础 catalog（material3-a2ui 首版组件）**：`Button` / `Image` / `Icon` / `List` / `Tabs` / `CheckBox` / `Slider` / `TextField` / `Video` / `AudioPlayer` / `Modal` / `ChoicePicker` / `Divider` + `AccessibilityProperty` / `ChecksProperty` 等基础组件，提供 design-system-agnostic 框架 + 开箱即用 Material3 实现。
+- **安全含义**：A2UI 渲染**原生 Compose 组件、无需执行任意代码**——把「模型生成 UI」从「生成可执行前端代码（高注入面）」改为「生成结构化 UI intent + 宿主受限渲染」，与 [[端侧 Router 置信度门控与工具可达性收缩 2026]]「结构性不可达比准确率更可靠」同源。
+- → 对 OS PM：四平台意图框架里，**A2UI 是首个明确跨平台（非厂商锁定）的 UI 层协议**，且本期 Android 给出官方 Jetpack 实现、此前鸿蒙侧有 AGenUI 第三方落地——「意图→UI」闭环从概念走向多端官方/半官方实现。⚠️ alpha01 为首版，基础 catalog 组件集与字段稳定性待后续 release 复核（延续 08-26「A2UI 版本协商防静默空白」工程纪律）。

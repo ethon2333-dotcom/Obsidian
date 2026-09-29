@@ -172,3 +172,74 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 ⚠️ **层级纪律（延续）**：IFA 2026 为微软高层 keynote + 安全媒体转述，**非 Windows agentic security 官方文档逐字**；Execution Containers 的具体实现（是否复用 Agent Workspace 容器、是否受 08-02 `Experimental agentic features` 同一 opt-in 管控、与 ODR 注册关系）仍待 Microsoft 官方 blog/learn 文档复核（见本笔记 08-05 待补项）。四平台意图 Registry 来源轴空白结论不变（见 [[Agent Data Injection 数据注入攻击]]）。
 
 #标签/Windows #标签/CopilotActions #标签/AgentWorkspace #标签/XPIA
+
+## 2026-09-15 增补：Agent 代码签名 + 证书校验/吊销（执行安全三原则落地，来源 [[AppIntent 每日情报 2026-09-15]]）
+
+> 接续 09-13 的 IFA 2026 Microsoft Execution Containers。本期补**执行安全的身份级机制**（容器隔离之外的第三块拼图），把本笔记 07 月「Agent 须数字签名」记录补全为「签名 + 证书校验 + 吊销」。
+
+**① 执行安全三原则（Microsoft 官方表述 corroborated by 第三方综述，2026-09）**
+- **Non-repudiation（不可抵赖）**：Agent 的**每个动作须在日志中可见、可追溯**，相关到 Agent 主体而非交互用户——与 07 月「Agent 账号 + ACL + 审计」一致。
+- **Confidentiality（机密性）**：Agent 访问敏感数据的标准**不低于人类用户**；敏感数据访问须显式、带上下文的批准。
+- **Authorization（授权）**：每个数据查询或特权动作**执行前须用户或管理策略批准**。
+
+**② 🔑 Agent 代码签名 + 证书校验 / 吊销（新机制细节）**
+- 综述明确：Agent 二进制须**数字签名 + 证书校验**，若签名 Agent 被入侵或行为不当可**吊销**——这是本库此前「Agent 须数字签名」记录的**吊销/证书校验补全**，把执行安全从「进程/账号隔离（Agent Workspace）+ 容器隔离（Execution Containers）」再推进到「**身份级可信**」。
+- → 与 [[Agent Workspace 隔离执行]] 09-15 增补同主题；与 Android `EXECUTE_APP_FUNCTIONS` 系统特权签名、HarmonyOS 芯片级可信根形成四平台对照（见 [[四平台意图 Registry 来源轴与权限模型对比 2026]]）。
+- → 对 OS PM：隔离解决「炸不到系统」，签名/吊销解决「谁是可信任的 Agent 主体」——两者正交，做安全路线图应并列排期（延续 08-04「隔离 ≠ 检查」的层级纪律）。
+
+⚠️ **层级纪律（延续）**：来源为 windowsforum 第三方综述（聚合 Microsoft Insider 文档与博客），**非 learn.microsoft.com 逐字**；签名/吊销的具体实现（是否纳入 ODR 注册信任链、是否受 08-02 `Experimental agentic features` 同一 opt-in 开关管控）仍待 Microsoft 官方文档复核。四平台意图 Registry 来源轴空白结论不变。
+
+## 2026-09-16 增补：Agent 代码签名/吊销由第三方升为官方确认（来源 [[AppIntent 每日情报 2026-09-16]]）
+
+> 接续 09-15 的「Agent 代码签名 + 证书校验/吊销（第三方综述）」。本期用 **learn.microsoft.com 官方 agentic security 文档**核验，把该机制从「windowsforum 第三方综述」升格为「**Microsoft 官方确认的 OS agentic security 四大原则之一**」。
+
+**① 官方逐字确认（learn.microsoft.com/en-gb/windows/security/book/operating-system-agentic-security）**
+- 文档将执行安全原则列为四大：**Distinct agent accounts（专属 agent 账号）/ Limited agentic privileges（最小权限）/ Operational trust（操作信任）/ Privacy-preserving design（隐私保护设计）**。
+- **Operational trust 原文**：「Agents that integrate with Windows must be signed by a trusted source so that maliciously or poorly behaved agents can be revoked and blocked with a range of defense-in-depth measures like certificate validation and antivirus.」
+- → 本笔记 09-15 记的「Agent 须数字签名 + 证书校验/吊销可阻断」获 **官方背书**，从第三方口径升为产品原则层表述（与 07 月「Agent 须数字签名」记录闭环）。
+
+**② 对四平台对照的含义**
+- 执行安全从「进程/账号隔离（Agent Workspace）+ 容器隔离（Execution Containers）」推进到「**身份级可信**」——隔离解决「炸不到系统」，签名/吊销解决「谁是可信任的 Agent 主体」，二者正交（延续 08-04「隔离 ≠ 检查」层级纪律）。
+- 与 Android `EXECUTE_APP_FUNCTIONS` 系统特权签名、HarmonyOS 芯片级可信根形成四平台「身份可信」对照，见 [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+
+⚠️ **层级纪律（延续）**：签名/吊销的具体实现（是否纳入 ODR 注册信任链、是否受 08-02 `Experimental agentic features` 同一 opt-in 开关管控）**仍待 learn.microsoft.com 逐字复核**（官方文档只确认原则，未给注册/信任链衔接细节）。四平台意图 Registry 来源轴空白结论不变。
+
+## 2026-09-17 增补：ODR Agent Connectors 权限模式具象化（build 26100.7344+，来源 [[AppIntent 每日情报 2026-09-17]]）
+
+> 接续 09-05/09-16 的 Agent 代码签名 + ODR 受控发现。本期补**第三方实操教程披露的 ODR Agent Connector 权限治理细节**，把「受控发现 + 用户授权」从原则落到可配置形态（⚠️ 第三方教程，非 learn.microsoft.com 逐字）。
+
+- **Agent Connectors 默认关进 Agent Workspace**：自预览 build **26100.7344+**，所有 ODR 注册的 agent connectors（本质是 MCP server）**默认在 Agent Workspace 隔离环境内执行**；Windows 先取得用户许可，才让 agent 运行这些连接器——与 08-05 `odr.exe agent-info add` 注册表 + 09-16 代码签名构成「注册 → 签名 → 隔离 → 授权」闭环。
+- **三档权限模式（连接器/文件夹级）**：教程披露 consent 三态：**Ask every time（每次询问）/ Allow always（始终允许）/ Never allow（永不许可）**——与 07 月「scoped file access 六文件夹 + 三档同意（Allow Always / Ask every time / Never allow）」一致，本次补的是「连接器」维度的同构三档。
+- **头号风险仍为 XPIA**：教程直引官方警告——XPIA 让攻击者不必碰设备，只需让 agent 读到一份夹带恶意指令的文件/UI 元素即可劫持；隔离解「出事后能搞多大」、不解「会不会出事」。与 [[XPIA 跨提示注入]] 元判断「假定注入必然发生，用边界压爆炸半径」一致。
+- → 对 OS PM：Windows 的「系统级意图框架」四层（搜索意图 Ask Copilot / agent 注册 Agent Launchers / 工具注册 ODR / 执行隔离 Agent Workspace）现在在**权限治理**层也齐了——连接器默认隔离 + 三档 consent，是四平台里**用户侧可配置度最高**的 agent 执行总线。
+
+⚠️ 层级纪律（延续）：来源 adersaytech 第三方教程（聚合 learn.microsoft.com + 支持文档），**build 26100.7344+ 与三档权限模式待 Microsoft 官方文档逐字复核**；是否与 08-02 `Experimental agentic features` 同一 opt-in 开关管控仍待补。
+
+## 2026-09-18 增补：Copilot Actions 向 Insiders 分批推送（部署里程碑，非 API 新增，来源 [[AppIntent 每日情报 2026-09-18]]）
+
+> 接续 09-17 的「ODR 连接器权限模式具象化」。本期**无框架 API 净新增**（四平台官方框架层 + BFCL v4 榜本窗口均无 24h 增量，见 [[AppIntent 每日情报 2026-09-18]] 已复核清单）。唯一低于收录阈值的进展是**部署推进**：
+
+- **Insider 分批推送「Now Available」**：据 msftnewsnow（2026-09-18 报道），Copilot Actions 已随 Copilot app 更新 **v1.25112.74+** 经 Microsoft Store 向 Windows Insiders **分批推送可用**；启用路径不变（管理员开 `Settings > System > AI components > Agent tools > Experimental agentic features` → 在 Copilot 作曲器用「Take Action」→ Agent Workspace 内可见可中断执行）。
+- **性质判定（★5/10，低于收录阈值）**：这是**已记录预览能力的部署推进**，能力清单（打开 app / 点 UI / PDF 表提取 / 批量修图 / 邮件起草 / Agent Workspace 内可观测可中断）与 08-02 起记录完全一致，**无新框架 API**。故本期**未新建 B 节点**，仅在此追加状态行。
+- → 对 OS PM：Windows 的 agentic OS 从「能演示的预览」进入「Insider 可装」阶段，但 GA 仍锚定 26H2（9 月下旬~10 月初，enablement package）。其「系统级意图框架四层（Ask Copilot / Agent Launchers / ODR / Agent Workspace）+ 权限治理三档 + 容器隔离 + 身份签名吊销」范式自 09-13/09-16/09-17 以来**无变化**。
+
+⚠️ 层级纪律（延续）：msftnewsnow 为第三方媒体，app v1.25112.74+ 精确发布日期与是否仍受 08-02 `Experimental agentic features` 同一 opt-in 开关管控待 Microsoft 官方 blog 复核。
+
+## 2026-09-25 增补：统一 Copilot 桌面 app 9 月中旬铺开（部署里程碑，非 OS API 新增，来源 [[AppIntent 每日情报 2026-09-25]]）
+
+> 接续 09-18 的「Copilot Actions 向 Insiders 分批推送（v1.25112.74+）」。本期**无框架 API 净新增**（四平台官方框架层 + BFCL v4 榜本窗口无增量，见 [[AppIntent 每日情报 2026-09-25]] 已复核清单）。一个低于收录阈值的进展是**应用层部署推进**：
+
+- **统一 Copilot 桌面 app 9 月中旬铺开**：自 2026-08-18 起管理员可 opt-in 测试、2026 年 **9 月中旬**起向商业/消费用户 broad rollout；新 app 为 **Chromium 架构**，把消费版 Microsoft Copilot 与工作版 Microsoft 365 Copilot **合并为单一 app**（个人/工作 Entra ID 账户同一界面切换、数据不互流）；应用 ID 不变、现有策略继续生效；由 **EdgeUpdate** 机制管理（非 Microsoft Store），要求 EdgeUpdate ≥ 1.3.253.25。来源：<https://simoncarter.ai/posts/microsoft-s-unified-copilot-desktop-app-rolls-out-to-commercial>（MC1457084 时间线 corroboration）。
+- **性质判定（★5/10，低于收录阈值）**：这是**应用层产品合并/分发变更**，**非 OS 执行总线 API 新增**——Copilot Actions / Agent Workspace / ODR / Execution Containers / Agent 代码签名等 OS 框架层自 09-13/09-16/09-17 以来**无变化**。按任务「丢弃应用层、聚焦 OS 级框架」规则，本项**不计入情报增量**，仅在此追加状态行保持连续性。
+- → 对 OS PM：Windows 的 agentic OS 进入「统一 Copilot app 分发」阶段，但**执行总线范式未变**；GA 仍锚定 26H2（9 月下旬~10 月初 enablement package）。
+
+## 2026-09-26 增补：26H2 仍以 enablement package 形态临近铺开（部署里程碑，非 API 新增，来源 [[AppIntent 每日情报 2026-09-26]]）
+
+> 接续 09-25 的「统一 Copilot 桌面 app 9 月中旬铺开」。本期**无框架 API 净新增**（四平台官方框架层本窗口无增量，见 [[AppIntent 每日情报 2026-09-26]] 已复核清单）。一个低于收录阈值的进展是 **26H2 部署时间窗进一步具象化**：
+
+- **Windows 11 26H2**：PCWorld / Windows Central / windowsforum（9-25）一致确认 26H2 以** enablement package** 形态于** 9 月下旬~10 月初**铺开（基于 25H2、仅切版本号+激活已内置功能，不重装）；支持期消费版 +24 月 / 商业版 +36 月。
+- **agentic 入口层补强（搜索/文件层，非执行总线 API）**：**Ask Copilot** 任务栏搜索替代（opt-in，AI 撰写搜索框 + 本地文件/设置自然语言 + 后续接文件/图上传与 Copilot Vision）；**File Explorer 内 Copilot 侧栏**（dockable，直接对话文件夹/文件、文档摘要，不转发到 Copilot app）；另提「Agentic AI functions in the system」。
+- **性质判定（★5/10，低于收录阈值）**：上述为**消费级部署推进 + 搜索/文件层的 agentic 入口**，Copilot Actions / Agent Workspace / ODR / Execution Containers / 代码签名等 OS 执行总线自 09-13/09-16/09-17/09-25 以来**无新 Registry API**。按任务「丢弃应用层、聚焦 OS 级框架」，本项**不计入情报增量**，仅追加状态行保持连续性。
+- → 对 OS PM：Windows agentic OS 进入「26H2 enablement 铺开 + 统一 Copilot app + 搜索/文件层 agentic 入口」阶段，但**执行总线范式未变**；企业可从 25H2 月度更新已陆续收到这些功能、26H2 仅正式启用。
+
+⚠️ 层级纪律（延续）：PCWorld/WindowsCentral/windowsforum 为第三方媒体，26H2 精确 GA 日与 agentic 入口是否仍受 08-02 `Experimental agentic features` 同一 opt-in 管控待 Microsoft 官方 blog 复核。

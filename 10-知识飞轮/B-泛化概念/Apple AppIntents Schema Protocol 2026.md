@@ -204,3 +204,48 @@ enum AssetType { ... }
 → **对 OS PM 的含义**：做 OS 级意图框架时，「可测试性」与「运行时护栏」同等重要——Registry 里声明了能力不等于能力被正确集成，Apple 用进程外测试框架把集成验证变成一等公民，是端侧意图总线成熟度的一个新标杆。
 
 #标签/Apple #标签/AppIntent #标签/SchemaProtocol
+
+## 2026-09-15 增补：iOS 27 正式版（09-14）post-GA 框架确认 + Foundation Models 多模型路由 + Per-Intent 路由待办重开（来源 [[AppIntent 每日情报 2026-09-15]]）
+
+> 接续 08-26 的 App Intents Testing + 08-17 的 Core AI / Foundation Models 多模型。本期是 **iOS 27 正式版（2026-09-14）落地**后的官方 post-GA 确认，把 WWDC26 已宣布的能力升为 GA 级，并**重开 08-31 的 Per-Intent Privacy Manifest 证伪结论**。
+
+**① iOS 27 官方 post-GA 确认的 App Intents 框架能力（developer.apple.com/ios/whats-new，2026-09-14）**
+- **Entity schemas**：把 App 内容贡献进 **Spotlight 语义索引**，Siri 可带「归属回 App」呈现——与 08-15/08-02 记的 `IndexedEntity` + `indexingKey` 语义索引一致，本次为 GA 级官方表述。
+- **Intent schemas**：让用户对内容「自然地采取动作」，**无需定义特定短语、随 Siri 语言理解演进/扩方言免改码**——与 07 月「免训练短语」主张一致，本次为 GA 确认。
+- **View Annotations API（新命名 GA）**：把视图映射为实体，让用户**对话式引用/操作屏幕上的内容**——与 08-02 Session 343 的 `.siriAnnotation` / `.appEntityIdentifier` / `appEntityIdentifier(forSelectionType:)` 一致，本次以「View Annotations API」正式命名 GA。
+- **App Intents Testing 框架（GA）**：已在 08-26 记录，本次随 GA 页确认。
+- → 上述四项均为 **WWDC26 已宣布、本次 GA 落地**，非 WWDC 之外的全新 API；本笔记 08-02/08-26 已覆盖其核心机制。
+
+**② 🔑 Foundation Models 框架：OS 级 Planner 首次把「多模型路由」写进一等公民框架**
+- 官方 post-GA 页明确：Foundation Models 原生 Swift API 现在支持**任意语言模型**——Apple Foundation Models、云端模型（**Claude、Gemini**）或任何**遵循 `Language Model` 协议**的 provider 均可接入；多模态（图+文）；**Dynamic Profiles** 允许在**连续会话内实时切换模型/工具/instructions**，App 行为可在会话中途自适应；**Evaluations 框架**验证 AI 功能在动态条件下行为正确。
+- 与 08-17 已记「Foundation Models 可切换 Apple/Claude/Gemini」一致，本次为 **GA 确认升级**并明确「任何遵循 Language Model 协议者」——**端云路由从架构决策降为运行时旋钮**，与 [[端侧 Router 置信度门控与工具可达性收缩 2026]]「置信阈值=系统确定性触发器」同构，但发生在**模型层**而非工具层。
+- → 对 OS PM：**OS 级意图框架的 Planner 不再被绑定到单一厂商模型**；Apple 把「本地优先 + 低置信/复杂升级云端」从 App 策略升为框架原语。⚠️ 08-31 节「Per-Intent Privacy Manifest」与「混合推理中定制版 Gemini 承担多少」两项仍待补——本次 GA 确认多模型可接入，但未拆分具体链路占比。
+
+**③ Per-Intent Privacy Manifest 待办重开（校正 08-31「证伪」结论）**
+- **08-31 结论回顾**：本笔记 08-31 经官方文档直查判定「Per-Intent Privacy Manifest / 按意图粒度声明云-端路由」**不存在**（第三方博客误读 iOS 17 通用隐私清单）；当时注明「若 iOS 27 正式版新增此类 API 需重新评估」。
+- **GA 后新证据**：WWDC 2026 多源报道（Lushbinary / ByteIota / TechTimes / AlgeriaTech，2026-06-08 起）一致称 Apple 引入 **per-intent privacy manifest declarations**，让开发者**按意图声明「Siri 交互可否路由上云 / 必须留端」**，作为受监管数据（健康/法律/金融）的合规控制。
+- **诚实判定**：官方 post-GA「What's New in iOS 27」页**未逐字列出该 API**（仅列 Entity/Intent schemas、View Annotations、Testing、Foundation Models 多模型等）。→ 由「confirmed non-existent」升为 **「GA 后多源一致报道、但官方页未确认 → 待官方文档逐字复核」**。
+- **对来源轴结论的影响**：即便最终确认，它也是**数据路由目的地（cloud vs on-device）声明**，与 [[四平台意图 Registry 来源轴与权限模型对比 2026]] 08-17/08-31 证伪的「来源/可信度 provenance」**不同轴**——不推翻「意图 Registry 来源/可信度轴全空白」结论，但会为 Apple 补一条「路由轴」声明，待确认后评估。详见 [[四平台意图 Registry 来源轴与权限模型对比 2026]] 09-15 增补。
+
+**④ 沿用结论**：iOS 27 框架层 GA 无 WWDC 之外的全新 API；多模型 Foundation Models + Dynamic Profiles 是本次 GA 确认的架构级信号；Per-Intent 路由待办由「证伪」重开为「待官方复核」。
+
+## 2026-09-20 增补：iOS 27.1 beta 在即（预期 2026-09-21~23，未发布·窗口外前瞻，来源 [[AppIntent 每日情报 2026-09-20]]）
+
+> 接续 09-15 的 iOS 27 GA 确认与 09-18 的「iOS 27.1 beta 尚未发布」校正。本期更新该待办的前瞻状态——**作为窗口外前瞻登记，非 24h 净新增 API**。
+
+- **发布时间窗（第三方基于 MacRumors 口径）**：首个 **iOS 27.1 developer beta 预期 2026-09-21~23** 放出；公开版随 **iPhone Duo（折叠屏）10-23 发布**预装，预期 10-19~21 向全体推送。Macworld 09-20 仍确认「Apple 尚未放出首个 iOS 27.1 beta」——**截至本窗口结束（09-20 21:00）无新 App Intents API 信号**。
+- **已知 27.1 内容（与 App Intents 框架相关）**：
+  - **Siri AI 新增 5 种语言**（法语 / 日语 / 韩语 / 葡萄牙语 / 西班牙语）——属 09-15 已录「Foundation Models 多模型 + Dynamic Profiles」之上的**本地化扩张**，非新 Schema API。
+  - **Messages 任务建议回炉（iOS 27 推迟的两功能之一）**：「发照片 / 执行任务」类对话触发**一键『加到提醒事项』/『加到备忘录』**——这是 **App Intents 驱动的主动式（proactive）能力分发**，等于把 `reminders.createReminder` / `notes.createNote` schema 以**零短语主动建议**形态推到 Messages 内（与 08-02「App Intents 2.0 conversational follow-ups」+ 08-15 `notes.createNote` 富文本参数同源）。**对 OS Agent 含义**：App Intents 正从「用户说 → Siri 做」扩展到「用户在别处说 → 系统主动建议调 App Intent」——proactive 触发面扩大，也意味着 [[XPIA 跨提示注入]] 08-09晚警告的「主动触发场景确认点更难布」问题更突出。
+  - **自动修复弱/复用密码（Passwords App）**：Apple Intelligence + Safari 后台改密——属系统级动作，走既有 Confirmation UI。
+- **对 OS PM 的跟踪意义**：**iOS 27.1 是否带新 `@AppIntent(schema:)` / App Intents Domains 细节**，是下一窗口头号跟踪项（延续 09-18 待办）；当前所有 27.1 报道均未提及新 Schema API，预期为 GA 能力补全 + 本地化，非框架级新增。
+- ⚠️ 诚实标注：上述发布日期与功能清单均来自 MacRumors / appauxin 等第三方前瞻（非 Apple 官方公告），精确 beta 日期与最终功能集待 Apple 官方发布后逐字复核。
+
+## 2026-09-21 增补：iOS 27.1 beta 已放出（Duo SDK，无新 Schema API）+ Model Delegation 反编译信号（来源 [[AppIntent 每日情报 2026-09-21]]）
+
+> 接续 09-20 的「iOS 27.1 beta 预期 09-21~23、尚未发布·窗口外前瞻」。本期**关闭该前瞻待办**——Xcode 27.1 beta（含 iOS 27.1 SDK）已于约 **09-18/19** 放出（早于 09-20 估计窗），但内容为 **iPhone Duo 折叠屏适配 SDK**，非 App Intents 框架新增。
+
+- **iOS 27.1 beta / Xcode 27.1 Beta 1 已放出（约 09-18/19）**：含 Swift 6.4 与 iOS 27.1 / iPadOS 27 / tvOS 27 / watchOS 27 / macOS 27 / visionOS 27 SDK；核心增量是 **iPhone Duo（首款折叠屏）适配工具**——Canvas 新增 Display 分组预览另一块屏、iPhone Duo 模拟器、折叠几何（size classes）+ 保留区域（`reservedRegions`，折痕 division / 摄像头 occlusion）API。→ **App Intents 框架侧无新 `@AppIntent(schema:)` / App Intents Domains API 信号**，与 09-20 前瞻「预期为 GA 能力补全 + 本地化、非框架级新增」一致。**含义：09-20 跟踪项「iOS 27.1 是否带新 Schema API」结论 = 已放出、Duo 向、无 schema 新增**（仍须正式 beta 发布说明逐字复核）。
+- **Model Delegation API 反编译信号（★5/10，非官方）**：开发者 pdfu 在 iOS 27 / macOS 27 代码中发现 **App Intents 内的 Model Delegation API** 机制——允许外部模型（演示含 Claude、GPT-5.6 Terra）作为 Siri 扩展出现，接收 Siri 提示与 tool 定义、处理系统动作并取回结果；另在 **Model Manager Services** 中发现可替换 Siri 服务器端运行模型。→ 与 09-15 已录「Foundation Models 框架支持任意遵循 `Language Model` 协议者」**互为印证**，但本次为**代码级证据、Apple 未官方宣布「用户可选外部模型」**；若未来成为正式功能，将是「外部模型接管部分推理与任务执行」的架构级信号（Siri 从「模型驱动助手」→「可路由到不同模型的接口」）。
+- → 对 OS PM：Apple 侧仍是「App Intents Schema Protocol 框架稳定、多模型路由 GA、无 27.1 schema 新增」；外部模型接入从「官方 GA 多模型」到「代码级 Model Delegation」是值得跟踪的演进方向，但**须 Apple 官方公告后才可收录为框架级信号**。
+⚠️ 诚实标注：Xcode 27.1 beta 日期/功能来自 blakecrosley.com / woozad（开发者博客，09-18~19）/ 网易·163 09-19 转述；Model Delegation 来自 nabamart（09-21）对开发者 pdfu 反编译的转述，Apple 未官方确认。

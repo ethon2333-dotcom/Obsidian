@@ -7,6 +7,7 @@
 ## 本层笔记
 - [[HarmonyOS 意图框架竞品观察]] —— 鸿蒙 ArkAF / 元服务 / A2A，对安卓的启示
 - [[Windows Copilot Actions 竞品观察]] —— Copilot Actions / Agent Workspace 的隔离与确认范式
+- [[AI 辅助竞品情报与行业扫描 学习笔记]] —— 🌱 广度种子：PM 用 AI 做竞品情报收集/行业扫描/结构化/预警（BREADTH，区别于用户研究与自家度量）
 
 ## 关联
 - 主线技术 → [[手机AI智能体知识库]]

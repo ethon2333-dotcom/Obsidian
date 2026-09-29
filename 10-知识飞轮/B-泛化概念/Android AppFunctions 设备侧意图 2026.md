@@ -153,3 +153,54 @@ blognone 等报道：Galaxy S26 / Pixel 10 将带来 AppFunctions + 本地 MCP �
 **C. DMA 强制跨助手开放（监管维度）**：欧盟 DMA 要求 Google 在 **2027-08 前**向竞品助手（ChatGPT/Claude/欧洲本土）开放 11 项 Android AI 能力；AppFunctions Registry 使函数可被**任一认证助手**发现，`EXECUTE_APP_FUNCTIONS` 在 EU 下沉为「认证闸门」。详见新建 [[AppFunctions 跨助手可发现性与 DMA 强制开放 2026]]；具体 11 项清单与官方文本措辞**待补**。
 
 #标签/Android #标签/AppFunctions #标签/设备侧MCP
+
+## 2026-09-16 增补：I/O '26 路由/编排原语库内空白补漏（来源 [[AppIntent 每日情报 2026-09-16]]）
+
+> 接续本笔记 09-01（alpha11）/ 08-26（真机闭环）/ 08-15（真机预览）。本期补 **Android I/O '26（2026-05）官方博客**中三条此前库内未单列为「Android 路由/编排原语」的能力，作库内空白补漏（标真实日期，避免下次检索误判为「新发布」）。
+
+- **① Firebase AI Logic Hybrid Inference（端云推理路由原语）**：新 API 提供 on-device 与云端之间的**显式路由能力**，可设 `PREFER_ON_DEVICE / PREFER_CLOUD / ONLY_ON_DEVICE / ONLY_CLOUD` 等编排模式——与 iOS 27 Foundation Models 多模型路由（[[Apple AppIntents Schema Protocol 2026]]）方向同构，是 Android 侧「端云推理路由」的一等原语。
+- **② ADK for Android（跨端+云多智能体编排）**：首版可用，跨 device 与 cloud 模型构建多智能体工作流，管理 orchestration / context handling / sessions between agents——把「跨应用 Intent 工作流」从单 Agent 调用扩展到多 Agent 协作。
+- **③ A2UI Jetpack Compose Renderer（生成式 UI 原生渲染）**：新 A2UI 库让 agent「speak UI」，经 Jetpack Compose Renderer 把 A2UI 消息**自动渲染为原生 UI 组件**——与 09-12 高德 AGenUI 基于 Google A2UI（[[A2UI 生成式UI协议(Google)与鸿蒙落地 2026]]）形成框架层呼应，补全「意图→UI」闭环。
+
+→ 对 OS PM：Android 的「系统级意图框架」现在在「语义路由」层有 I/O '26 明示的端云路由原语（Hybrid Inference）+ 多智能体编排（ADK）+ 生成式 UI（A2UI Renderer），与另三家对照更完整；但 AppFunctions 仍守 alpha11、无 GA 日期，路由原语 ≠ Registry API（二者互补不替代）。
+
+⚠️ 层级纪律：上述为 I/O '26（2026-05）已发布内容，非本窗口新 API；本次仅作库内空白补漏，标真实日期。
+
+## 2026-09-17 增补：Android 17 GA 确认 + AppFunctions 进 Android 17 智能系统叙事（compileSdk 37，来源 [[AppIntent 每日情报 2026-09-17]]）
+
+> 接续 09-16 的 I/O '26 原语补漏。本期确认 **Android 17 已正式发布**（developer.android.com/ai/intelligence-system 与 android-17-is-here 官方博客同叙事），并把 AppFunctions 明确纳入 Android 17 的「智能系统」能力栈；同时第三方复核确认 **AppFunctions 仍 `1.0.0-alpha11`（2026-08-26）、无 alpha12**。
+
+- **Android 17 把 AppFunctions 放进「Intelligence System」主线**：官方 `developer.android.com/ai/intelligence-system` 将 AppFunctions 与 Remote MCP server、Computer Control 并列为「让系统 agent（如 Gemini）跨本地应用与 web 服务安全编排」的三条新能力；AppFunctions 仍是「把 App 独特功能作为设备端 MCP 可编排工具」的入口。
+- **compileSdk / targetSdk 建议更新**：第三方复核（androidboss，Reviewed 2026-09-06）给出 **compileSdk = 37 / targetSdk = 36** 的当前推荐基线（alpha11 `androidx.appfunctions:appfunctions` + KSP compiler），并提示「alpha 库版本常变、发布前复查 release page」——本库 08-03 记的 `compileSdk ≥ API 36` 现升为 37。
+- **API 面无变化**：窗口内**无 alpha12**；alpha11 的 `@AppFunctionSignature` 动态注册 + `AppFunctionState` 取代 `isEnabled` 仍是最新净新增（见本笔记 09-01 增补）；Gemini 集成仍「受信任测试者私测」。
+- → 对 OS PM：Android 17 GA 把「设备侧意图框架」从实验叙事正式抬进 OS 主版本，但 **AppFunctions 自身仍是 alpha、未 GA**——「框架进主版本」≠「API 稳定」，开发者仍须按 alpha 节奏跟版本（延续本笔记「AppFunctions 何时 GA 待补」待办）。
+
+⚠️ 诚实标注：Android 17 具体 GA 日期在官方博客为「现已发布」表述，第三方镜像未给精确日；AppFunctions 仍 alpha11 / compileSdk 37 为第三方复核+官方 release page 一致结论，具体 Android 17 GA 日待补。
+
+## 2026-09-21 增补：AppFunctions 无 alpha12 + App Functions Manager 安全护栏信号（来源 [[AppIntent 每日情报 2026-09-21]]）
+
+> 接续 09-17 的「Android 17 GA 确认 + AppFunctions 仍 alpha11、无 alpha12」。本期确认**窗口内 alpha12 仍未发布**，并补一条**低置信的「执行安全」信号**——Google 被报道在 App Functions Manager 框架层嵌入 agent 安全护栏。
+
+- **alpha12 仍未发布**：窗口内 Android AppFunctions 仍守 **`1.0.0-alpha11`（2026-08-26）**，无 alpha12；`@AppFunctionSignature` 动态注册 + `AppFunctionState` 取代 `isEnabled` 仍是最新净新增（见本笔记 09-01）。
+- **「安全笼 / Safety Cage」信号（★5/10，低置信，待官方 SDK 注释复核）**：第三方分析（ai.jp.net，09-21）称 Google 已把一套 AI agent 安全框架**深度嵌入 Android OS**，核心组件是 **App Functions Manager framework**，目前**仅开发者文档与 SDK release notes 有暗示**、尚未面向用户；定位是「让自主 agent 规划/预订等任务时不损坏设备」。→ 这与本库已录的 AppFunctions 权限模型（`EXECUTE_APP_FUNCTIONS` 闸门 + `AppFunctionState` 门控）方向一致，但**尚未在官方 SDK release notes 逐字确认「安全笼」是新增机制还是对既有门控的复述**；且它属于**执行安全**（防 agent 越权），不是意图框架 API 新增。
+- → 对 OS PM：Android 在「设备侧意图框架」的执行安全上仍走「权限闸门 + 状态门控」路线；若「App Functions Manager safety cage」被官方确认，将是四平台里**又一处 OS 内建 agent 安全护栏**信号（与 Windows ODR / Agent Workspace、Apple Session 347 风险元数据、HarmonyOS 可信协商并列），但当前仅二手分析，**须 learn.microsoft.com / Android 开发者文档逐字复核**后才有收录价值。
+⚠️ 诚实标注：「safety cage」来自 ai.jp.net 二次分析（援引开发者文档/SDK 注释暗示），非 Google 官方公告；具体机制、是否等价于既有 `AppFunctionState` 门控、API 名均待补。Android 18（2027）AI-native 传闻（thenextgentechinsider，持续 Canary）属前瞻、低质，已丢弃不收录。
+
+## 2026-09-25 增补：alpha12 净新增 API（scope / activityId / serialize 元数据 / Uri 约束 + 破坏性移除 AppFunctionContext，来源 [[AppIntent 每日情报 2026-09-25]]）
+
+> 接续 09-21「alpha12 仍未发布」与 09-01「alpha11 动态注册」。本期 **官方 Jetpack Release Notes 确认 `1.0.0-alpha12`（2026-09-23）发布**——这是自 alpha11（2026-08-26）以来首个版本号进位，含多项对 Registry/权限/执行上下文有影响的 API 变更。
+
+**A. `1.0.0-alpha12`（2026-09-23，官方 Release Notes，窗口内净新增）**
+- **`scope` 字段加入 `AppFunctionMetadata` 与 `AppFunctionSearchSpec`（I4344c）**：Registry 元数据与搜索规格新增 **`scope` 维度**——四平台意图框架里**首个由官方 Jetpack 显式加入元数据/搜索的「作用域」字段**，直接服务 Registry 的**可见性/权限模型**（谁能发现这个函数）。→ 更新 [[四平台意图 Registry 来源轴与权限模型对比 2026]]「运行时动态可见性 API」与「权限/Registry 模型」行：Android 仍是唯一有公开动态可见性 API 的平台，现新增 scope 维度（具体语义待官方文档逐字段确认：是调用方可见性作用域还是功能分类域）。
+- **`activityId` 加入 `ExecuteAppFunctionRequest`（I6ac86）**：把函数执行请求**绑定到一个 Activity 上下文**——执行安全相关：把「一次工具调用」锚定到具体的 UI 表面/Activity，便于确认 UI 与执行审计（与 [[Confirmation UI 安全机制]]「执行须绑定可感知上下文」同方向）。
+- **`AppFunctionData#serialize` 现要求调用方提供元数据（I61eca）**：序列化须由调用方附带元数据。**可能是来源/可信度轴（provenance）的信号，但须谨慎**——此处「元数据」更可能是序列化结构元数据，未必等于「数据从哪来/可不可信」的 provenance；本库「四平台意图 Registry 来源轴全空白」结论（[[四平台意图 Registry 来源轴与权限模型对比 2026]]）**不因此改变**，待官方文档逐字段确认。
+- **`AppFunctionUriValueConstraint` 作为公共 API 加入**：对 Uri 类型参数/返回值施加约束（如限制 scheme/路径），是**参数级安全约束**（防路径穿越/限制可访问 URI 范围），补足此前仅 `IntValueConstraint` / `StringValueConstraint` 的约束族。
+- **运行时注册 API 标 `@ExperimentalAppFunctionsApi`（Idb2ca）**：`registerAppFunction` / `registerAppFunctions` / `RegisterAppFunctionRequest` / `CallbackAppFunction` 显式标记 experimental——呼应 09-01 `@AppFunctionSignature` 动态注册走向「运行时可塑 Registry」，但成熟度仍低。
+- **破坏性变更：移除 `AppFunctionContext` 与 `AppFunctionConfiguration`（I9dd8f）**：此前 07-31/Android 17 博文示例首参恒为 `appFunctionContext: AppFunctionContext`（Registry 注入调用方身份的位置）、`AppFunctionConfiguration` 承载配置——**两者在 alpha12 被删除**。这是 **alpha→1.0 前的 API 震荡信号**，意味着开发者须改写法；也削弱了本笔记 08-03 开放问题「`AppFunctionContext` 是否携带可验证调用方身份」的追问基础（该对象被移除，身份注入位置待 alpha13+ 重定义）。
+- 另：新增内联具体化 `getHandleAppFunctionRequestAdapter` 重载（Ic1b4e）。
+- 含义：AppFunctions 仍 **experimental / 无 GA 日期**；alpha12 把 Registry 的**作用域（scope）+ 执行上下文（activityId）+ 参数约束（Uri）+ 序列化元数据**四块同时推进，方向是「更可控的 Registry 与更安全的执行」，但 API 仍在剧烈变动期（破坏性移除首参对象即为证）。
+
+**B. 诚实标注**
+- alpha12 的 `scope` 语义、`serialize` 元数据字段定义均**待 developer.android.com/ai/appfunctions 官方文档逐字段确认**；`scope` 是否等于「调用方可见性/权限作用域」、还是「功能分类域」影响搜索召回，须以官方文档为准。
+- `AppFunctionContext` / `AppFunctionConfiguration` 移除后，调用方身份注入的新机制（如有）待 alpha13+ 或官方指南。
+- 本次为官方 Release Notes 直查确认（developer.android.google.cn/jetpack/androidx/releases/appfunctions），非二手。

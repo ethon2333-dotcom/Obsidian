@@ -80,6 +80,16 @@ DualView（arXiv 2607.03821）提出了一个比进程/账号隔离**粒度更�
 - 与 Android（系统特权签名 `EXECUTE_APP_FUNCTIONS_TRUSTED`）、HarmonyOS（芯片级可信根 TEE）形成对照：三者都用「签名/可信根」给 Agent 主体背书，但 Windows 额外强调**运行时可吊销**，是身份级治理最显式的样本。详见 [[Windows Copilot Actions 与 Agent Workspace 2026]] 09-15 增补 + [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
 - ⚠️ 仍待 Microsoft 官方文档确认：签名/吊销是否纳入 ODR 注册信任链、是否受同一 opt-in 开关管控。
 
+## 2026-10-08 增补：MXC GA 把隔离升为 GA 级「五档可调」容器级（来源 [[AppIntent 每日情报 2026-10-08]]）
+
+> 接续 09-13「Microsoft Execution Containers 把隔离升为容器级」与 09-15「签名/吊销补身份可信」。本期 MXC 由 preview 升 **GA**，把本笔记「独立低权限账号 + ACL + 受控文件夹 + 容器级」再推进为**五档可调的 GA 级隔离栈**。
+
+- **五档隔离粒度（GA 官方确认）**：进程 / 会话 / WSL 容器（WSLc，Build 2026 随 WSL 3）/ 虚拟机 / Windows 365 for Agents——组织按 workload 选隔离形状，而非「一种沙箱 fits all」。
+- **身份分离是隔离的第二支柱**：每个动作归到 agent 而非用户，IT 可区分两者；GitHub Copilot 演示中 Defender 拦截恶意网页指令并切断 agent 的 SharePoint 访问、不影响用户——把「隔离域内的爆炸半径」与「可归因于哪个主体」解耦，是隔离范式的身份级补全（与 09-15 签名/吊销同方向但不同机制：吊销针对 agent 二进制，身份分离针对运行时动作归属）。
+- **沙箱外盲区（诚实标注）**：内置文件工具、远程 MCP server 不在 OS 级沙箱内——意味着「隔离执行」对这两类动作不保证 OS 强制边界，须叠加 [[Confirmation UI 安全机制]]（敏感动作确认）+ 流量级检测（Project Perception）。
+- → 对四平台对照：Windows 现以 **GA 级五档容器隔离 + 运行时身份分离** 领先（Apple Extensions 经 App Review + Confirmations / Android 系统特权签名 `EXECUTE_APP_FUNCTIONS_TRUSTED` / HarmonyOS 芯片级可信根 TEE 均为不同层级的隔离/可信原语）。详见 [[Windows Copilot Actions 与 Agent Workspace 2026]] 10-08 增补 + [[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+- ⚠️ 仍待 Microsoft 官方文档确认：MXC 与既有 Agent Workspace 容器/独立账号的关系（复用还是并列）、是否受 08-02 `Experimental agentic features` 同一 opt-in 管控、沙箱外两类动作的治理归属。
+
 #标签/隔离执行 #标签/AgentWorkspace #标签/安全
 
 ## 2026-09-26 增补：Copilot Managed Runtime = 租户内沙盒执行总线的 SaaS 侧样板（来源 [[AppIntent 每日情报 2026-09-26-晚]]）
@@ -89,3 +99,12 @@ DualView（arXiv 2607.03821）提出了一个比进程/账号隔离**粒度更�
 - **Managed Runtime 把「隔离 + 身份 + 审计」落到租户级**：Code 生成的 App 跑在 M365 租户内的**隔离环境**，由 IT 治理、出现在 M365 管理中心供策略审查；这与本笔记 07 月「独立低权限账号 + ACL + 受控文件夹」、09-13「Execution Containers 容器级」构成**跨层级呼应**——隔离范式的核心三件套（跑在哪儿/权限多大/能否被审计吊销）在 SaaS 侧被微软产品化。
 - **与四平台 OS 隔离范式对照**：Windows（Agent Workspace 容器 + 独立账号 + 签名/吊销）/ Android（系统特权签名 `EXECUTE_APP_FUNCTIONS_TRUSTED`）/ HarmonyOS（芯片级可信根 TEE）/ **M365 Managed Runtime（租户沙箱）**——四者都在回答「agent 在哪跑、权限多大、能否被治理」，但层级不同（OS 内核级 vs SaaS 租户级）。
 - ⚠️ 层级纪律：Managed Runtime 属 M365/Entra 治理与执行层，**不是 Windows OS 执行总线（ODR/Agent Workspace）的扩展**；勿写成「Windows OS 已内建托管运行时」。来源为微软 09-25 官方博文转述（byteiota/codiot/gadgetbond），沙箱语法/SDK 与 GA 日期待 learn.microsoft.com 复核。
+
+## 2026-10-02 增补：连接器白名单 = 执行边界，consent 时长 = 授权窗口（来源 [[AppIntent 每日情报 2026-10-02]]）
+
+> 接续 09-26「Copilot Managed Runtime 租户级隔离」。本期 Windows 在 26H2 中首次公开 **agent 连接器治理策略项**，把本笔记的「隔离 = 执行边界」进一步落到可配置控制面。
+
+- **`AgentConnectorAccessPolicy`（连接器白名单）**：限制 Agent 可访问的 MCP server/host 范围——本质是**把「隔离边界」从账号/文件夹级推进到「工具/连接器级」**：Agent 即使被注入，能调用的外部工具也被策略收窄，直接压低 XPIA 横向移动面。与 09-13 Execution Containers（容器级）、07 月「独立账号 + ACL + 受控文件夹」构成**账号→文件夹→容器→连接器**四层收窄的隔离栈。
+- **`AgentConsentDuration`（授权持久化时长）**：控制 consent 决定保留多久——把 [[Confirmation UI 安全机制]] 的「每次敏感动作显式同意」从「每次」变成「可设窗口」，是确认机制的**持久化治理维度**；窗口越长，被劫持后的行动窗口越大，需与最小权限权衡。
+- **版本割裂**：上述两项 + `ConfigureAgentConnectors` + `DisableSettingsAgent` **仅企业版/教育版/IoT 企业版**可配置；家庭版/专业版无法关闭或白名单化连接器——意味着「隔离边界可治理」在消费市场实际缺位，与 EU AI Act Article 15 抗注入可举证性要求存在落差（见 [[Windows Copilot Actions 与 Agent Workspace 2026]] 10-02 增补）。
+- ⚠️ 层级纪律：来源 cnBeta/163 引 Neowin，**待 learn.microsoft.com 逐字复核**策略项命名与版本限制。

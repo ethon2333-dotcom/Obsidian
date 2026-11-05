@@ -50,3 +50,11 @@ aliases: [语义路由]
 - 平台：[[Apple AppIntents Schema Protocol 2026]] ｜ [[HarmonyOS Intents Kit 与 ArkAF 2026]]
 
 #标签/语义路由 #标签/端侧Planner #标签/IntentResolution
+
+## 2026-11-05 增补：Apple 语义索引「任意实体」放宽——schema 约束松动（来源 [[AppIntent 每日情报 2026-11-05]]）
+
+> 接续本笔记「Apple：IndexedEntity → Spotlight 语义索引」与「适用边界」段（端侧 Planner 适合窄域 Schema）。本期捕获 Apple 在 iOS 27.3 开发者预览中 **放宽语义索引的 schema 约束**。
+
+- **范式松动**：Apple 官方表述「Siri AI can now surface any entity in the Spotlight semantic index, not just the ones that fit an existing schema」——此前 Siri 只能路由/浮现 **符合 system schema 域** 的实体（本库长期记「schema 覆盖不到是断崖」），现在允许 Siri 触达 **任意经 App Intents 暴露的实体**，**介于封闭 schema 与完全 schema-less 之间**。
+- **对端侧路由的含义**：Apple 的语义路由从「靠预定义 schema 类型匹配」转向「靠 App Intents 暴露的能力 + Spotlight 索引」做更宽匹配——**降低了长尾能力被 schema 断崖卡死的代价**，但代价是路由结果更依赖开发者对 entity 的索引/描述质量（与 [[Apple AppIntents Schema Protocol 2026]]「Schema 质量决定路由上限」主张一致，只是把「质量」从「schema 对齐」部分转移到「实体索引/描述」）。
+- **与端侧 Planner 架构的关系**：路由放宽后，端侧小模型 Planner 可在 schema 之外借 App Intents 工具描述做语义匹配，与 [[Function Calling 端侧工具调用]]「小模型本地路由 + 低置信升级云端」混合架构互补；但「任意实体」也放大了「低置信/歧义实体被错误浮现」的风险，需 [[端侧 Router 置信度门控与工具可达性收缩 2026]] 类的置信门控兜底。

@@ -204,3 +204,158 @@ blognone 等报道：Galaxy S26 / Pixel 10 将带来 AppFunctions + 本地 MCP �
 - alpha12 的 `scope` 语义、`serialize` 元数据字段定义均**待 developer.android.com/ai/appfunctions 官方文档逐字段确认**；`scope` 是否等于「调用方可见性/权限作用域」、还是「功能分类域」影响搜索召回，须以官方文档为准。
 - `AppFunctionContext` / `AppFunctionConfiguration` 移除后，调用方身份注入的新机制（如有）待 alpha13+ 或官方指南。
 - 本次为官方 Release Notes 直查确认（developer.android.google.cn/jetpack/androidx/releases/appfunctions），非二手。
+
+## 2026-10-02 晚增补：Android 17 企业策略可关 AppFunctions 数据（setAppFunctionsPolicy / APP_FUNCTIONS_DISABLED，跨平台治理收敛，来源 [[AppIntent 每日情报 2026-10-02]]）
+
+> 接续 09-25「alpha12 净新增 API」。本期补**一个企业/治理层信号**（非框架 API 新增，但属 AppFunctions 执行边界的管控面）——与晨间跑（[[AppIntent 每日情报 2026-10-02]]）的 Windows 连接器策略治理构成跨平台收敛。⚠️ 口径：iseC7 引 Google Android 17 企业页（09-16 更新），非 24h 窗口，作治理面 corroboration。
+
+**① Android 17 企业管控对 AppFunctions / AI 自动化**
+- **`setAppFunctionsPolicy` + 标志 `APP_FUNCTIONS_DISABLED`**：管理员可**全局禁用 AppFunctions 数据给 on-device agents**——authorized assistant apps 经 AppFunctions 框架收到的设备级数据，在工作 Profile 默认不返回，企业可一键关。
+- **`setNearbyAppStreamingPolicy`**：在 COPE 设备的个人 Profile / 全托管设备**整体关闭 AI 自动化**（Agent 跨 App 工作流编排）。
+- 工作 Profile 作天然隔离边界：工作侧数据默认不进 AppFunctions 通道，BYOD 个人侧由用户决定。
+- 另：Certificate Transparency 默认开、ACCESS_LOCAL_NETWORK 新运行时权限（API 37）等通用企业加固。
+
+**② 对 OS PM 的含义：跨平台「agent 执行边界可经 MDM 治理」收敛**
+- **Google**：用 `APP_FUNCTIONS_DISABLED` 把「AppFunctions 数据给 agent」作为可关闭开关（默认工作 Profile 不返回）。
+- **Microsoft**（晨间跑）：用 `ConfigureAgentConnectors` / `AgentConnectorAccessPolicy`（Allow-list）+ `AgentConsentDuration` 把「agent 可用 MCP server」白名单化、授权限时——但**仅企业/教育/IoT 企业版**，家庭/专业版不可控。
+- → 二者**方向相反但同构**：都把「agent 能接什么数据/工具」从应用层决策升为**企业管控面**；Google 偏「默认关 + 开关」，Microsoft 偏「白名单 + 限时授权」。这是四平台里 Android/Windows 两支在「agent 执行边界治理」上的首个对照样本，补 [[四平台意图 Registry 来源轴与权限模型对比 2026]]「权限/Registry 模型」行的治理维度。
+
+⚠️ 诚实标注：Android 17 企业页 09-16 更新、非 24h；`setAppFunctionsPolicy`/`APP_FUNCTIONS_DISABLED` 具体语义与是否覆盖 Gemini 私测通道待 developer.android.com/ai/appfunctions 官方文档确认；与 Windows 治理面为治理层对照，非 OS 执行总线 API 新增。
+
+## 2026-10-05 增补：Android Context Engine（Android 18 proactive caller of AppFunctions）+ Intelligence System 框架（来源 [[AppIntent 每日情报 2026-10-05]]）
+
+> 接续 09-25「alpha12 净新增 API」与 10-02 晚「企业策略可关 AppFunctions 数据」。本期补 **一个语义路由层的新维度**——AppFunctions 首次出现 **OS 原生的 proactive 调用方**（Android Context Engine），并补 **Android 18 被正式定位为「Intelligence System」** 的框架信号。⚠️ 层级：来自 Android Dev Summit 2026（10-28~29）公告 cluster + 第三方解读，**非 Android 开发者文档逐字 API**，属前瞻信号（★6/10，低于 alpha 级 API 变更）。
+
+**A. Android Context Engine = AppFunctions 的第三类调用方（proactive）**
+- **机制**：Android 18 新增**后台服务**，持续追踪 user intent / screen context / app tasks，**在用户开口前就主动行动**（proactive, not reactive）。它是 AppFunctions 的新一类 caller——此前 caller 集 = {Gemini, 持 `EXECUTE_APP_FUNCTIONS` 的第三方 agent}，现加入 **OS 原生 Context Engine** 作 proactive 编排者。
+- **例**：notes app 看到购物清单 → 主动提议加购物车；检测到下班发伴侣消息 → 主动提议自动化。这不是 chatbot 响应 prompt，而是「OS 级 agent 看着并行动」。
+- **对端侧意图路由的含义**：Android 的「语义路由」从「被动响应用户指令」升级为「OS 主动观测上下文并提议/执行」——与 Apple 主动式 App Intents 分发（Messages「加到提醒事项」）、Windows Copilot Vision、鸿蒙小艺导航条「复制即触发」形成**四平台主动式意图路由收敛**；但 Android 这次由**独立 OS 后台服务（Context Engine）**驱动，而非单层 UI 触发。详见 [[Intent Router 语义路由]]。
+
+**B. Android 18 = Intelligence System 框架**
+- Gemini Nano v3 作为 **resident on-device model** 与常驻 App 并列驻内存（**12GB RAM 下限**）；旧 Google Assistant 组件 deprecation，Gemini 成系统服务底层（非上层 App）。
+- AppFunctions 声明机制不变（`@AppFunction` + `@AppFunctionSerializable` → KSP 生成 XML → OS 索引 → agent 经 `AppFunctionManager` 发现执行），仅 caller 多出 Context Engine。
+- Dev Summit 2026（10-28~29, Bay View）议程**首次把 Android 18 摆上台面**；AppFunctions 被定位为「maturing in Android 18」，summit session 预期 signal **production readiness for Android 18**（非 GA 承诺）。
+
+**C. 权限/确认边界在 proactive 场景下的风险放大（呼应 [[确认机制]] [[Confirmation UI 安全机制]]）**
+- `EXECUTE_APP_FUNCTIONS` 仍是「一次性 blanket grant、非 per-function」；在 **proactive-before-ask** 语境下，Context Engine 可能基于上下文发起调用而用户未显式授权该次动作，**确认边界更模糊**——这是 Android「确认下放 App」路线在主动式场景下的风险放大。
+- 与 Microsoft Taxonomy v2.0（2026-04/06，非本窗口）consent-architecture hardening 同构：deterministic invocation / compound-action decomposition / semantic summarization of approval / tiered approval。proactive caller 更需要「确定性调用确认」而非「agent 自行决定何时弹窗」。
+
+**D. DMA 时间线 consolidation（已录 [[AppFunctions 跨助手可发现性与 DMA 强制开放 2026]]，本次补具体锚点）**
+- 欧盟 2026-07-16 绑定规格决定：11 项 Android AI 能力（含 AppFunctions）须于 **Android 18 前、2027-08-01 前**向第三方认证助手开放；并发 hotword 检测推至 Android 19（2028-08-01）。
+
+⚠️ 诚实标注：Android 18 仍 Canary / 未 GA；Android Context Engine 为 Dev Summit 公告 + 第三方解读（dev.to/byteiota/beebom/streamingmeme），**非 Android 开发者文档逐字 API**；具体 API 名、是否独立系统 service、与 `AppFunctionManager` 调用关系、是否受 `EXECUTE_APP_FUNCTIONS` 同一闸门约束**待 developer.android.com/ai/appfunctions 官方文档确认**；Dev Summit 为 2026-10-28 召开、非已发生发布。
+
+## 2026-10-09 增补（2026-10-13 二次复核确认：alpha13 确为真实发布，10-10 更正段已被推翻）：AppFunctions `1.0.0-alpha13`（函数侧访问限制 `@AppFunctionAccessLevel` + 重命名，纠正 10-08 漏捕，来源 [[AppIntent 每日情报 2026-10-09]]）
+
+> 接续 09-25「alpha12 净新增 API（`scope` + `serialize` + `AppFunctionUriValueConstraint`）」与 10-02 晚「企业策略可关 AppFunctions 数据」、10-05「Context Engine proactive caller」。本期由官方 Jetpack Release Notes 确认 **AppFunctions `1.0.0-alpha13`（2026-10-07 发布）**，上一轮（10-08）误判「alpha12 无 alpha13」未捕获，本运行纠正。
+
+**① 权限模型第三个原语：`@AppFunctionAccessLevel`（access restriction setting）**
+- alpha13 新增 `@AppFunctionAccessLevel` 注解，**在「函数侧」声明访问限制**——与既有的「调用方持 `EXECUTE_APP_FUNCTIONS` 权限」（alpha 以来）+「函数可见性 `scope`」（alpha12）构成 AppFunctions 权限模型三向约束：**谁能调（caller 权限）/ 谁能看见（scope 可见性）/ 函数自身允许谁访问（access level）**。
+- 这是四平台设备侧 MCP / 意图 Registry 里**首个「函数自身声明可访问性」原语**；此前 Android 仅 caller 侧 + 可见性侧，缺函数侧自声明。
+- ⚠️ 级别语义待确认：官方 Release Notes 仅写「support access restriction setting」，**未展开 @AppFunctionAccessLevel 的级别定义**（如 public/protected/same-app/system 等）。确切语义待 `developer.android.com/ai/appfunctions` 官方文档逐字段确认（延续 09-25 `scope` 纪律，不猜测级别）。
+
+**② 破坏性重命名（迁移注意）**
+- `@AppFunction` 注解 → **`@AppFunctionDeclaration`**（I4b15d）：开发者标注名变更，需随 KSP 编译器插件同步迁移。
+- `ObserveAppFunctionsEvent` → **`AppFunctionsChangeEvent`**（Iec918）：运行时变更事件重命名。
+- `AppFunctionService` 现可获取 **`AppFunctionMetadata`**（If1117）：服务侧执行时可按元数据做策略/审计。
+- Bug Fixes：`AppFunctionData` 支持全部内建 proxy 类型（LocalDate / LocalTime / Instant / ZoneId）。
+
+**③ 与来源轴结论的关系**
+- `@AppFunctionAccessLevel` 是**访问/权限维度**，非「数据从哪来、可不可信」的来源/provenance 轴——本库最高优先待办「来源轴四平台全空白」结论**不因此改变**。详见 [[四平台意图 Registry 来源轴与权限模型对比 2026]] 10-09 增补。
+
+⚠️ 诚实标注：alpha13 发布于 2026-10-07（落在上轮窗口边缘），由本运行直查官方 Release Notes + alpha-channel 确认；`@AppFunctionAccessLevel` 级别语义待官方文档；`AppFunctionDeclaration` 重命名对既有 `@AppFunction` 标注代码的迁移影响待社区/官方迁移指南确认。
+
+## 2026-10-10 更正：alpha13 记载疑似误记，最新官方版本仍为 alpha12（2026-09-23）
+
+> 来源：[[AppIntent 每日情报 2026-10-10]]。本段纠正本笔记 10-09 增补段（及其引用的 10-09 A 笔记）所载 `1.0.0-alpha13`（2026-10-07）相关记录。
+
+- **二次核验结论（2026-10-10）**：直查官方 `developer.android.com/jetpack/androidx/releases/appfunctions` 发布页 + `@AppFunction` / `AppFunctionSchemaDefinition` API Reference，**最新版本仍为 `1.0.0-alpha12`（2026-09-23）**，**无 alpha13**。`@AppFunction` 注解仍标注「Added in 1.0.0-alpha12」，并未被重命名为 `@AppFunctionDeclaration`；`@AppFunctionAccessLevel` 在官方源不可见。
+- **对 10-09 段的影响**：该段所述「`@AppFunctionAccessLevel` 函数侧访问限制原语」「`@AppFunction`→`@AppFunctionDeclaration` 重命名」「`ObserveAppFunctionsEvent`→`AppFunctionsChangeEvent` 重命名」均**未能从官方源 corroboration，疑似误记**，本笔记不再将其作为已确认事实引用。AppFunctions 权限模型的「三向约束（caller 权限 + scope 可见性 + 函数侧 access level）」推论**降级为待官方确认**，当前可确认的权限模型仍维持 alpha12 的「`EXECUTE_APP_FUNCTIONS` 闸门 + `scope` 可见性 + `AppFunctionState` 状态门控」三块（见本笔记 09-01 / 09-25 增补）。
+- **当前可确认最新净新增**：仍是 **alpha12（2026-09-23）**（scope / activityId / serialize 元数据 / AppFunctionUriValueConstraint / 移除 AppFunctionContext），已录于本笔记 09-25 增补；**alpha13 及之后版本在 2026-10-10 时点官方源均未出现**。
+- **对 dedup / 后续跑的影响**：未来每日跑对 Android 侧应以「官方最新 = alpha12（09-23）」为基线检索 alpha13+，而非以 10-09 误记的「alpha13 已捕获」为基线，避免漏检真正的 alpha13/alpha14 发布。
+
+⚠️ 诚实标注：本更正基于 2026-10-10 对官方发布页与 API Reference 的 WebSearch 直查（WebFetch 直连失败，以搜索索引快照 + API Reference 交叉确认）；若 Google 后续发布 alpha13 并回填发布页，应以新发布页为准，本笔记届时再更新。
+
+## 2026-10-13 复核（推翻本段 10-10 更正）：alpha13 经官方源二次直查确为真实发布
+
+> 来源：[[AppIntent 每日情报 2026-10-13]]。本段二次复核本笔记 10-10 更正段，结论已反转。
+
+- **10-13 官方源直查结论**：`developer.android.com/jetpack/androidx/releases/appfunctions` 发布页、alpha-channel 与 all-channel 发布列表**均明确列出 `1.0.0-alpha13`（2026-10-07 发布）**，API 变更逐字为：① Added `@AppFunctionAccessLevel` annotation, supporting access restriction setting (Id47e1)；② Renamed `AppFunction` annotation to `AppFunctionDeclaration` (I4b15d)；③ Renamed `ObserveAppFunctionsEvent` to `AppFunctionsChangeEvent` (Iec918)；④ Surface `AppFunctionMetadata` in `AppFunctionService` (If1117)；⑤ Bug fix：`AppFunctionData` 支持全部内建 proxy 类型（LocalDate/LocalTime/Instant/ZoneId）。
+- **对 10-10 更正段的影响**：该段「最新仍为 alpha12、无 alpha13、`@AppFunctionAccessLevel` 不可见、`@AppFunction` 未重命名」的结论**系当时搜索索引快照滞后导致的误判，已被 10-13 复核推翻**。本笔记 10-09 增补段所述内容（函数侧 `@AppFunctionAccessLevel` 三向约束、`@AppFunction`→`@AppFunctionDeclaration` 重命名等）**真实有效，维持原结论**。
+- **当前可确认最新版本**：`1.0.0-alpha13`（2026-10-07），无 alpha14（10-13 时点）。AppFunctions 权限模型三向约束（caller `EXECUTE_APP_FUNCTIONS` 权限 + `scope` 可见性 + 函数侧 `@AppFunctionAccessLevel`）维持成立；`@AppFunctionAccessLevel` 具体级别语义仍待 `developer.android.com/ai/appfunctions` 官方文档逐字段确认（不猜测 public/protected/system 等级别）。
+- **对 dedup / 后续跑的影响**：未来每日跑应以「官方最新 = alpha13（10-07）」为基线检索 alpha14+；10-10 跑遗留的「以 alpha12 为基线」指示已失效，请勿沿用。
+
+⚠️ 诚实标注：本复核基于 2026-10-13 对官方 Jetpack Release Notes 发布页 + alpha-channel + all-channel 三处官方列表的 WebSearch 直查交叉确认；`@AppFunctionAccessLevel` 级别语义官方 Release Notes 仍未展开，待官方文档逐字段确认。
+
+## 2026-10-26 增补：AppFunctions 跳到首个 Beta `1.0.0-beta01`（2026-10-21，首个 beta 渠道 + `description`→`instructions` 对齐 MCP 命名，推翻「等待 alpha14」假设，来源 [[AppIntent 每日情报 2026-10-26]]）
+
+> 接续 10-13「官方最新 = alpha13（10-07）、无 alpha14（10-13 时点）」的 dedup 基线。本期由官方 Jetpack Release Notes 确认 **AppFunctions 未发 alpha14、而是跳到 `1.0.0-beta01`（2026-10-21）**——这是自 2026-05 实验性预览以来**首个 Beta 渠道版本**，意味着 API 面从「剧烈变动期（破坏性重命名频发）」迈入「趋于稳定、接近 1.0」的成熟度阶梯。⚠️ 层级：官方 Jetpack Release Notes 逐字确认，非二手。
+
+**① 版本号进位 = 成熟度里程碑（高价值）**
+- 自 alpha10（07-01）→ alpha11（08-26）→ alpha12（09-23）→ alpha13（10-07）一路破坏性重命名（`@AppFunction`→`@AppFunctionDeclaration`、`AppFunctionContext` 移除等）后，**beta01 标志 AppFunctions 进入「beta 稳定化」通道**——开发者可预期 API 收敛，不再每版本破坏性迁移。这与 09-17 记的「Android 17 把 AppFunctions 抬进主版本、但 API 仍 alpha」形成对照：**框架进主版本 ≠ API 稳定，但 beta01 是 API 稳定化的真正信号**。
+- 对 dedup/后续跑的影响：未来每日跑应以「官方最新 = beta01（10-21）」为基线检索 beta02+，此前 10-13 的「alpha13 为基线」指示仍有效但版本号已进位，请勿沿用「等待 alpha14」的旧假设（10-18 跑曾把 alpha14 列为待办，已被本运行推翻）。
+
+**② `AppFunctionAppMetadata.description` → `instructions`（对齐 MCP 命名惯例，跨平台信号）**
+- beta01 把 `AppFunctionAppMetadata.description` 及其 XML 属性 `description` **重命名为 `instructions`**，官方明确「to align with MCP naming conventions」。
+- **含义**：AppFunctions 是设备端 MCP 的 OS 原生特例（本笔记开篇定义），现在连**元数据字段名都向标准 MCP 收敛**——`description`→`instructions` 正是 Anthropic/标准 MCP server 工具定义里「`instructions` 描述工具如何被使用」的惯用字段名。这是四平台里**首个明确把设备侧意图框架的元数据语义对齐到通用 MCP 命名**的案例，强化「AppFunctions = 设备端 MCP」的身份（呼应 [[MCP 与设备侧 MCP]]）。
+- 对 OS PM：做意图 Registry 元数据规范时，可参考这一「向通用 MCP 命名对齐」的收敛方向，减少跨体系迁移的认知成本。
+
+**③ 其余 beta01 API 变更（Release Notes 逐字）**
+- `AppFunctionName` 从 `androidx.appfunctions.metadata` 包**迁移到 `androidx.appfunctions`** 包（Iec624）——包结构收敛，与「进入 beta、清理 experimental 命名空间」一致。
+- **移除 `isDescribedByKDoc` 的默认值**（AppFunctionDeclaration / AppFunctionSerializable / AppFunctionSignature，Idcfd2）：此前 KDoc 驱动工具描述是默认行为，现**必须显式设置**——对「KDoc 即工具描述」的工程约定（见本笔记「可复用启发」）是收紧：开发者须主动声明「此函数描述来自 KDoc」，而非默认。可能意味着 Google 在 beta 期把「描述来源」从隐式升为显式决策点（与来源轴待办有微妙呼应，但仍是描述来源、非数据 provenance）。
+- `AppFunctionServiceEntryPoint` 支持进入 `AppFunctionTestRule`（I12e01）——测试代理/集成测试能力补强（呼应 08-02 官方 Agent Skill 四步生命周期的 Testing 步）。
+- `AppFunctionResourceContainer` / `AppFunctionTextResource` 标 `@ExperimentalAppFunctionsApi`（If9469）——资源型描述仍 experimental，未进稳定面。
+- `@AppFunctionStringValueConstraint` 的 regex 替换为 `patternMatchers`（基于 `android.os.PatternMatcher`，I7c7cc）——参数级约束从「正则字符串」升级为「OS 原生 PatternMatcher」，约束表达力与安全性增强（延续 09-25 alpha12 的 Uri 约束补强方向）。
+- Bug Fixes：`java.time` 参数类型在启用 Java 库脱糖时反序列化失败、生成文件名在部分 OS 含非法符号、SDK37+ 上 URI 权限被双重授予——均为 beta 期工程稳定性修复。
+
+→ **对 OS PM 的含义**：AppFunctions 在 2026-10-21 跨过「首个 beta」门槛，**成熟度 + 跨平台命名对齐**双信号同时到位；但 beta01 仍属 pre-stable，**GA 日期仍待补**（延续本笔记「AppFunctions 何时 GA 待补」开放问题）。`@AppFunctionAccessLevel` 级别语义（10-13 段）在 beta01 Release Notes 仍未展开，仍为待补项。
+
+⚠️ 诚实标注：beta01 发布于 2026-10-21，由本运行直查官方 Jetpack Release Notes 发布页（developer.android.com/jetpack/androidx/releases/appfunctions）逐字确认；`description`→`instructions` 的 MCP 命名对齐为官方 Release Notes 原文；`@AppFunctionAccessLevel` 级别语义在 beta01 仍未展开，待 `developer.android.com/ai/appfunctions` 官方文档逐字段确认。
+
+## 2026-10-29 增补：Connected Apps Platform（预览，10-28 Dev Summit）+ ML Kit Agentic API（alpha，Gemini Nano 4，来源 [[AppIntent 每日情报 2026-10-29]]）
+
+> 接续 10-26「AppFunctions 进首个 Beta `1.0.0-beta01`（10-21）」。本期由 Android Dev Summit（2026-10-28 召开）官方公告捕获 **AppFunctions 生态的两层扩展**：① 一个把 AppFunctions 挂到系统级 AI 入口的 **discovery/registration surface**（Connected Apps Platform）；② 一个 OS 提供的**端侧 agentic 运行时**（ML Kit Agentic API，Gemini Nano 4）。两者均非 AppFunctions 自身版本进位（仍 beta01），而是「工具层 + 模型层」的能力补强。
+
+**① Connected Apps Platform（预览，10-28 Dev Summit，★7/10，跨应用 Intent 工作流发现面）**
+- **机制**：开发者经 **cloud-hosted MCP server 或 Android MCP（用 AppFunctions APIs）** 接入，在 **Google Connected Console** 注册并选择「出现在 Search / Gemini app / 两者」；一次接入、跨 Google 全家可用（"enable once, run Google-wide"）。官方称已上线 **50+ Connected Apps**（Adobe、Peloton、Experian、Calm 等），Search 侧先在 US 的 AI Mode（英文）开放。
+- **对 AppFunctions 的含义**：这是四平台里**首个把设备侧意图框架（AppFunctions/Android MCP）直接接入「系统级搜索入口 Search」的官方能力**——把「跨应用 Intent 工作流」从「Gemini app 内编排」扩到「Search 结果页即触发 agentic action」。AppFunctions 的 Registry 发现面从「Gemini 助手内」扩到「系统级搜索」，是 [[Intent Router 语义路由]] 与 [[四平台意图 Registry 来源轴与权限模型对比 2026]] 的 discovery-surface 维度补强。
+- **执行仍受既有 OS 权限模型兜底**：调用方经 `EXECUTE_APP_FUNCTIONS` 闸门 + `scope` 可见性 + 函数侧 `@AppFunctionAccessLevel` 三向约束（见本笔记 09-25/10-09 增补）；用户授权经 **OAuth 2.1** 让 Gemini 代表用户行动（Google 文档明示）。但「Search 即触发」比「助手内显式指令」更易产生非预期调用，需观察确认/隔离是否随入口扩张收紧（延续本笔记「确认下放 App」路线风险）。
+- ⚠️ 层级纪律：仍为 **preview + 分阶段开放**（US 开发者 waitlist），非 GA；具体 API 名、是否独立 service、是否受 `EXECUTE_APP_FUNCTIONS` 同一闸门约束**待 developer.android.com/ai/appfunctions 官方文档确认**。
+
+**② ML Kit Agentic API（alpha，Gemini Nano 4，★6/10，OS 提供的端侧 Planner 原语）**
+- **机制**：ML Kit 新增基于 **Gemini Nano 4** 的 Agentic API（alpha），支持**函数调用（function calling）+ 对话历史管理（conversation history management）+ 执行流控（execution flow control）**，供开发者探索**设备端运行的智能体体验**。
+- **对 AppFunctions 的含义**：AppFunctions 负责**暴露 App 能力为设备端 MCP 工具**，ML Kit Agentic API 补上**设备端模型与运行时的 agentic 编排**一环，二者共同构成 Android 端侧意图执行总线的「工具层 + 模型层」。这与本库 [[Function Calling 端侧工具调用]] 聚焦的「端侧 Planner / 设备侧 MCP」直接对齐——是把「端侧路线图」从「工具声明」补到「端侧推理+编排」的关键一块。
+- ⚠️ 层级纪律：alpha 阶段、Gemini Nano 4 后端；具体 SDK 形态、调用 AppFunctions 的方式、权限边界**待官方文档确认**。
+
+→ 对 OS PM 的含义：Android 在 10-21 进 beta01（API 稳定化）后，10-28 Dev Summit 又补「discovery 面（Connected Apps Platform）+ 端侧模型运行时（ML Kit Agentic API）」——AppFunctions 从一个「工具声明 API」正在长成「端侧意图执行总线的完整栈」。但三者成熟度不同（beta01 / alpha / preview），均**非 GA**，落地广度仍受准入约束（延续本笔记「有限数量应用与系统智能体」开放问题）。
+
+⚠️ 诚实标注：Connected Apps Platform 与 ML Kit Agentic API 来自 Android Dev Summit（2026-10-28）官方公告，经 The Prompt Insider（"Google announced it on October 28, 2026"）/ 腾讯新闻（2026-10-29）/ Pivot News / Zendoric 多方一致复述；均处 preview/alpha，非 GA，具体 API 名与权限边界待 developer.android.com/ai/appfunctions 官方文档逐字段确认。Dev Summit 公告（10-28）处本窗口起点边缘、10-28 运行未记录，本运行作诚实边界补捕。
+
+## 2026-11-03 复核增补：AppFunctions beta 权限边界澄清（Forkast 11-01，★5 复述、无新字段）
+
+> 接续本笔记 10-29 增补（Connected Apps 双路径 + OAuth 2.1 + `EXECUTE_APP_FUNCTIONS`/`scope`/`@AppFunctionAccessLevel` 三向约束）。Forkast（11-01）报道 Android 10-28 beta 公告将 **AppFunctions API 状态与正式生产发布分离**——beta 态不等于开放/无限制 agent 访问，生产发布为独立受闸步骤。此为本笔记既有「权限/Registry 约束」论述的**媒体复述**，未引入新 API/字段；无新净新增。AppFunctions 版本仍 `1.0.0-beta01`（10-21）最新。来源 [[AppIntent 每日情报 2026-11-03]]。
+
+## 2026-10-29 补遗：Connected Apps Platform 执行安全/确认机制 + 架构双路径（21:12 复核，来源 [[AppIntent 每日情报 2026-10-29]] + 多源 freshness 复核）
+
+> 接续本笔记 10-29 增补（Connected Apps Platform 预览 + ML Kit Agentic API）。本次以 freshness 复核（多源：TechCityAuthority / aiagentslibrary / beyondthe.news / xnews / dev.to / MACCUS，均 10-29 发布）补 **此前遗漏的「执行安全 / Confirmation UI」与「架构双路径」硬细节**——这些直接命中本任务聚焦轴「执行安全（Confirmation UI）/ 语义路由」，之前仅笼统记为「确认下放 App」风险，未抓到平台已提供的确认机制原语与调用模型。
+
+**A. 平台级确认机制（Execution Safety / Confirmation UI，★7 维度补强）**
+- **工具读写分类**：开发者须把每个工具声明为 **read-only（只读）或 action-that-changes-data（改变数据的动作）**——这是 Connected Apps 的**工具级数据安全风险标注**，直接服务「哪些动作需要确认」。
+- **控制台确认标记**：开发者可在 **Google Connected Console** 中**显式标记「需要确认的操作（operations that require confirmation）」**——这是平台提供的**确认 UI 钩子**，非纯靠 App 自加弹窗。→ 修正本笔记 10-05/10-09「确认完全下放 App」的单向叙述：现在 Google 在**平台层提供了确认标记能力**，但**仍由开发者/工具声明是否需确认**（非系统按风险自动拦截，对照 Apple 系统级 Confirmation UI 仍分歧）。见 [[Confirmation UI 安全机制]]。
+- **可选绑定交互 UI 资源**：工具可**可选地绑定到交互式 UI 资源**（与 A2UI 渲染原生 UI 同方向）——确认/结果呈现可走原生 UI 而非纯文本，呼应 [[A2UI 生成式UI协议(Google)与鸿蒙落地 2026]]。
+
+**B. 调用模型（语义路由 / session 维度）**
+- **@ 调用 + 名称调用**：用户可用 **"@appname"** 或**在请求中提及 App 名**显式触发；一旦调用，**该 app 在本 session 的相关请求中保持上下文（remains in context）**——这是**会话级意图保持**机制，影响 Planner 的路由召回（无需每轮重述目标 App）。
+- **工具 schema 驱动选择**：Google 产品读取 App 发布的**工具 schemas** 决定哪个工具适配请求——schema 质量直接决定路由准确率（延续本笔记「KDoc 即工具描述」的「描述质量=召回上限」论点，见 08-02/10-09 可复用启发）。
+
+**C. 架构双路径（修正/补强「AppFunctions = Android MCP 唯一路径」的旧表述）**
+- **Remote MCP server = Google 推荐默认路径**：官方称其为「foundational, cross-platform capabilities 的推荐默认」，因同一 server 可跨 **Android / iOS / Web** 扩展；须部署到**公开 HTTPS 端点**，可复用既有 Web API 或远程 MCP server。
+- **AppFunctions = client-side 本地路径**：官方定位为「client-side integration path」，**尤其适合希望工具执行发生在 Android 设备本地**的场景——是 remote MCP 的**互补项而非竞争项**。
+- → 对 OS PM 的含义：Google 的「系统级意图框架」实际是**混合模型**——跨平台能力走云端 remote MCP（推荐默认），设备端能力走 AppFunctions（本地子集）。这**修正本笔记此前将 AppFunctions 表述为 Android 唯一 MCP 路径的简化**；也说明 Connected Apps Platform 把「设备端意图框架（AppFunctions）」与「云端 MCP 工具」统一到一个开发者入口，但二者执行位置/权限模型不同（AppFunctions 受 `EXECUTE_APP_FUNCTIONS` + `scope` + `@AppFunctionAccessLevel` 三向约束，remote MCP 走 OAuth 2.1 + 工具 schema 注解）。详见 [[MCP 与设备侧 MCP]]、[[四平台意图 Registry 来源轴与权限模型对比 2026]]。
+
+**D. 授权与治理底线**
+- **OAuth 2.1**：作为「安全授权 Gemini app 与你的服务交互」的机制，用户**一次性链接账号**后 Gemini/Search 可触达其账户数据与执行授权动作。
+- **平台政策（dated 2026-09-28）**：要求**数据最小化、处理透明、安全数据处理**，禁止在 Connected App 工具内投放**第三方广告/促销内容**、禁止欺骗性工具描述、隐藏功能、无授权 API 包装。→ 这是**平台层治理约束**，与 10-02 晚 Android 17 企业策略（`APP_FUNCTIONS_DISABLED`）的「agent 执行边界可经治理面管控」形成互补（开发者政策 + 企业 MDM 双保险）。
+- **验证方式**：MCP Inspector 校验、HTTPS 托管、Gemini Developer Mode 实测执行后再提交审核。
+
+⚠️ 诚实标注：上述细节来自 10-29 freshness 复核的多源媒体复述（均引用 Google 开发者文档 / Dev Summit 公告），具体字段名（如「require confirmation」标记在 Console 的精确 API/UI 形态、`read-only`/`action` 的声明注解名）**待 developer.android.com/ai/appfunctions 或 Connected Apps Platform 开发者文档逐字段确认**；WebFetch 直连官方文档在本会话仍失败（沙箱网络限制），故以多源交叉确认 + 诚实标注处理，不臆造字段名。

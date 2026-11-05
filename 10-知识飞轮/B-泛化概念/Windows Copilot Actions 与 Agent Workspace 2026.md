@@ -171,6 +171,20 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 
 ⚠️ **层级纪律（延续）**：IFA 2026 为微软高层 keynote + 安全媒体转述，**非 Windows agentic security 官方文档逐字**；Execution Containers 的具体实现（是否复用 Agent Workspace 容器、是否受 08-02 `Experimental agentic features` 同一 opt-in 管控、与 ODR 注册关系）仍待 Microsoft 官方 blog/learn 文档复核（见本笔记 08-05 待补项）。四平台意图 Registry 来源轴空白结论不变（见 [[Agent Data Injection 数据注入攻击]]）。
 
+## 2026-10-08 增补：Microsoft Execution Containers (MXC) 正式 GA（来源 [[AppIntent 每日情报 2026-10-08]]）
+
+> 接续 09-13「IFA 2026 MXC 预览」与 09-30「26H2 已于 09-29 GA」。本期把本笔记「Microsoft Execution Containers」从「IFA 2026 预览（09-13）」**升级为 GA 级官方发布**——这是 09-13 以来 Windows agent 执行总线首个**官方 GA 级净新增**。
+
+- **GA 时间/事件**：2026-10-07 微软在旧金山「Hybrid Intelligence」活动（Satya Nadella + Pavan Davuluri + Jensen Huang）宣布 **MXC 在 Windows 11 上正式 GA**（此前为 preview）。官方博文：<https://blogs.windows.com/windowsexperience/2026/10/07/building-windows-for-hybrid-intelligence/>。
+- **是什么（官方定义）**：MXC 是**开源执行沙箱**，组织可在运行时定义 agent 可访问的**文件与网络边界**并强制策略；对个人用户，这些保护内置于 agent 体验本身。隔离粒度可调：**进程（process）/ 会话（session）/ WSL 容器（WSLc，Build 2026 随 WSL 3 披露）/ 虚拟机 / Windows 365 for Agents** 五档——四平台里**最明确的 OS 内建多档容器隔离原语**。
+- **身份分离（第二支柱）**：Windows 把每个动作归到 **agent 而非用户**——IT 可区分 agent 活动与本人操作。现场演示：GitHub Copilot agent 遵从网页夹带的恶意指令，**Defender 拦截动作并切断该 agent 对 SharePoint 的访问，不影响用户本人访问**——证实「用户身份」与「agent 身份」双轨。
+- **启用方式**：Copilot CLI 用 `/sandbox` 命令开启；GitHub Copilot app 按项目开启。默认 agent 可写项目文件夹、其余系统基本只读/不可达；shell 命令、本地 MCP server、语言 server 均隔离。⚠️ 两处**在沙箱外**：内置文件工具（在 Copilot 内、由 agent 过滤、无 OS 级隔离）、远程 MCP server。
+- **跨平台/提供商无关**：已支持 OpenAI Codex / GitHub Copilot / OpenClaw / Replit / LM Studio / NVIDIA OpenShell / Unsloth AI；后续 Claude Code / Box / Egnyte / Heidi Health / Hermes Agent（Nous）/ Manus / Perplexity / Raycast / Simular；Meta **Muse for Windows** 即将作为原生 app 接入 MXC。原生隔离机制：Windows=ProcessContainer / macOS=Seatbelt / Linux=bubblewrap（Flatpak 同款）。
+- **与监管/治理衔接**：IT 用既有 Intune + Agent 365 管理 agent；MXC 把「隔离 + 身份 + 可治理」三件套落成 GA 级平台原语，与 07 月「独立账号 + ACL + 受控文件夹」+ 09-13 容器级 + 09-15 签名吊销构成**账号→文件夹→容器→连接器→身份**五层收窄的隔离/治理栈。
+- **性质判定（★7-8/10，OS 框架 GA 级增量）**：这是本笔记自 09-13 预览以来**首个 GA 级官方净新增**，关闭「MXC 何时 GA」待办；Copilot Actions / Agent Workspace / ODR / 代码签名等其余 OS 执行总线自 09-13 以来范式未变，仅隔离原语升 GA。
+
+⚠️ 层级纪律（延续）：来源为微软官方博文 + it-connect.tech / pymnts / ainewsbank 多家媒体（10-07~08） corroboration；HydraFusion 本地模型路由仍为 **10 月底实验性预览**（非 GA），MAI Code 1.1 Flash 本地量化模型参数（137B/6.8B active/3.3-bit/53GB/256K）来自 it-connect 转述待官方逐字确认。
+
 #标签/Windows #标签/CopilotActions #标签/AgentWorkspace #标签/XPIA
 
 ## 2026-09-15 增补：Agent 代码签名 + 证书校验/吊销（执行安全三原则落地，来源 [[AppIntent 每日情报 2026-09-15]]）
@@ -243,3 +257,62 @@ Windows 以 **Copilot Actions**（跨 App + 云连接器链式执行）+ **Agent
 - → 对 OS PM：Windows agentic OS 进入「26H2 enablement 铺开 + 统一 Copilot app + 搜索/文件层 agentic 入口」阶段，但**执行总线范式未变**；企业可从 25H2 月度更新已陆续收到这些功能、26H2 仅正式启用。
 
 ⚠️ 层级纪律（延续）：PCWorld/WindowsCentral/windowsforum 为第三方媒体，26H2 精确 GA 日与 agentic 入口是否仍受 08-02 `Experimental agentic features` 同一 opt-in 管控待 Microsoft 官方 blog 复核。
+
+## 2026-09-30 增补：Windows 11 26H2 于 2026-09-29 正式 GA（部署里程碑，非 API 新增，来源 [[AppIntent 每日情报 2026-09-30]]）
+
+> 接续 09-26 的「26H2 仍以 enablement package 形态临近铺开」。本期**OS 执行总线框架层仍零净新增**（Copilot Actions / Agent Workspace / ODR / Execution Containers / 代码签名自 09-13 以来无新 Registry API），但 **GA 时间窗尘埃落定**：
+
+- **Windows 11 26H2 GA = 2026-09-29**（BetaWiki：`released for general availability on 29 September 2026`；build 26300.9550 Release Preview / 26340.9577 Experimental；Germanium 代码基，enablement package 形态，不重装、仅切版本号+激活已内置功能；支持期消费 +24 月 / 商业 +36 月）。
+- **26H2 新 surface（消费级，仍 opt-in）**：**Ask Copilot** 任务栏搜索替代（自然语言 + 本地文件/设置意图理解，后续接文件/图上传与 Copilot Vision）；**File Explorer 内 Copilot 侧栏**（dockable，直接对话文件夹/文件、文档摘要，不转发到 Copilot app）。二者为入口层（搜索/文件层）补强，**执行总线能力未变**。
+- **性质判定（★6/10，OS 级部署里程碑）**：这是 Windows agentic OS 从「Insider 可装 / 预览」进入「GA 启用」的标志，但**框架 API 范式与 09-13/09-16/09-17/09-25 完全一致**——Copilot Actions 仍 experimental opt-in、Agent Workspace 仍隔离会话、ODR 仍 opt-in 连接器、代码签名吊销仍四原则。按任务「聚焦 OS 级框架」规则，本项计入**状态里程碑**而非框架增量，仅追加状态行。
+- → 对 OS PM：26H2 GA 后，Windows 的「系统级意图框架四层 + 权限治理三档 + 容器隔离 + 身份签名吊销」范式进入稳定期；下一观察点是 Copilot Actions 是否随补丁从 experimental 转为正式、以及 26H2 之后 Build 2026/11 Ignite 是否披露新 Registry API。
+
+⚠️ 层级纪律（延续）：GA 日来自 BetaWiki 第三方维基；agentic 入口是否仍受 08-02 `Experimental agentic features` 同一 opt-in 管控待 Microsoft 官方 blog 逐字复核。
+
+## 2026-10-02 增补：agent 连接器策略治理面（组策略/MDM 命名首次公开，来源 [[AppIntent 每日情报 2026-10-02]]）
+
+> 接续 09-30 的「26H2 已于 09-29 GA」。本期**OS 执行总线框架层仍零净新增**（Copilot Actions / Agent Workspace / ODR / Execution Containers / 代码签名自 09-13 以来无新 Registry API），但 **2026-10-01 cnBeta/163 引 Neowin** 披露了此前未公开的 **agent 连接器治理策略项**，把「受控发现 + 授权持久化」从产品态落到 OS 控制面。
+
+- **连接器治理的具体策略命名（首次进入公开视野）**：
+  - `ConfigureAgentConnectors`：开关 agent 连接器（Agent 可访问的 MCP server/host）—— **仅企业版/教育版/IoT 企业版**可配置。
+  - `AgentConnectorAccessPolicy`：限制连接器可访问范围（allow-list）—— **仅企业/教育/IoT 企业版**。
+  - `AgentConsentDuration`：控制授权决定保留多久（consent 持久化时长）—— **仅企业/教育/IoT 企业版**。
+  - `DisableSettingsAgent`：关闭设置 AI 代理（以本地 AI 概览替代传统设置搜索）—— **仅企业/教育/IoT 企业版**；家庭版/专业版官方不支持。
+- **File Explorer 连接器**：可读取/创建/移动/重命名/修改本地文件，访问仍需用户明确授权（confused-deputy 面）。
+- **对四平台对照的含义**：这是 ODR「受控发现 + 三档 consent（09-17 增补）」逻辑首次落到 **Group Policy/MDM 控制面**的具体策略项——连接器白名单 = 执行边界，consent 时长 = 授权窗口。与 [[Agent Workspace 隔离执行]] 10-02 增补、[[Confirmation UI 安全机制]]、[[XPIA 跨提示注入]] 互证。
+- **版本割裂风险**：家庭版/专业版用户**无法通过策略彻底关闭连接器**、也**无法限制 agent 可用 MCP server**——多数 Copilot+ PC 消费者实际处于「连接器常开、白名单不可控」状态，与企业合规（EU AI Act Article 15 抗注入可举证性）存在落地缺口。
+- **性质判定（★6/10，执行安全治理机制具体化）**：非新 OS API，但属控制面具体化，达收录阈值；家庭/专业版限制为新增事实点。详见 [[AppIntent 每日情报 2026-10-02]]。
+
+⚠️ 层级纪律（延续）：来源为 cnBeta/163 媒体汇总（政策项命名与版本限制来自 Neowin 转述），**待 learn.microsoft.com 逐字复核**——尤其三项策略是否确为 Group Policy 项、家庭/专业版限制是否准确。
+
+## 2026-10-09 增补：Windows 10-07 事件补细节（taskbar Search actions / Entra 本地 agent 身份 / MAI Code 本地参数，来源 [[AppIntent 每日情报 2026-10-09]]）
+
+> 接续 10-08 增补「MXC 正式 GA」。本期**非 OS 框架净新增**——10-09 多家媒体（foxvector / my2cents.ai / 163 / toutiao-InfoQ / testingcatalog）复述 10-07「Hybrid Intelligence」活动，补得 3 个此前未单列的 surface / 治理细节，均属已捕获事件的延伸。
+
+- **Windows Search taskbar actions（新 agentic 入口 surface）**：Insiders 可从任务栏搜索直接触发动作——切换设置、管理窗口、发送消息。属 10-07 事件叙事的入口层补强，**执行总线范式未变**。
+- **Entra agent identity 扩展至本地 agent**：微软称将用 **Microsoft Entra 区分 agent 活动与用户活动**，并把 **Agent 365 控制扩展到本地 agent**（my2cents.ai 10-09）——把「agent 身份隔离」从云端 M365/Entra 治理层下沉到本地 Windows agent，与 MXC 的 agent 身份分离（10-08）构成「云端身份 + 本地隔离」双支柱。
+- **MAI Code 1.1 Flash 本地参数 corroboration**：3-bit 量化（尺寸近 -80%）、256K 本地上下文—— corroborate 10-08 跑「待补」项（原仅 it-connect 转述）；`llama.cpp` 进 Windows ML（GPU/NPU/CPU）；GitHub HydraFusion 本地模型路由 10 月底实验性预览（非 GA，延续 10-08 标注）。
+- **性质判定（★5/10，状态补细节）**：均非本窗口独立净新增，仅向本笔记追加状态段；MXC GA 仍为 10-08 跑的唯一 OS 级净新增。
+
+⚠️ 层级纪律（延续）：来源为微软官方博文 + 多家媒体（10-07~09）复述；taskbar Search actions 与 Entra 本地 agent 身份扩展的精确形态/版本待 learn.microsoft.com 逐字复核。
+
+## 2026-10-28 增补：Windows「10-26 已跟踪的 late-October 节点」落地——HydraFusion 本地/云端路由实验性预览到点（★5/10，状态更新·非新 OS API，来源 [[AppIntent 每日情报 2026-10-28]]）
+
+> 接续 10-07「MXC 正式 GA（本笔记 10-08 增补）」与 10-09「taskbar Search actions / Entra 本地 agent 身份」状态段。本期本窗口无新 OS 执行总线 API，但两个已跟踪节点的**落地状态更新**值得登记。
+
+- **HydraFusion 本地/云端路由实验性预览现已到点（已跟踪节点·非新 API）**：2026-10-28 多家媒体（heise.de / blockbeats / nerova / bigchange / anywherexchange）报道微软「Windows and Surface October 2026 News」活动——混合智能/agentic Windows 愿景的**硬件+软件正式亮相（RTX Spark PCs 等）**。活动确认 **GitHub Copilot 本地/云端模型路由（HydraFusion）实验性预览 by end of October 落地**（Copilot app / CLI / VS Code）——本地模型（MAI Code 1.1 Flash 3-bit/53GB/256K、NVIDIA Nemotron 2-bit/20GB、DeepSeek V4 Flash 1.6-bit/60GB）与云端模型自动路由，token 成本优化。这是 10-07 博文预告的「later in October」实验性预览的**到点交付**，**非新 OS API**。
+- **MXC GA 再确认 + 身份集成「即将到来」**：MXC 已 GA；agents 以**独立用户身份 + 独立访问限制**运行，Entra 身份归因「to follow shortly（即将到来）」——与 10-09 捕获的「Entra 本地 agent 身份扩展」一致，确认企业身份集成仍是「即将到来」而非已 GA。
+- **XPIA 警告重述（低于阈值）**：rottenwifi / sekin / ctmanga / aitechmodel 均为「Securing AI agents on Windows」+ Experimental Agentic Features 支持页的重述（XPIA 风险、off-by-default、per-agent 文件夹控制、agent 独立账号、需 26H1 build 28000.3079+ 进程隔离强制执行层、agent 标识符为 preview、格式可能变）——均为 10-07/09 已捕获内容的延伸，**无新 OS-framework 机制**，不升新节点。
+- → **对 OS PM 的含义**：Windows 侧本窗口为 10-07 MXC GA 事件的硬件 + 落地状态延伸，OS 执行总线框架层**无净新增**；维持「MXC GA（10-07）为唯一 OS 级净新增」结论。后续观察点 = HydraFusion 本地路由预览实际可用性 + Entra 身份集成 GA 日 + MXC 与 Agent Workspace 容器的关系厘清。
+
+⚠️ 层级纪律（延续）：HydraFusion「by end of October」来自 10-07 微软官方博文预告、本次活动（heise.de 等 10-28 报道）确认落地；MXC GA 与 Entra「to follow shortly」与 10-09 捕获一致；XPIA 重述为已知文档复述，待 learn.microsoft.com 逐字复核 agent 标识符 preview 形态与进程隔离 build 号。
+
+## 2026-11-02 增补：File Explorer 右键菜单 8 项 OneDrive Copilot Actions 整合进「Ask Copilot」（surface 收敛，非 API 新增，★5/10，来源 [[AppIntent 每日情报 2026-11-02]]）
+
+> 接续 09-30「26H2 已于 09-29 GA」与 10-28「MXC GA 落地 + HydraFusion 到点」。本期**OS 执行总线框架层仍零净新增**（Copilot Actions / Agent Workspace / ODR / Execution Containers / 代码签名自 09-13 以来无新 Registry API），但 **2026-11-02 窗口内捕获一个 Copilot Actions surface 收敛信号**（MC1515940 公告，analyticsinsight/thinkcomputers/Windows Latest 报道）——直接落在任务范围「Windows：Copilot Actions」内，故登记但不升新节点。
+
+- **是什么（surface 收敛，非能力删除）**：微软宣布将移除 File Explorer 右键菜单中 **8 项 OneDrive 关联的 Copilot Actions**——Summarize / Create FAQ / Compare Files / Ask a question / Explain image / Explain images / Compare images / Extract text；这些分散的二级菜单项统一收纳进一级的 **「Ask Copilot」** 入口。底层 Copilot 能力**保留**，用户仍可通过右键「Ask Copilot」/ File Explorer Home 图标 / OneDrive 活动中心访问；分阶段 **2026-11 中旬起**开始、**2026-12 初**完成。
+- **性质判定（★5/10，低于收录阈值）**：这是 **Copilot Actions 入口/分发的整理收敛**，属产品 UX 决策而非新框架 API / 新安全机制；与 09-25「统一 Copilot 桌面 app」、09-26「26H2 搜索/文件层 agentic 入口」同属「surface 部署推进」谱系，**执行总线范式未变**。按任务「聚焦 OS 级框架、丢弃应用层/营销稿」规则，本项**不计入情报增量**，仅在此追加状态行保持连续性。
+- **对 OS PM 的含义**：Windows 在 GA（09-29）后对 Copilot Actions 做「入口收敛」而非「能力扩张」——把用户右键菜单里重叠的 8 个 AI 动作收拢到单一「Ask Copilot」对话入口，减少菜单噪声、统一调用路径。这暗示微软对 Copilot Actions 的策略从「广铺入口」转向「收敛到统一对话面」，值得在 Ignite 2026（11-17~20）观察是否进一步官宣 Copilot Actions 从 experimental 转正式。
+
+⚠️ 层级纪律（延续）：MC1515940 公告经 analyticsinsight/thinkcomputers/Windows Latest（2026-11-02 报道） corroboration；分阶段落地精确日期与是否受 08-02 `Experimental agentic features` 同一 opt-in 开关管控待 Microsoft 官方 blog 逐字复核；四平台意图 Registry 来源轴空白结论不变。

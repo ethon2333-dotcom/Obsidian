@@ -249,3 +249,102 @@ enum AssetType { ... }
 - **Model Delegation API 反编译信号（★5/10，非官方）**：开发者 pdfu 在 iOS 27 / macOS 27 代码中发现 **App Intents 内的 Model Delegation API** 机制——允许外部模型（演示含 Claude、GPT-5.6 Terra）作为 Siri 扩展出现，接收 Siri 提示与 tool 定义、处理系统动作并取回结果；另在 **Model Manager Services** 中发现可替换 Siri 服务器端运行模型。→ 与 09-15 已录「Foundation Models 框架支持任意遵循 `Language Model` 协议者」**互为印证**，但本次为**代码级证据、Apple 未官方宣布「用户可选外部模型」**；若未来成为正式功能，将是「外部模型接管部分推理与任务执行」的架构级信号（Siri 从「模型驱动助手」→「可路由到不同模型的接口」）。
 - → 对 OS PM：Apple 侧仍是「App Intents Schema Protocol 框架稳定、多模型路由 GA、无 27.1 schema 新增」；外部模型接入从「官方 GA 多模型」到「代码级 Model Delegation」是值得跟踪的演进方向，但**须 Apple 官方公告后才可收录为框架级信号**。
 ⚠️ 诚实标注：Xcode 27.1 beta 日期/功能来自 blakecrosley.com / woozad（开发者博客，09-18~19）/ 网易·163 09-19 转述；Model Delegation 来自 nabamart（09-21）对开发者 pdfu 反编译的转述，Apple 未官方确认。
+
+## 2026-10-08 增补：Apple 跳过 iOS 27.1 beta、直发 iOS 27.2 beta 3（无新 Schema API，来源 [[AppIntent 每日情报 2026-10-08]]）
+
+> 接续 09-20「iOS 27.1 beta 在即（预期 09-21~23）」与 09-21「iOS 27.1 beta 已放出（Duo SDK，无新 Schema）」。本期**更新并收口该跟踪项**——事实比此前预期更明确：Apple **未发布 iOS 27.1 的任何 developer/public beta**，27.1 是 **iPhone Duo（首款折叠屏）专属预装正式版**，常规 iPhone 直接跳到 **iOS 27.2** beta 线。
+
+- **事实更正（关闭 09-20/09-21 跟踪项）**：Apple 于 **2026-09-17 直接放出 iOS 27.2 beta 1**（build 24B5084k），**跳过 iOS 27.1**；最新为 **iOS 27.2 beta 3（build 24B5099f，约 10-05/06 放出）**。多家媒体（9to5Mac / MacRumors / AppleInsider / 网易 / 新浪）一致解读：跳过是为**防止开发者解包 27.1 beta 泄露 iPhone Duo 硬件参数与双屏专属代码**（Duo 10-23 上市、预装 iOS 27.1 正式版）。
+- **对 App Intents Schema Protocol 的含义（关键）**：iOS 27.2 beta 线（含 beta 3）**不含新的 `@AppIntent(schema:)` / App Intents Domains API**——27.2 beta 内容为「被清洗过」的常规更新（redesigned Health app / Group FaceTime 双摄 / Siri 多语言 / Apple TV profiles / AutoLock 防盗），**所有 Duo 相关代码被排除在外**；而真正含 Duo 适配的 **iOS 27.1 不开放 beta、随 Duo 首发**。→ 本窗口（及连续多轮）**Apple 侧无新 Schema Protocol API 净新增**，与「OS 框架不日更」一致；此前 09-21「已放出、Duo 向、无 schema 新增」结论维持。
+- **Xcode 27.1 仍含 Duo SDK**：Apple 要求开发者用 **Xcode 27.1** 重编译适配 Duo（DeviceHub 工具查看折叠/展开/横竖屏姿态）；2027-04 起 App Store 上架须含 Duo 截图——这是**设备形态适配**，非 App Intents 框架 API 新增。
+- → 对 OS PM：Apple 用「跳号 + 清洗 beta」把折叠屏专属系统锁在 27.1 正式版内，是产品保密驱动的版本策略，**不影响 App Intents Schema Protocol 框架稳定性**；下一观察点是 **iOS 27.1 正式版（10-23 随 Duo）是否带来 Duo 双屏场景的新 intent/entity schema**（如双屏分栏布局相关的 App Intents 适配），纳入下轮跟踪。
+
+⚠️ 诚实标注：跳号与 Duo 保密动机来自 9to5Mac / MacRumors / AppleInsider / 网易 / 新浪等媒体综合；Apple 官方未发「跳过 27.1」公告，上述为媒体共识解读。iOS 27.1 正式版（10-23）是否含 App Intents 新 Schema 待 Apple 官方发布后逐字复核（延续 09-21 待办）。
+
+## 2026-10-16 增补：Apple 官方澄清「iOS 27.1 发 beta、本月晚些时候」——修订 10-08「跳过 27.1 beta」旧结论（来源 [[AppIntent 每日情报 2026-10-16]]）
+
+> 接续 10-08「Apple 跳过 iOS 27.1 beta、直发 27.2 beta 3」的收口结论。本期**修订该结论**——Apple 官方开发者新闻（developer.apple.com/news）亲口确认 27.1 **会发 developer beta**，此前「跳过」系媒体共识、现被官方表述覆盖。⚠️ 修订仅涉及**发布节奏**，不涉及任何新 Schema API。
+
+- **官方原文要点（developer.apple.com/news，2026-10 当期）**：
+  - **「When iPhone Duo becomes available on October 23, it will run iOS 27.1. This version builds on the foundation of iOS 27 and introduces features that were purpose-built for the new foldable design.」** —— 确认 Duo 10-23 上市、预装 iOS 27.1（折叠屏专属设计）。
+  - **「Xcode 27.1 will add development support for iPhone Duo… A beta version will be available later this month.」** —— 明确 **iOS 27.1 的 developer beta 将于「本月晚些时候」放出**（面向 Duo 适配），不向常规直板机 beta 线开放。
+  - 同期给出 Bundles & Suites、Multiseat 购买、EU ATT 替代系统提示等 27.2 生态能力（10-22/冬季陆续上线），均非 App Intents 框架变更。
+- **对 10-08 旧结论的修订**：
+  - 10-08→10-15 连续四轮采信「Apple 跳过 27.1 beta、直发 27.2」的媒体共识——**该结论现被 Apple 官方澄清推翻**：27.1 **会发 beta**（Duo 开发用），只是独立于常规 27.2 beta 线。
+  - **不变的部分**：iOS 27.2 beta 线（含 beta 4 = 24B5110a、beta 5 预期 Late October）**不含新 `@AppIntent(schema:)` Schema**；App Intents Updates 官方页最新条目仍停在 **June 2026**（SyncableEntity / OwnershipProvidingEntity / LongRunningIntent 等已录项）；「OS 框架不日更」结论维持。
+- **对 OS PM 的含义 / 跟踪窗口前移**：
+  - 头号跟踪项「**iOS 27.1 是否带双屏场景新 intent/entity Schema**」此前预期在 10-23 正式版才揭晓；现在 **27.1 beta「本月晚些时候」即可能暴露 Duo 双屏专属 Schema/Entity**（如双屏分栏布局相关的 App Intents 适配）——跟踪窗口提前。
+  - 产品保密动机（防 Duo 硬件参数经 27.1 beta 解包泄露）从「不发 27.1 beta」修正为「发 27.1 beta 但独立于 27.2 线、且清洗常规线」——仍是保密驱动，但 Apple 现在给 Duo 开发者留了合法 beta 通道。
+- ⚠️ 诚实标注：官方仅写「later this month」，**未给 27.1 beta 精确日期**；27.1 beta 是否真含双屏新 Schema 待 beta 推送后逐字复核（延续 09-21 / 10-08 待办，窗口前移）。Jetpack 侧 alpha13 仍为 Android 最新（10-13 三处直查），与 Apple 侧澄清无关。
+
+## 2026-10-18 增补：iOS 27.1 无设备公开 beta、以 Duo 出厂/设置 build 交付——撤回 10-16「跟踪窗口前移」推论（来源 [[AppIntent 每日情报 2026-10-18]]）
+
+> 接续 10-16「Apple 官方澄清 iOS 27.1 发 beta、本月晚些时候」的修订段。本期**再修订 10-16 的推论**——10-16 据 Apple 09-16 开发者新闻「A beta version will be available later this month」把「iOS 27.1 双屏 Schema」跟踪窗口前移到「本月晚些 beta」；**本期第三方（apfelpatient，2026-10-17，基于 Apple 公告整理）确认：iOS 27.1 没有设备公开 beta 阶段，该「beta」实为 Xcode 27.1 工具链 beta（09-18 已放出），跟踪窗口回退到 10-23 Duo 出厂正式版**。⚠️ 修订仅涉及**发布节奏与跟踪窗口定位**，不涉及任何新 Schema API。
+
+- **第三方澄清要点（apfelpatient，2026-10-17，多家果粉媒体一致复述）**：
+  - **iOS 27.1 没有公开 beta 测试阶段**——「The betas continued directly with iOS 27.2」；Duo 预装 iOS 27.1（build 24A94232 出厂），**10-12 起 Apple 放出更新 build 24A94425，设备在首次设置时下载安装**，无 changelog。
+  - **Apple 09-16 说的「A beta version will be available later this month」实为 Xcode 27.1 beta（已于 09-18 放出）**——是给 Duo 开发者的**工具链 beta**，并非面向常规 iPhone 的设备 iOS 27.1 beta（applescoop / guofenchaxun / 今日头条数码知更鸟均复述「iOS 27.1 不开放测试、直接迎来 iOS 27.2」）。
+  - **对 10-16 推论的修订**：10-16 跑据此把「iOS 27.1 双屏 Schema」跟踪窗口从「10-23 正式版」前移到「本月晚些 beta」。现在看**根本没有设备 27.1 beta**，双屏专属 intent/entity Schema（若有）只在 10-23 出厂正式版揭晓——**跟踪窗口回退到 10-23**，10-16 的「前移」推论被撤回（非错误、是信息更完整后的修正）。
+- **对 App Intents Schema Protocol 的含义（关键）**：iOS 27.1 设备版以**出厂/首次设置 build（24A94232 → 24A94425）**形态交付、无公开 beta，等于**双屏专属 Schema（若有）在 10-23 前完全不进入公开可解包基线**——比「发 Duo 专属 beta」更彻底地锁死；iOS 27.2 beta 线（beta 4 = 24B5110a，10-13；beta 5 预期 Late October）**仍无新 `@AppIntent(schema:)` Schema**，App Intents Updates 官方页最新条目仍停在 **June 2026**。→ 本窗口（及连续多轮）**Apple 侧无新 Schema Protocol API 净新增**，「OS 框架不日更」结论维持。
+- **对 OS PM 的含义 / 跟踪窗口回退**：头号跟踪项「**iOS 27.1 是否带双屏场景新 intent/entity Schema**」跟踪窗口**从「本月晚些 beta」回退到 10-23 Duo 出厂正式版**（与 10-16「前移」相反方向修正）；下一观察点 = 10-23 出厂正式版 + 设置期更新 build 是否暴露 Duo 双屏专属 Schema/Entity。
+- ⚠️ 诚实标注：iOS 27.1 无设备公开 beta、以 Duo 出厂/设置 build 交付（24A94232 出厂 → 24A94425 更新自 10-12）来自 apfelpatient（2026-10-17，德国果粉媒体，基于 Apple 公告整理）；「Apple 09-16 本月晚些 beta = Xcode 27.1 beta（09-18 已出）」由该文 + Apple 09-16 开发者新闻原文交叉确认。Apple 开发者新闻（developer.apple.com/news?id=5042016a，09-16）原文确写「Xcode 27.1 will add development support for iPhone Duo… A beta version will be available later this month」，其上下文指 Xcode 27.1 开发支持，与 apfelpatient 解读一致。10-16 段未删除（保留推断链），本段显式标注修订，避免下次重复「前移」。
+
+## 2026-10-26 增补：iOS 27.1 随 Duo 10-23 正式发布——双屏由布局/铰链 API 处理，无新 `@AppIntent(schema:)` Schema（头号跟踪项收口，来源 [[AppIntent 每日情报 2026-10-26]]）
+
+> 接续 10-18「跟踪窗口回退到 10-23 Duo 出厂正式版」的待办。本期**关闭该头号跟踪项**——iOS 27.1 已于 2026-10-23 随 iPhone Duo 正式发布，经 Apple 官方 newsroom + 开发者指南 + App Intents Updates 官方页逐字核验，**Duo 双屏适配走 SwiftUI/UIKit 布局 API，而非任何新的意图 Schema**。
+
+**① 事实核验（关闭 09-21→10-18 连续多轮的「双屏新 Schema」跟踪）**
+- **iOS 27.1 的 Duo 适配 API = 布局/形态层，非 App Intents Schema 层**：Apple newsroom（2026-10-23，developer.apple.com.cn/cn/newsroom）明示开发者用「iOS 27.1 SDK 中新 API 和更新版 API」适配 Duo，具体包括：**新的布局和保留区域 API（arrangement & reserved region APIs）**、**新的铰链 API（hinge API）**、**场景配件（scene accessories，双屏同时显示内容）**、**新的摄像头 API**、**Xcode 27.1 的 Device Hub（模拟开合/折叠/旋转）**。→ 这些全部是 SwiftUI/UIKit 的**空间布局与姿态感知原语**，**没有任何 `@AppIntent(schema:)` / App Entities 双屏专属 Schema 或 Entity 信号**。
+- **App Intents Updates 官方页最新条目仍停在 June 2026**（SyncableEntity / OwnershipProvidingEntity / LongRunningIntent 等已录项；developer.apple.com/documentation/Updates/AppIntents 直查）——**27.1 未在 App Intents 框架层带来任何新 Schema/Entity/枚举**。
+- **结论**：自 09-21（iOS 27.1 beta 已放出·Duo SDK）经 10-08（跳过 27.1 beta）/ 10-16（官方澄清发 beta）/ 10-18（撤回前移、回退到 10-23）一路跟踪的「iOS 27.1 双屏是否带新 intent/entity Schema」问题，**最终答案 = 否**：双屏折叠形态被 Apple 当作**显示/布局问题**而非**意图语义问题**处理——这与本库长期主张「Schema 覆盖不到的地方是断崖」及 Apple「用布局 API 而非新意图 Schema 应对新硬件形态」的工程取舍一致。
+
+**② iOS 27.2 RC（10-19）经核实也无新 Schema**
+- iOS 27.2 于 2026-10-19 放出 **Release Candidate（RC）**（比 beta 4 = 24B5110a 早一周），公开版预期 ~10-26；内容 = **Siri AI 新增 5 语言（法/日/韩/葡/西）+ 六款 App 功能补全（Messages 建议动作 / Apple TV profiles / FaceTime 双摄 / Podcasts / Home 锁门提醒 / Music 图标）+ EU ATT 替代系统提示 +  redesigned Health app（后续 beta 才回）**。
+- **App Intents Schema Protocol 层零变更**：27.2 RC 未引入任何新 `@AppIntent(schema:)` Domain；27.1/Duo 与 27.2 均不触及 App Intents 框架 API，「OS 框架不日更」结论维持。
+- **相关但低于新节点阈值**：iOS 27 已内置、于 27.2 RC 中现身的 **Impersonation Risk Detection（冒名风险检测，默认关，Settings > Privacy & Security > Share with App Developers）**——检测通话/消息中「冒充银行诱导转账」等 scams，向受支持 App 仅提供风险等级而非用户数据（Apple 支持文档明确该特性「从 iOS 27 开始提供」，非 27.2 新增）。它属于**通信反诈骗 / 社会工程检测**，与 [[XPIA 跨提示注入]] 及 [[Trust Insights 意图 coercion 检测框架 2026]]「意图真实性」主题相邻但**非意图框架 API**，且为 off-by-default 通信安全特性，不构成 App Intents Schema Protocol 变更，本次仅作关联观察、不升新节点。
+
+→ **对 OS PM 的含义**：Apple 用「布局/铰链/scene-accessory API」而非「新意图 Schema」承载折叠屏双屏，是一个值得记取的范式选择——**新硬件形态优先用显示层原语而非语义层原语处理**，避免了为每种设备形态膨胀 Schema 域；同时再次印证 App Intents Schema Protocol 框架在 27.x 周期已进入**稳定维护期**（无新增 Schema 域），跟踪重点应从「新 Schema」转向「27.2 的 agentic 安全与多模型路由落地」。
+
+⚠️ 诚实标注：iOS 27.1 Duo 适配 API 来自 Apple newsroom（2026-10-23，developer.apple.com.cn/cn/newsroom/2026/10/developers-bring-incredible-new-app-experiences-to-iphone-duo）+ 第三方（udn/iclarified）对开发者指南的整理；App Intents Updates 官方页（developer.apple.com/documentation/Updates/AppIntents）直查最新条目仍 June 2026；iOS 27.2 RC（10-19）与 Impersonation Risk Detection 来自 Times of India / Apple 开发者新闻（developer.apple.com/news/?id=0l3nh5gd）交叉确认。Duo 双屏无新 Schema 为「官方页未列 + 适配 API 全为布局层」推断，非逐 Schema 反编译确认。
+
+## 2026-10-28 增补：iOS 27.2 正式版（框架零变更·官方页直查仍 June 2026）+ 「排除的 App」消费者层意图访问治理细化 + 160 CVE 安全事件（来源 [[AppIntent 每日情报 2026-10-28]]）
+
+> 接续 10-26「iOS 27.1/Duo 双屏无新 Schema、头号跟踪项收口」。本期把 10-26 对 iOS 27.2 RC 的「无新 Schema」推断**升级为正式版发布后的官方页逐字确认**，并捕获 iOS 27.2 一个消费者层意图访问治理细化。
+
+**① iOS 27.2 正式版（2026-10-26/27，24B119；Duo 专属 24B91020）——App Intents Schema Protocol 框架层零变更**
+- 本运行 **WebFetch 直查 `developer.apple.com/documentation/updates/appintents`** 确认最新条目仍 **June 2026**（SyncableEntity / OwnershipProvidingEntity / LongRunningIntent 等已录项），**iOS 27.2 未在 App Intents 框架层引入任何新 `@AppIntent(schema:)` Schema/Entity/枚举**。这把 10-26 对 27.2 RC 的「无新 Schema」从推断升级为正式版发布后的官方页逐字确认。
+- 27.2 消费者功能 = Siri AI 记忆此前对话 + 更广个人上下文（信息照片附件/日历参与者/语音留言/Safari 历史）+ 5 种新语言（法/日/韩/葡/西，EU 与中国大陆不可用）+ Messages/Photos/FaceTime 建议动作 + SynthID 水印识别 + Apple Music/Podcasts/Apple TV redesign。→ 全部为 GA 能力补全与本地化扩张，**非 App Intents 框架 API 新增**。
+- Duo 专属（24B91020）：Apple Pencil 支持 + 边缘光效（弱光视频通话）；**国行**新增「限制运动数据」遏制「摇一摇」广告跳转（隐私控制，仅中国区账号可见）。均非 App Intents 框架。
+
+**② 🔑 唯一 OS 级治理细化（★6/10，消费者层意图访问治理）＝「排除的 App」（Excluded Apps）统一设置**
+- iOS 27.2 新增**统一隐私设置**，用户可集中选择**哪些 App 不能被 Siri、搜索（Search）和建议（Suggestions）访问**。这是 Apple 侧一个**系统级「意图访问排除清单」**——把「系统 agent（Siri/Search/Suggestions）可调用哪些 App 的能力与数据」的控制权以**消费者隐私开关**形态落地。
+- 与 Android `setAppFunctionsPolicy` / `APP_FUNCTIONS_DISABLED`（企业 MDM 层，详见 [[Android AppFunctions 设备侧意图 2026]]）**同源**，但落在**消费者隐私层**——补齐了本库「agent 执行边界 = OS 权限/访问边界」跨平台收敛的**消费者层拼图**（详见 [[四平台意图 Registry 来源轴与权限模型对比 2026]] 10-28 增补）。
+- ⚠️ 属用户隐私开关、**非开发者框架 API**，不构成 Schema Protocol 新 API；但它是 Apple 在 27.x 周期内对「意图访问治理」最明确的一次消费者层补强。是否影响开发者侧 intent 注册可见性待 Apple 开发者文档逐字确认。
+
+**③ 重大 OS 安全事件（XPIA 相邻，低于新节点阈值）＝iOS 27.2 修复 160+ CVE（含 Apple Intelligence 远程数据访问漏洞）**
+- iOS 27.2 修复 **160+ 安全漏洞（163 个可追踪 CVE）**，含一个 **Apple Intelligence 漏洞（远程攻击者可能访问敏感数据）** 与「隐藏邮件地址（Hide My Email）」真实邮箱泄露缺陷；30+ WebKit、约 15 个内核漏洞。
+- Apple Intelligence **远程数据访问类漏洞**属 **agentic 数据安全相邻面**（OS 智能层把敏感数据暴露给非预期远程方），与 [[XPIA 跨提示注入]] 及 [[Agent Data Injection 数据注入攻击]] 主题相邻，但为 **CVE 修复而非新框架机制**，低于新节点阈值，仅作关联观察（延续 0 新建 B 节点纪律）。
+
+→ **对 OS PM 的含义**：App Intents Schema Protocol 在 27.x 周期已确认进入**稳定维护期**（无新增 Schema 域），跟踪重点应从「新 Schema」转向「27.2 的 agentic 安全与多模型路由落地 + 消费者层意图访问治理」。
+
+⚠️ 诚实标注：iOS 27.2 无新 App Intents Schema 经本运行 WebFetch 直查 `developer.apple.com/documentation/updates/appintents` 确认（最新仍 June 2026）；「排除的 App」来自 iOS 27.2 媒体功能清单（IT之家 10-27）；160+ CVE / Apple Intelligence 漏洞来自网易 TechWeb 10-27 报道，CVE 编号与 Apple 安全通告逐条对应待补。
+
+## 2026-11-05 增补：Siri AI 开发者预览（iOS 27.3）—— @AppIntent(.tool) + Skills + 语义索引任意实体 + Siri Evaluations（来源 [[AppIntent 每日情报 2026-11-05]]）
+
+> 接续 10-28「iOS 27.x 进入稳定维护期、跟踪重点转向 agentic 安全与多模型路由」。本期捕获 iOS 27.3 开发者预览（2026-11-03 美/11-04 中）带来的 **App Intents 接入面最大一次扩展**——是既有机制的能力放大，非新 schema 域。
+
+**① 新 API / 宏（开发者接入面放宽）**
+- **`@AppIntent(.tool)` 宏**：给 intent 加 `ToolIntent` 一致性，把它变成 Siri 的「工具」（agent 的「手」）；对**既有与新 intent 均生效**；Siri 从 intent 的 title + description 读用途、做消歧。与原先「仅对齐 system schema 才可被 Siri 调用」相比，降低接入门槛。
+- **Skills（`SKILL.md` 子集）**：教 Siri 把多步动作串成单体验；每个 skill 是 `Skills.skillsbundle` 内独立文件夹中的 `SKILL.md`，body ≤10,000 字符；**仅是 Agent Skills 标准的子集**（name + description + Markdown body，**无 scripts / references / 其他字段**）；一个 app target 一个 bundle；依赖脚本的 skill 需为 Gemini 重写。→ 与 [[Agent Skills 技能范式 2026]] 跨平台 `SKILL.md` 收敛信号对齐。
+- **Spotlight 语义索引「可浮现任意实体」**：**「Siri AI can now surface any entity in the Spotlight semantic index, not just the ones that fit an existing schema」**——语义路由从「仅 schema 内实体」放宽到「任意 App Intents 暴露的实体」，**介于封闭 schema 与 schema-less 之间**（详见 [[Intent Router 语义路由]] 11-05 增补）。
+- **Siri Integration Advisor（Xcode）+ Siri Evaluations 框架**：前者给接入建议，后者跑脚本化请求、测意图集成改动后的响应漂移；与 08-26 App Intents Testing / 08-17 Evaluations 形成「发布前 + 运行时」双测试闭环。
+
+**② 执行安全（确认 / 认证策略）关键约束**
+- **Skills 不保证确定性顺序（★8/10，确认机制相关）**：Apple 明确「Siri AI does not necessarily run the intents listed in a skill in sequence」；**保序步骤（如确认购买）必须在 intent 实现内部加检查，不能依赖 skill 文案顺序**——首次官方确认「技能编排 ≠ 确定性执行」，冲击「用 skills 串多步含确认流程」的朴素假设（呼应 [[Confirmation UI 安全机制]]）。
+- **认证策略 + beta 已知缺陷**：默认 entity 不需认证；敏感信息须设 `authenticationPolicy`，结果含敏感信息的 intent 须在 intent 级也设策略（单属性 `internal` 仅作用于 Siri 响应）；**iOS/iPadOS 27.3 known issue：即便定义了要求解锁的策略，Siri AI 仍可能在未解锁时显示该实体**——beta 期认证策略执行缺口，内部测试建议暂不用真实数据（与 08-02/08-16 EntityOwnership + authenticationPolicy 棘轮互补）。
+
+**③ 发布边界（隔离相关但非新机制）**
+- 预览仅在**开发签名构建 + 内部 TestFlight** 生效，外部测试者/App Store 版本暂不可用；customer availability「几个月后」、App Store 提交「春季」。
+- 中国区：Writing Tools/Genmoji/Priority Notifications/Clean Up/Visual Intelligence/Live Translation(AirPods) 本版进中国（与 11-03 中国 Qwen 端侧底座互为表里）；agentic Siri AI + Image Playground 仍不进中国。EU（iOS/iPadOS/watchOS）仍不可用；<13 岁不可用。
+
+→ **对 OS PM 的含义**：Apple 把 App Intents 从「schema 对齐」推进到「工具 + 技能 + 任意实体」三层，但**未膨胀 schema 域**——是「接入面放宽而非语义层重构」；跨平台 `SKILL.md` 收敛 + 「skills 不保序」的官方确认，是做 OS 级技能编排时**必须内建确定性护栏**的实证。⚠️ `@AppIntent(.tool)` 是否新 API 名或 ToolIntent 宏糖衣、`Skills.skillsbundle` 打包约束、GA 日期（预览期「数月后」/提交「春季」）待官方文档逐字段确认。

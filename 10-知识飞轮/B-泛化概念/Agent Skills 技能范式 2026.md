@@ -83,3 +83,12 @@ Agent Skills 是 Anthropic 于 2025-10 提出的开放标准（2025-12-18 成为
   - **新增设计护栏**：Skill manifest 须**来源校验 + 签名 + 权限最小化**（与 [[Agent 身份与硬件级审批]] 同构）；企业级 Skill 市场（[[企业级 Agent 平台与 Agent-as-Asset 2026]]）须把恶意 Skill 注入纳入准入扫描；端侧低带宽下仍须保留签名校验（不能为了渐进式披露牺牲来源可信）。
 - → 与 [[XPIA 跨提示注入]] 的协同：本库 XPIA 威胁模型新增「**能力描述（Skill）注入**」靶面，即意图框架的声明层本身成为注入面；OS Agent 执行安全须把 Skill 来源完整性纳入爆炸半径边界。
 - ⚠️ 诚实标注：三篇均 2026-02 arXiv 预印本、由本轮检索首次入库（非 24h 新发布）；具体 benchmark 数字待一手论文复核，先不写精确百分数。
+
+## 2026-11-05 增补：Apple 入局 `SKILL.md` + 跨平台技能格式收敛（来源 [[AppIntent 每日情报 2026-11-05]]）
+
+> 接续本笔记「格式之争」与「深化补充」段（SKILL.md 为事实最广兼容格式）。本期把「跨平台 SKILL.md 收敛」从预判升级为 **已发生事实**——Apple 在 iOS 27.3 Siri AI 开发者预览中采用 `SKILL.md` 子集作为 App Skills 格式，且 Google 已声明 Gemini 可复制其他平台 skill。
+
+- **Apple App Skills = Agent Skills (`SKILL.md`) 的子集**：每个 skill 是 `Skills.skillsbundle` 内独立文件夹的 `SKILL.md`，body ≤10,000 字符，仅 YAML 元数据（name + description）+ Markdown 指令体，**无 scripts / references / 其他字段**（比 Claude Code / Anthropic 标准更瘦）；依赖脚本的 skill 需为 Gemini 重写（格式兼容但能力受限）。
+- **Google 已确认跨平台 skill 可移植**：wain.blog 引述——Google 声明「在其他平台写的 skill 可复制到 Gemini，同样用 `SKILL.md`」——与 Apple 子集同源。→ **Apple + Google 首次在技能描述文件格式上对齐到 `SKILL.md`**，是四平台之外**技能分发层的跨厂商收敛**，坐实本笔记「格式统一者掌握生态入口」的判断。
+- **🔑 关键安全约束（跨平台通用）**：Apple 明确 app skills **不能保证确定性执行顺序**——「Siri AI does not necessarily run the intents listed in a skill in sequence」。→ 把本笔记「反例与边界」的「过度召回/恶意 Skill 注入」之外，补上**「编排非确定性」靶面**：OS 级 skill 若串多步含写回/确认流程，**不能靠 skill 文案顺序保证安全，必须在被调用意图内部做确定性护栏**（呼应 [[Confirmation UI 安全机制]] 与 [[Apple AppIntents Schema Protocol 2026]] 11-05 增补）。
+- **对 OS PM 的启示**：① 技能格式战趋近终局，`SKILL.md` 成事实标准，OS 系统 Agent 直接以 `SKILL.md` 为跨厂商能力描述载体（本笔记「深化补充」的预判兑现）；② 但「skill 可移植」≠「skill 安全可移植」——跨平台 skill 携带的脚本/指令注入面（见本笔记 09-20 增补 Skill-Inject/Malicious Agent Skills）随可移植性放大，**OS Skill Registry 的来源校验 + 签名门槛须同步抬高**。

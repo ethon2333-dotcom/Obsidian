@@ -59,3 +59,12 @@ aliases: [A2UI, 生成式UI协议, AGenUI]
 - **Material3 基础 catalog（material3-a2ui 首版组件）**：`Button` / `Image` / `Icon` / `List` / `Tabs` / `CheckBox` / `Slider` / `TextField` / `Video` / `AudioPlayer` / `Modal` / `ChoicePicker` / `Divider` + `AccessibilityProperty` / `ChecksProperty` 等基础组件，提供 design-system-agnostic 框架 + 开箱即用 Material3 实现。
 - **安全含义**：A2UI 渲染**原生 Compose 组件、无需执行任意代码**——把「模型生成 UI」从「生成可执行前端代码（高注入面）」改为「生成结构化 UI intent + 宿主受限渲染」，与 [[端侧 Router 置信度门控与工具可达性收缩 2026]]「结构性不可达比准确率更可靠」同源。
 - → 对 OS PM：四平台意图框架里，**A2UI 是首个明确跨平台（非厂商锁定）的 UI 层协议**，且本期 Android 给出官方 Jetpack 实现、此前鸿蒙侧有 AGenUI 第三方落地——「意图→UI」闭环从概念走向多端官方/半官方实现。⚠️ alpha01 为首版，基础 catalog 组件集与字段稳定性待后续 release 复核（延续 08-26「A2UI 版本协商防静默空白」工程纪律）。
+
+## 2026-10-21 增补：A2UI 1.0.0-alpha02 官方进位（来源 [[AppIntent 每日情报 2026-10-28]] 21:00 复核补录）
+
+> 接续 09-25「alpha01 官方落地」。本期补 **A2UI 官方 Jetpack 库的次级版本进位**——确认 Google 把「意图→UI」渲染层作为**常青维护线**持续推进，跨平台 UI 协议稳进（仍 alpha 阶段）。
+
+- **官方发布（2026-10-21，Jetpack alpha-channel）**：`androidx.a2ui` / `androidx.a2ui.compose` / `androidx.compose.material3:material3-a2ui` 由 **1.0.0-alpha01 → 1.0.0-alpha02**。来源：<https://developer.android.google.cn/jetpack/androidx/versions/beta-channel> + 第三方 Recent Release Notes 镜像（telp.cc，列 2026-10-21 一组 release 含 A2ui 1.0.0-alpha02）。⚠️ 官方 alpha-channel 逐字 Release Notes 未单独抓取（沙箱网络），版本进位以官方 beta/alpha channel 列表 + 镜像交叉确认。
+- **性质（★3/10，次级进位·非新范式）**：本次为已跟踪官方库 `alpha01 → alpha02` 的小幅迭代，**无新 API 范式/组件大类变更**（延续 09-25 alpha01 的 JSONL agent-defined UI + Material3 原生 Compose 渲染路线）；仍 alpha 阶段，catalog 组件集与字段稳定性待后续 release 复核（延续「A2UI 版本协商防静默空白」工程纪律）。
+- **意义**：A2UI 官方库自 09-23 alpha01 起约每月一进位，表明 Google 把「Agent 产出物→原生 UI 渲染」当作**持续维护的 OS 级能力线**，而非一次性实验；在四平台意图框架里，A2UI 仍是**唯一明确跨平台（非厂商锁定）的 UI 层协议**，且与鸿蒙 AGenUI 第三方落地形成「Android 官方 + 鸿蒙半官方」双轨。
+- → 对 OS PM：跟踪 A2UI 成熟度可看「alpha → beta → stable」进位节奏；当前仍 alpha，不应在跨平台 Agent UI 互操作上做重依赖假设。本补录**不属 10-28 情报 note 的 44h 窗口净新增**（10-21 早于窗口起点 10-26 22:53），仅作概念笔记的版本连续性维护。

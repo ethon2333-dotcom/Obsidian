@@ -215,4 +215,39 @@ Windows Copilot Vision 通过**屏幕像素 + 语义文件索引**扩展读取�
 
 ⚠️ 诚实标注：BragJack 为 09-16 公开、09-20 周报覆盖，非本窗口 24h 首发；CVE 编号/评分/修补版本来自 zeroday.news / cybersecuritynews.com / techtimes（Forever Security 原始披露转述）；Plugin4Shell 一手 CVE 与受影响版本清单待补。
 
+## 2026-09-30 增补：多智能体注入威胁模型 + 自复制注入 + SearchLeak 重提（来源 [[AppIntent 每日情报 2026-09-30]]）
+
+> 接续 09-21 的「⑧ 信道/身份信任劫持（BragJack）」与本库 XPIA 七支防御谱系。本期补**两则新研究** + **一则可证伪重提**，把威胁模型扩到**第⑨支（多智能体编排注入）**并补**自我复制**演进环。
+
+**① 多智能体注入威胁模型（arXiv:2609.22949v1，★6/10 收录）**
+- **三机制放大单模型风险**：inter-agent message passing（不可见注入信道，绕过边界防御）/ shared tool access（跨 agent 边界提权）/ trust propagation（感染上游 orchestrator）。
+- **14 攻击向量**（直接注入 3 / 间接注入 4 / inter-agent 注入 4 / cascading 3）；6-智能体生产代表系统实测 **67% 至少一种 scope violation**（即便有 system-prompt 级 guardrail），间接注入经 tool output **43% 成功**。
+- **四架构防御把总注入成功率 31.2% → 4.2%**：消息签名+来源追踪（inter-agent ↓91%）/ 边界 I/O 净化（间接 ↓78%）/ 按角色权限定界 tool access（提权归零）/ inter-agent 通信异常检测（cascading 84% 捕获）。
+- → 与 [[A2A 端侧智能体协议]] / HarmonyOS A2A / Android AppFunctions agent skill 多智能体编排直接映射；本库 XPIA 威胁模型新增**第⑨支**。
+
+**② 自复制注入（OpenAI Alignment 2026-09 警告，★6/10 收录，低置信来源）**
+- 根因 = 把上下文窗口当**扁平可信缓冲** + 给模型无限制写工具（send_email / post_slack / write_file / git_push）。经 email connector / dev repo / Slack 三跳**自我复制**（如把注入原文逐字 append 到 outbound 消息），类早期网络蠕虫。
+- 四缓解：ingest/dispatch 信道严格分离 / 写工具格式强制 / 上下文持久化视为不可信边界 / 速率限制 + 出口过滤。
+- → 续 09-17 SIR 自改进 + 09-16 权重级持久化，构成 XPIA 演进链**第五环（自我复制）**。⚠️ 来源 urgent.news 机器撰写自 Dev.to，具体数字待一手复核。
+
+**③ SearchLeak 重提 + Purview 标签治理（★5/10，09-30 语境重提，实旧 CVE）**
+- SearchLeak = Microsoft 365 Copilot Enterprise Search 三链漏洞（**CVE-2026-42824**，2026-06-15 Varonis 披露，Microsoft 后端已缓解，CVSS 有争议 Microsoft 6.5 / NVD 更高），parameter-to-prompt injection + 渲染 race + Bing SSRF 经 image endpoint 外泄邮件/日历/MFA 码。
+- 09-30 it-boltwise 在「26H2 Copilot 入 Explorer + 隐私控制」语境重提，并提 **Microsoft Purview 标签门控**（管理员可禁止 Copilot 访问带特定 label 的 Word/Excel/PPT/Outlook 文档）——条件性表述（「sollen」），**待官方确认**。
+- → 含义：企业 Copilot 把「外部输入 + 内部数据访问」结合，是 XPIA 在 M365 侧具象；Purview 标签把 AI 能力绑定**数据分级**而非仅用户角色，是可复用治理启发。与 [[Confirmation UI 安全机制]] / [[Agent Workspace 隔离执行]] / [[Chrome Agent Origin Sets 与用户对齐评判器 2026]] 互补。
+
+⚠️ 诚实标注：多智能体注入（arXiv:2609.22949）为预印本，67%/43%/4.2% 等系论文自报，待一手复核；自复制注入来自机器撰写媒体，OpenAI 原文 / GPT-Red 协议待补；SearchLeak 为 2026-06 已披露 + 后端已缓解，本次仅语境重提，Purview 标签治理待 learn.microsoft.com 确认。
+
+## 2026-10-02 晚增补：DecodingTrust-Agent(DTAP) 防御实证 + 2026 大模型安全众测权威数据（来源 [[AppIntent 每日情报 2026-10-02]]）
+
+> 接续 09-30「第⑨支多智能体注入 + 自复制 + SearchLeak」。本期补**一项防御侧量化实证（媒体综述）** + **一项权威中文监管数据（跨窗口）**。⚠️ 口径：techwalker 10-01 媒体综述（论文日期/协议待一手）；CN-SEC 09-15 国家网络安全宣传周官方通报。
+
+**① DecodingTrust-Agent(DTAP) 防御实证（techwalker 10-01 综述，★5/10）**
+- 在 DTAP 红队测试集（覆盖十几应用域）上搜出 15 套独立安全方案，平均**攻击成功率 45.6% → 10.0%**，正常任务完成率仅降 **3.3pp**；对比固定方案 Progent 完成率 79.8%→56.4%（可用性掉 23pp）。
+- 场景分化印证库内二分：**文件系统场景残留失败 43/57 来自直接攻击**（恶意目标即用户本人提出，须判操作本身是否合规）——对应 [[Confirmation UI 安全机制]]「授权边界」；**金融场景 24/41 来自间接注入**（外部内容篡改合法流程参数，须核实来源 + 查最终效果是否合理）——对应本库「间接注入靠溯源」。
+- → 与 09-20 已录 PromptArmor（FP/FN<1%）/ Zylos（间接注入 ~32% 天花板）构成防御侧量化三段；把「可用性与安全性解耦」作为评价指标（完成率掉 3.3pp 换攻击率降 35pp）。⚠️ 媒体综述，论文/评测协议待一手复核。
+
+**② 2026 大模型安全众测（CN-SEC，09-15 国家网络安全宣传周，★5/10，跨窗口）**
+- 2467 名白帽子测 25 家厂商 54 款大模型/智能体产品，发现 **873 漏洞（其中智能体特有 608 个）**；六类典型风险：**提示注入（最普遍）**、信息泄露、不当输出处理、**代理身份与权限滥用（多智能体委托链路/上下文记忆缺陷诱导冒用身份）**、**代理目标劫持（提示注入/上下文投毒/伪造工具返回篡改任务目标）**、非预期代码执行。
+- → 这是本库**首个权威中文监管侧的智能体安全量化**（与 Microsoft 2026 red-team、NIST 2026 工作同主题）；代理身份滥用/目标劫持直接映射本库「多智能体注入第⑨支」「混淆代理」。建议下个完整窗口正式收录为独立证据段。⚠️ 09-15 发布，非 24h 窗口，作跨窗口补强登。
+
 #标签/XPIA #标签/安全 #标签/注入

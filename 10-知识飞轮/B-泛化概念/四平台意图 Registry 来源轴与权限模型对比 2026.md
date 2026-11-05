@@ -111,6 +111,19 @@ tags: [概念, Registry对比, 权限模型, 来源轴, 执行安全, 跨平台,
 
 → 对来源轴结论无影响：DMA 强制的是「可发现性」而非「provenance」——跨助手开放仍不解决「数据从哪来、可不可信」的来源轴空白（见 [[Agent Data Injection 数据注入攻击]]）；最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位。
 
+## 2026-10-03 增补：Apple 桌面文件权限层 agent-aware（来源 [[AppIntent 每日情报 2026-10-03]]，详见 [[Apple 桌面 Agent 权限治理 macOS Full Disk Access 2026]]）
+
+> 接续本笔记 09-25「Android alpha12 `scope` + `serialize`」与「Apple 用锁屏鉴权 + entitlement 治理」（行 81）。本期 Apple 在**桌面 OS 权限层**（非意图 Registry 层）发出新治理信号，补齐本对比表「权限模型」维度的 Apple 桌面侧拼图。
+
+- **新增对比维度：Apple 桌面文件权限（FDA）显式动作门控**。Apple 2026-10-02 宣布把 macOS Full Disk Access 改为「仅以非常明确的用户动作授予」，并首次把 AI agent 自主能力增长列为理由。这是 Apple 桌面侧「agent 可达性 = OS 权限边界」的显式表态，**与此前本笔记记的 Apple 移动侧「锁屏鉴权 + entitlement 治理」构成 Apple 全平台权限治理的两层**。
+- **四平台「agent 执行边界 = OS 权限/隔离/确认边界」收敛对账**（更新「权限/Registry 模型」对比行的 Apple 列）：
+  - **Apple（桌面）**：FDA 显式用户动作门控（forward-looking，未给版本/形态）；移动侧锁屏鉴权 + entitlement。
+  - **Windows**：Agent Workspace 低权账号 + ACL + Agent ID 审计；ODR 三档 consent（Ask every time / Allow always / Never allow）。
+  - **Android**：`EXECUTE_APP_FUNCTIONS` 仅限可信 caller；`setAppFunctionsPolicy` + `APP_FUNCTIONS_DISABLED` 经 MDM 全局禁用。
+  - **Microsoft（跨窗口权威，2026-10-01 Digital Defense Report）**：agent 身份 + 权限 + prompt injection + revoke 四件套。
+- **门控颗粒度差异（本笔记新观察）**：Apple=显式动作 / Windows=低权账号+consent 时长 / Android=caller 白名单+MDM 开关 / Microsoft=身份+revoke——方向同构，落点不同。
+- **不推翻来源轴结论**：FDA 是桌面文件权限层，与「意图 Registry 来源/provenance 轴四平台全空白（confirmed）」**正交**；本笔记最高优先待办「意图元数据记录数据来源/可信度」结论延续。
+
 #标签/跨平台 #标签/Registry #标签/权限模型 #标签/来源轴 #标签/执行安全 #标签/IntentFramework
 
 ## 2026-09-15 增补：Per-Intent Privacy Manifest 待办重开（08-31 证伪结论 GA 后重评估，来源 [[AppIntent 每日情报 2026-09-15]]）
@@ -149,3 +162,77 @@ tags: [概念, Registry对比, 权限模型, 来源轴, 执行安全, 跨平台,
 - 新增 `AppFunctionUriValueConstraint` 公共 API，对 Uri 类型参数/返回值施加约束（scheme/路径限制）——是 AppFunctions 约束族（Int/String/Uri）的参数级安全补强，与「最小权限工具作用域」方向一致。
 
 → 对来源轴结论：alpha12 在「可见性作用域（scope）+ 参数约束（Uri）」上有实质推进，但**仍未触及「数据从哪来、可不可信」的来源轴**——本库最高优先待办的「来源轴四平台全空白」结论延续。
+
+## 2026-10-09 增补（2026-10-13 二次复核确认：alpha13 确为真实发布，10-10 更正段已被推翻）：Android alpha13 引入函数侧访问限制 `@AppFunctionAccessLevel`（来源 [[AppIntent 每日情报 2026-10-09]]，详见 [[Android AppFunctions 设备侧意图 2026]]）
+
+> 接续本笔记 09-25「Android alpha12 `scope` + `serialize`」与「Apple 用锁屏鉴权 + entitlement 治理」（行 81）、10-03「Apple 桌面 FDA agent-aware」。本期由官方 Jetpack Release Notes 确认 **AppFunctions `1.0.0-alpha13`（2026-10-07）** 新增 `@AppFunctionAccessLevel`，在权限模型上补全「函数侧访问限制」维度。
+
+> [!info] 复核确认（2026-10-13 官方源直查推翻 10-10 更正）：经 2026-10-13 对 Jetpack Release Notes 发布页 + alpha-channel + all-channel 三处官方列表直查，`1.0.0-alpha13`（2026-10-07）**确为真实发布**，含 `@AppFunctionAccessLevel` 与 `@AppFunction`→`@AppFunctionDeclaration` 重命名；10-10 复核因索引滞后误判「最新仍 alpha12、alpha13 不可见」，其「降级为待官方确认」结论**已被推翻**。本段「Android alpha13 引入函数侧访问限制」**真实有效**，Android 权限模型「三向约束（caller 权限 + scope + 函数侧 `@AppFunctionAccessLevel`）」维持成立。详见 [[AppIntent 每日情报 2026-10-13]] 与 [[Android AppFunctions 设备侧意图 2026]] 10-13 复核段。
+
+**① 权限/Registry 模型对比行更新（Android 列）**
+- Android AppFunctions 权限模型现三向：① 调用方持 `EXECUTE_APP_FUNCTIONS`（caller 权限）；② 函数 `scope`（可见性作用域，alpha12）；③ **`@AppFunctionAccessLevel`（函数侧访问限制，alpha13）**。
+- 与「调用方权限」对比行（行 56）互补：此前 Android 列仅「调用方须持 `EXECUTE_APP_FUNCTIONS`；每函数可配用户显式授权」，现补「函数可自声明访问级别」——**权限从单向（caller）扩展为 caller + 可见性 + 函数侧三段**。
+- ⚠️ `@AppFunctionAccessLevel` 级别语义（public/protected/system 等）官方未展开，待 `developer.android.com/ai/appfunctions` 逐字段确认；在确认前仅记录「函数侧访问限制原语已就位」，**不写入具体级别对照**。
+
+**② 不推翻来源轴结论**
+- `@AppFunctionAccessLevel` 是访问/权限维度，与「意图元数据记录数据来源/可信度（provenance 轴）」**正交**——本笔记最高优先待办「来源轴四平台全空白（confirmed）」结论延续。Android 仍是四平台里**权限模型最厚**的平台（caller 权限 + 可见性 scope + 函数侧 access level + 企业 `APP_FUNCTIONS_DISABLED` 总开关），但仍**不记录 intent 来源 provenance**。
+
+## 2026-10-26 增补：Android 进首个 Beta（成熟度）+ `description`→`instructions` 对齐 MCP 命名；iOS 27.1/Duo 双屏无新 Schema（来源轴待办维持，来源 [[AppIntent 每日情报 2026-10-26]]，详见 [[Android AppFunctions 设备侧意图 2026]] 与 [[Apple AppIntents Schema Protocol 2026]]）
+
+> 接续 10-09/10-13「Android alpha13 引入函数侧 `@AppFunctionAccessLevel`」与 10-18「iOS 27.1 无设备 beta、跟踪窗口回退 10-23」。本期有两个对比表相关增量，并**关闭 iOS 27.1/Duo 双屏是否带新意图 Schema 的跟踪项**（不影响来源轴结论）。
+
+**① 「成熟度/版本状态」对比行更新（Android 列）**
+- AppFunctions 自 alpha10→alpha13 一路破坏性重命名后，于 **2026-10-21 跳到首个 `1.0.0-beta01`**（未发 alpha14）——这是四平台设备侧意图框架里**首个进入 Beta 稳定化通道**的实现，标志 Android 的 Registry/权限 API 面从「剧烈变动期」迈入「趋于稳定、接近 1.0」。
+- 对照：Apple（27.x 稳定维护期，无新 Schema 域）、HarmonyOS（ArkAF 提供意图框架/Skill/端侧 A2A 三机制、稳定）、Windows（ODR 连接器注册 + 实验性 Agent Launchers，pre-GA）——Android 在「API 面成熟度里程碑」上本窗口领先（首个进 beta），但 **GA 日期仍待补**。
+
+**② 「命名惯例 / 跨平台对齐」对比行更新（Android 列，跨平台信号）**
+- beta01 把 `AppFunctionAppMetadata.description` 重命名为 **`instructions`**，官方明确「to align with MCP naming conventions」——Android 设备端 MCP 的元数据字段名**显式向标准 MCP 收敛**，强化「AppFunctions = 设备端 MCP 特例」身份（详见 [[MCP 与设备侧 MCP]]）。这是四平台里**首个把意图框架元数据语义对齐到通用 MCP 命名**的案例，对做跨体系 Registry 规范有参考价值。
+
+**③ 关闭 iOS 27.1/Duo 双屏 Schema 跟踪项（不影响来源轴）**
+- iOS 27.1 于 2026-10-23 随 iPhone Duo 正式发布；经核验 Duo 双屏适配走 **SwiftUI/UIKit 布局/铰链/scene-accessory API**，**未引入任何新的 `@AppIntent(schema:)` Domain 或 Entity**；App Intents Updates 官方页最新仍 June 2026。
+- → 自 09-21 连续 8+ 轮跟踪的「iOS 27.1 双屏是否带新意图 Schema」问题**最终答案 = 否**，Apple 把折叠屏当作**显示/布局问题**而非**意图语义问题**处理（详见 [[Apple AppIntents Schema Protocol 2026]] 10-26 增补）。
+
+**④ 来源/溯源轴（provenance）结论延续（最高优先待办不关闭）**
+- 本窗口 Android（`scope`/`@AppFunctionAccessLevel`/beta01 `instructions`）、Apple（27.1 布局 API/27.2 RC）、HarmonyOS（稳定）、Windows（稳定）**均未新增「数据从哪来、可不可信」的 intent 元数据来源字段**。
+- **结论不变**：四平台 OS intent Registry 层**来源轴仍全空白（confirmed）**，最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位（或 Android 式 scope 扩展为来源声明的变体）。Android 虽在权限/可见性/命名上最厚，但其 `instructions`/`serialize` 元数据仍属「描述来源/序列化结构」而非「数据 provenance」——不推翻空白结论。
+- 横向参考（非 OS 意图层）：标准 MCP 本身也不强制 provenance；Chrome Origin Sets（[[Chrome Agent Origin Sets 与用户对齐评判器 2026]]）是浏览器层 source-of-truth 白名单、未下沉到 Android AppFunctions Registry——来源轴的 OS 级解法仍是本库最高优先未解项。
+
+## 2026-10-28 增补：Apple「排除的 App」统一意图访问排除（消费者层）+ 来源轴结论延续（来源 [[AppIntent 每日情报 2026-10-28]]，详见 [[Apple AppIntents Schema Protocol 2026]] 10-28 增补）
+
+> 接续 10-26「Android 进首个 Beta + `instructions` 对齐 MCP 命名」与「iOS 27.1/Duo 双屏无新 Schema（关闭跟踪项）」。本期补一个**消费者层意图访问治理**的对比维度增量，并**再次确认来源轴结论不变**。
+
+**① 「意图访问边界」对比行扩展（Apple 列，消费者层）**
+- iOS 27.2（10-26/27）新增**「排除的 App」（Excluded Apps）统一隐私设置**——用户可集中选择**哪些 App 不能被 Siri、搜索（Search）和建议（Suggestions）访问**。这是 Apple 侧一个**系统级「意图访问排除清单」**，把「系统 agent 对 App 能力与数据的访问」以**消费者隐私开关**形态纳入 OS 治理。
+- 对照：Android 此前已在**企业 MDM 层**提供 `setAppFunctionsPolicy` / `APP_FUNCTIONS_DISABLED`（关闭 AppFunctions 数据，[[Android AppFunctions 设备侧意图 2026]] 10-02 增补）；Windows 在**企业/治理层**提供 ODR 连接器策略 + Agent Workspace 独立账号（[[Windows Copilot Actions 与 Agent Workspace 2026]]）。→ Apple 本期补的是**消费者隐私层**的意图访问排除，与 Android/Windows 的**企业/治理层**互为镜像，共同坐实本库长期主张：**agent 执行边界 = OS 权限/访问边界**（跨平台收敛在消费者层也成立）。
+- ⚠️ 属用户隐私开关、非开发者框架 API，不构成 Registry/权限模型的新 API 维度；是否影响开发者侧 intent 注册可见性待 Apple 开发者文档逐字确认。
+
+**② 来源/溯源轴（provenance）结论延续（最高优先待办不关闭）**
+- 本窗口 Apple（27.2 无新 Schema、仅 Excluded Apps 消费者层开关）、Android（beta01 稳定）、HarmonyOS（稳定）、Windows（Surface 活动无新 API）**均未新增「数据从哪来、可不可信」的 intent 元数据来源字段**。
+- **结论不变**：四平台 OS intent Registry 层**来源轴仍全空白（confirmed）**，最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位（或 Android 式 scope 扩展为来源声明的变体）。Apple 的 Excluded Apps 是「访问排除」而非「来源声明」，不补来源轴空白——来源轴的 OS 级解法仍是本库最高优先未解项。
+
+**③ 成熟度/版本状态对比行（确认）**
+- Apple：27.x 周期 App Intents Schema Protocol 已确认进入**稳定维护期**（App Intents Updates 官方页直查仍 June 2026，无 Oct 条目），无新增 Schema 域；跟踪重点转向 agentic 安全与消费者层意图访问治理。
+- Android：AppFunctions 仍 `1.0.0-beta01`（10-21）为最新，无 beta02 / alpha14，维持「首个进 Beta」的成熟度领先（GA 日期仍待补）。
+
+## 2026-10-29 增补：Connected Apps Platform 扩 AppFunctions 发现面到 Search + 来源轴结论延续（来源 [[AppIntent 每日情报 2026-10-29]]，详见 [[Android AppFunctions 设备侧意图 2026]]）
+
+> 接续 10-28「Apple Excluded Apps 消费者层意图访问排除对照 Android 企业层 + 来源轴仍全空白延续 + 成熟度确认」。本期由 Android Dev Summit（10-28）官方公告补一个**发现/注册面（discovery surface）维度**增量，并再次确认来源轴结论不变。
+
+**① 「发现/注册面」对比行扩展（Android 列，跨应用 Intent 工作流）**
+- **Connected Apps Platform（预览，10-28 Dev Summit）**：开发者经 cloud-hosted MCP server 或 Android MCP（AppFunctions APIs）接入，在 Google Connected Console 注册并选择「出现在 Search / Gemini app / 两者」——AppFunctions 的 Registry 发现面从「Gemini 助手内」扩到**系统级搜索入口 Search**（"enable once, run Google-wide"）。官方称 50+ Connected Apps 已上线（Adobe/Peloton/Experian/Calm 等），Search 侧先在 US AI Mode（英文）开放。
+- **对比含义**：这是四平台里**首个把设备侧意图框架（AppFunctions/Android MCP）直接接入「系统级搜索入口」的官方能力**——把「跨应用 Intent 工作流」从「助手内编排」扩到「搜索即触发 agentic action」。此前本表「发现/注册」行 Android = 「OS AppSearch registry」，现补一个**系统级 AI 入口层的二级发现面**（Gemini app + Search AI Mode）。⚠️ 仍为 preview + 分阶段开放，非 GA；是否受 `EXECUTE_APP_FUNCTIONS` 同一闸门约束待 developer.android.com/ai/appfunctions 确认。
+- **权限兜底不变**：Search 入口触发的执行仍受 caller 权限（`EXECUTE_APP_FUNCTIONS`）+ 可见性 `scope` + 函数侧 `@AppFunctionAccessLevel` 三向约束（见本笔记 10-09 增补）；用户授权经 OAuth 2.1。但「Search 即触发」比「助手内显式指令」更易非预期调用——入口扩张使确认/隔离的 UX 约束更关键（与 [[确认机制]] / [[Confirmation UI 安全机制]] 同方向）。
+
+**② 来源/溯源轴（provenance）结论延续（最高优先待办不关闭）**
+- 本窗口 Android（Connected Apps Platform preview + ML Kit Agentic API alpha + beta01 稳定）、Apple（27.2 框架零变更、10-28 已复核）、HarmonyOS（稳定）、Windows（无新 OS API、仅 GitHub Copilot Fusion 本地路由实验预览落地·编码 harness）**均未新增「数据从哪来、可不可信」的 intent 元数据来源字段**。
+- **结论不变**：四平台 OS intent Registry 层**来源轴仍全空白（confirmed）**，最低成本补丁仍是意图 Registry 加 `readOrWrite` 声明位（或 Android 式 `scope` 扩展为来源声明的变体）。Connected Apps Platform 是「发现面扩张」而非「来源声明」——它让 AppFunctions 更容易被系统入口发现，但**不记录意图数据的 provenance**，不补来源轴空白。来源轴的 OS 级解法仍是本库最高优先未解项。
+- 横向参考（非 OS 意图层）：标准 MCP 本身不强制 provenance（Connected Apps Platform 同时支持 cloud MCP server 接入，亦未引入 provenance）；Chrome Origin Sets（[[Chrome Agent Origin Sets 与用户对齐评判器 2026]]）是浏览器层 source-of-truth 白名单、未下沉到 Android AppFunctions Registry。
+
+**③ 成熟度/版本状态对比行（确认）**
+- Apple：27.x 周期 App Intents Schema Protocol 已确认进入**稳定维护期**（App Intents Updates 官方页直查仍 June 2026，无 Oct 条目）。
+- Android：AppFunctions 仍 `1.0.0-beta01`（10-21）为最新、无 beta02/alpha14；但 10-28 Dev Summit 补「Connected Apps Platform（preview）+ ML Kit Agentic API（alpha）」两层生态扩展，AppFunctions 从「工具声明 API」向「端侧意图执行总线完整栈」生长（均非 GA）。
+- HarmonyOS / Windows：均稳定、无窗口内新 OS API。
+
+## 2026-11-03 复核增补：Connected Apps 双路由再确认（NeoTeo 11-03，★5 复述、无新字段）
+
+> 接续本笔记 10-29 增补（Connected Apps Platform 扩 AppFunctions 发现面到 Search + 双路径）。NeoTeo（11-03）重述 10-28 公告的两条集成路径——**cloud-hosted MCP**（触达 Search / Gemini on web·Android·iOS）与 **Android MCP**（设备本地、触达 Gemini on Android）——与既有「Remote MCP = 推荐默认跨平台路径 / AppFunctions = client-side 本地路径」完全一致，**无新字段/新 API**。来源轴结论不变（仍全空白）。来源 [[AppIntent 每日情报 2026-11-03]]。

@@ -426,6 +426,17 @@ EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
 
 ⚠️ 诚实标注：MLPerf Edge Agentic 参考模型 Qwen3.6-27B 为 MLPerf 选的**参考实现**（非最小端侧 Planner）；gated 86.23% 为 Jetson AGX Thor 上 Q4_K_M 参考点；本笔记端侧 Planner 评测表（Needle 2 / FunctionGemma / qwen3-0.6b-tool-router 等）的 BFCL 分数仍为 Berkeley 榜/模型卡口径，与 MLPerf gate 不可混算。
 
+## 2026-09-30 增补：BFCL v4 BenchLM 09-28 刷新（评测设施状态，非新模型入榜，来源 [[AppIntent 每日情报 2026-09-30]]）
+
+> 接续 09-26 的「MLPerf Edge Agentic gate」。本期补一份**榜单刷新状态**，无新端侧 Planner（亚 1B~8B 小模型）入榜。
+
+- **BenchLM BFCL v4 刷新生效 2026-09-28**：榜首 **BTL-3（Bad Theory Labs，开放权重）88.5%**，其次 Atria Dawn Preview 77.0% / Qwen3.7 Max 75.0% / BTL-4 73.5% / MiniCPM5-2B（OpenBMB，开放权重）66.6% / LFM2.5-2.6B 56.9% / LFM2.5-8B-A1B 49.7%。共 22 模型，多为大模型/中等模型。
+- **关闭一条旧待办**：此前本库把「88.5%」标「疑单轮子集/厂商自报」——现 BenchLM 将其归因为 **BTL-3（Bad Theory Labs）开放权重大模型**，属可信度更高的开源榜首，但仍**非端侧 Planner**（端侧小模型榜首仍是 MiniCPM5-2B 66.6）。
+- **端侧 Planner 横评（模型卡口径，09-04 HF 卡，延续 09-12/09-26）**：FunctionGemma-270m 27.03（think=no-think）/ Qwen3-0.6B 54.08（think）/ 29.17（no-think）/ LittleLamb-TC-0.3B 51.55（think）/ 50.51（no-think）；Needle2 42.6 / Apple FM 61.7。→ 与 MLPerf gate（参考 Qwen3.6-27B 86.23%）**规模差一个数量级**，印证「端侧能达标」与「边缘设备能达标」是两层问题。
+- **性质判定（★5/10，评测设施状态）**：榜单刷新但端侧 Planner 选型无变化，按任务「聚焦端侧路由实测与 BFCL」规则，本项计入**状态更新**而非情报增量。
+
+⚠️ 诚实标注：BenchLM 为聚合镜像（22 行全为厂商自报、0 行来自榜主独立运行），BTL-3 88.5% 为自报口径；端侧 Planner 分数仍 Berkeley 榜/模型卡口径，与 MLPerf gate 不可混算。
+
 ## 2026-09-26 晚增补：Qwen3-0.6B 在 2017 Note8 驱动真实桌面 Chrome（来源 [[AppIntent 每日情报 2026-09-26-晚]]）
 
 > 接续 09-26 的「MLPerf Edge Agentic gate」。本期补一份**社区端侧 Planner 实证**——把「端侧小模型真的能驱动真实浏览器 Agent」的样本从 LocalCowork（笔记本，LFM2.5-8B-A1B）补到**2017 年老旧手机 + 0.6B 模型**。⚠️ 口径：e2llm/edge-browser-agent 社区仓库（r/LocalLLaMA 镜像，AGI Hunt / prismix 转述），仅 3 个固定任务、名称匹配与抄写，**非通用 benchmark、非 BFCL**，引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？）。
@@ -446,3 +457,43 @@ EvalScope 官方文档交叉确认 08-04 记的权重公式无误：
 - 把「端侧小模型驱动真实 Agent」的可用样本从 LocalCowork（笔记本、LFM2.5-8B-A1B）补到**老手机 + 0.6B 模型**，进一步压低「端侧能跑」的设备/模型下限；但**方法学**：结构化感知层是外围贡献、任务固定且窄，不能直接当作端侧 Planner 通用准确率证据（延续 09-26 诚实标注）。
 
 ⚠️ 诚实标注：e2llm 为社区仓库、仅 3 个固定任务、名称匹配与抄写非通用，**非 BFCL、非官方榜**；「结构化感知远优于原始 HTML」是方法学洞察，与其直接比端侧 Planner 准确率不严谨。
+
+## 2026-10-02 晚增补：决策模型（Decision Model）品类升温——Cloudflare Clef / Amazon Strands Decider 2B 直击 Jev（来源 [[AppIntent 每日情报 2026-10-02]]）
+
+> 接续 09-30 的「BFCL v4 BenchLM 刷新（BTL-3 88.5% 榜首，非端侧）」。本期补一个**相邻但不同类的信号**：**「决策模型 / 路由模型」品类（Typesafe Jev 开创）一日之内出现两个开源挑战者**——属「意图路由模型」市场的供给扩张，但与本笔记关注的**端侧 Planner** 有边界。⚠️ 口径：Cloudflare / Amazon 官方博文（2026-10-01），BFCL 数字为厂商自报、未经独立复现。
+
+**① Cloudflare Clef + Clef-flash（Apache 2.0，2026-10-01）**
+- 定位：「bounded structured outputs cheaply, quickly and consistently that can be added into a workflow when a decision is required」——即**在 workflow 里做工具/动作决策的路由层**，直接对标 Typesafe Jev。
+- 规格：64k 上下文 + 视觉编码器（Jev 文本-only）；**Clef-flash 基于 Qwen3.5-9B**。
+- 分数（厂商自报）：BFCL case-exact **98.5** vs Jev 95.75；BANKING77 macro-F1 94.20 vs 79.74；中位延迟 **209.3ms vs Jev 524.1ms**，Clef-flash p95 122.4ms。
+- 配套 RL 服务：客户可在 Workers AI 上 capture/fine-tune/redeploy 自有 Clef 变体。
+
+**② Amazon Strands Decider 2B（2026-10-01，同日）**
+- 开源 Jev 竞品，2B 决策模型；与 Clef 同日出现，使「决策模型」品类单日浮现 3 个挑战者（Clef / Clef-flash / Strands Decider 2B vs 闭源 Jev）。
+
+**③ 对本笔记「端侧 Planner 选型」的含义与边界**
+- **边界（必须标清）**：Clef / Strands 跑在 **Cloudflare Workers AI / Amazon 云端/边缘**，是**决策/路由模型**而非**端侧 on-device Planner**；其 BFCL 98.5 是**厂商自报、非 Berkeley 官方榜行、未独立复现**，不可与 MiniCPM5-2B 66.6 / Needle2 42.6 等端侧小模型并列。
+- **信号价值**：「意图路由 = 一层独立决策模型」正从 Jev 单点变成品类（路由层专职化）；与本笔记「本地优先 + 低置信升级」架构里的**路由层**同源——只是 Clef/Strands 走云/边缘大模型路由、本库端侧路由走亚 1B~8B 小模型。二者对应不同算力档。
+- 选型纪律维持四轴并存、每分标来源与版本：BFCL **v3**（格式合规）/ **NexusRaven**（语义）/ **BFCL v4**（多轮+该不该调）/ **MLPerf Edge Agentic gate**（量化实现达标度）；新增「决策模型品类（Jev/Clef/Strands）属云/边缘路由，不入端侧 Planner 评测表」一条边界。
+
+⚠️ 诚实标注：Clef/Strands 为厂商博文（2026-10-01）发布，BFCL 98.5 为 Cloudflare 自报、经 mer.vin/aiweekly 转述，**未独立复现**；决策模型是否真能降「云端逃逸率」待第三方评测。
+
+## 2026-10-29 增补：ML Kit Agentic API（alpha，Gemini Nano 4，OS 端侧 Planner 原语）+ LFM3-1.7B BFCL V4 71.39（来源 [[AppIntent 每日情报 2026-10-29]]）
+
+> 接续 10-02 晚「决策模型品类（Clef/Strands）属云/边缘路由、不入端侧 Planner 评测表」。本期补**两项与端侧 Planner 直接相关的增量**：① OS 厂商提供的**端侧 agentic 运行时 API**（ML Kit Agentic API，Gemini Nano 4）；② 一个新端侧 agentic 模型（LFM3-1.7B）的 BFCL v4 分数。
+
+**① ML Kit Agentic API（alpha，Google，Gemini Nano 4，★6/10，OS 提供的端侧 Planner 一等原语）**
+- **能力**：ML Kit 新增基于 **Gemini Nano 4** 的 Agentic API（alpha），支持**函数调用（function calling）+ 对话历史管理（conversation history management）+ 执行流控（execution flow control）**，供开发者探索**设备端运行的智能体体验**（Android Dev Summit 2026-10-28 公告）。
+- **对本笔记「端侧 Planner 选型」的含义**：这是**四平台 OS 厂商首次把「端侧函数调用 + 多轮对话 + 执行流控」作为一等 API 提供**（此前端侧 Planner 多为自托管开源小模型如 FunctionGemma/Needle 2/qwen3-0.6b-tool-router）。它把「端侧 Planner」从「开发者自选小模型 + 自写 harness」升级为「OS 内置端侧 agentic 运行时」——与 [[Android AppFunctions 设备侧意图 2026]] 的「设备端 MCP 工具层」构成「模型层 + 工具层」互补。
+- ⚠️ 层级纪律：alpha 阶段、Gemini Nano 4 后端；具体 SDK 形态、是否调用 AppFunctions、权限边界**待官方文档确认**；未提供 BFCL 分数（属运行时 API 而非 benchmark 模型）。
+
+**② LFM3-1.7B（Liquid AI）BFCL V4 71.39（★5/10，新端侧 agentic 模型，待官方复核）**
+- **规格/分数**：LFM3-1.7B 为 **1.7B 文本模型**，定位 local agents / specialized applications，**256K 上下文**；post-trained to run in agentic harnesses（Hermes Agent / Pi / OpenClaw），可做 inbox triage / calendar / web research / **tool search among thousands of options**——即**工具路由**是它的核心 post-training 目标。聚合 benchmark 表（xibilus 转述 LFM3 系列）给到 **BFCL V4 71.39**（对照：LFM2.5-2.6B 55.89 / MiniCPM5-2B 62.65 / Qwen3.5-4B 55.12 / Qwen3.5-9B 62.83）。AMD Ryzen AI 定位（on-device AI PCs）。
+- **对本笔记评测表的含义**：在「端侧 Planner 模型横向评测」里新增一个 1.7B 档、BFCL v4 71.39 的样本，与 LFM2.5-2.6B（56.9% 镜像站）/ MiniCPM5-2B（66.6% 官方榜）同档对照；其「tool search among thousands」的 post-training 定位恰是 [[Intent Router 语义路由]] 的端侧实现，但**确切官宣日期与是否官方 BFCL 行待补**（来源为聚合转述，非一手榜）。
+- ⚠️ 口径纪律（延续本库铁律）：LFM3 分数来自 xibilus 聚合转述（LFM3 系列 benchmark 表），**非 Berkeley 官方行、确切官宣日期待补**；引用前仍须三问（官方榜 or 自建？微调 or 零样本？全量 or 子集？），且每个数字标 BFCL 版本号。
+
+**③ BFCL v4 榜单状态（10-29 复核）**
+- rlresearch 镜像 Snapshot **2026-10-25**，104 模型 scored；**无新端侧 Planner official entry**（端侧小模型 LFM2.5-230M 21% / MiniCPM5-2B 66.6% 维持）；官方 Berkeley 榜仍停滞（2026-04-12）。LFM3-1.7B 是新增端侧模型样本，但属第三方聚合口径，未进官方榜。
+- 沿用纪律：BFCL **v3**（格式合规）/ **NexusRaven**（语义）/ **BFCL v4**（多轮+该不该调）/ **MLPerf Edge Agentic gate**（量化实现达标度）四轴并存、每分标来源与版本。
+
+⚠️ 诚实标注：ML Kit Agentic API 来自 Android Dev Summit（2026-10-28）官方公告（腾讯新闻 2026-10-29 / Pivot News / Zendoric 复述），alpha 阶段、非 GA、未提供 BFCL 分数；LFM3-1.7B 来自 xibilus 聚合转述的 LFM3 系列 benchmark 表，确切官宣日期与 Berkeley 官方榜行待补；BFCL v4 镜像（rlresearch 10-25 快照）为聚合站、非官方全量。
